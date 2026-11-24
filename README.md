@@ -8,6 +8,8 @@ Uma moeda experimental feita em casa, minerada por placas **ESP32**, celulares e
 
 A rede começou com 8 placas ESP32 de R$ 30 minerando juntas numa rede de casa. Este repositório tem tudo: o servidor, o painel, o firmware das placas e um verificador independente.
 
+**➡️ Tutorial passo a passo: [Minere sua própria moeda com uma ESP32](docs/tutorial-esp32.md)** · **English: [Mine your own coin on an ESP32](docs/tutorial-esp32-en.md)** · Firmware: [release v1.4](https://github.com/shamah10/portgiga/releases/tag/v1.4)
+
 ## Como funciona
 
 - **Mineração justa entre aparelhos.** O servidor manda um desafio (achar `n` tal que `sha256(base + n) = alvo`) e ajusta a dificuldade de cada aparelho para ele responder a cada ~10 s. Uma ESP32 (~40 mil hashes/s) ganha parecido com um celular. A ideia é a mesma da Duino-Coin.
@@ -50,7 +52,7 @@ python3 servidor/servidor.py          # abre em http://localhost:7777
 
 ## Gravar uma ESP32
 
-Baixe o `.bin` na página de *Releases* (ou compile com `pio run` em `minerador-esp32/`) e grave pelo navegador em <https://espressif.github.io/esptool-js/>, no endereço `0x0`. Depois conecte o celular na rede Wi-Fi `Portgiga-xxxxxx` que a placa abre e preencha o Wi-Fi da casa, o endereço da carteira (`ptg1...`) e o servidor.
+Passo a passo completo, com imagens: [docs/tutorial-esp32.md](docs/tutorial-esp32.md). Resumo: baixe o `.bin` na página de [*Releases*](https://github.com/shamah10/portgiga/releases/tag/v1.4) (ou compile com `pio run` em `minerador-esp32/`) e grave pelo navegador em <https://espressif.github.io/esptool-js/>, no endereço `0x0`. Depois conecte o celular na rede Wi-Fi `Portgiga-xxxxxx` que a placa abre e preencha o Wi-Fi da casa, o endereço da carteira (`ptg1...`) e o servidor.
 
 A placa só precisa do **endereço** da carteira, nunca da chave secreta.
 
