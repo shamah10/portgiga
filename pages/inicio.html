@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portgiga</title>
+<meta name="description" content="Portgiga (PTG): moeda digital brasileira de código aberto. Moeda de troca, de pessoa pra pessoa. Não é investimento.">
+<meta name="theme-color" content="#062b18">
+<link rel="icon" href="/app/icones/icone.svg" type="image/svg+xml">
+<meta property="og:title" content="Portgiga · moeda de troca de pessoa pra pessoa">
+<meta property="og:description" content="Carteira grátis, mineração, Corretora, Feira e Arena. Não é investimento.">
+<meta property="og:image" content="/app/icones/icone-512.png">
+<style>
+  :root { --fundo: #04140c; --card: #0b2418; --borda: #1c4430; --texto: #ecfdf5; --sub: #9cc8b2; --verde: #34d58a; --ouro: #f3c552; --vermelho: #f87171; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 50% 0%, #0f5132 0%, var(--fundo) 60%); color: var(--texto);
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; padding: 28px 16px 40px; }
+  main { width: 100%; max-width: 440px; }
+  header { text-align: center; margin-bottom: 22px; }
+  header img { width: 96px; height: 96px; filter: drop-shadow(0 0 28px rgba(243,197,82,.35)); }
+  h1 { margin: 10px 0 2px; font-size: 34px; letter-spacing: .5px; }
+  h1 small { font-size: 15px; color: var(--ouro); margin-left: 6px; font-weight: 700; }
+  .lema { margin: 0; color: var(--sub); font-size: 15px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 6px 14px; border-radius: 99px; background: var(--card); border: 1px solid var(--borda); font-size: 13px; color: var(--sub); }
+  .status i { width: 9px; height: 9px; border-radius: 50%; background: #6b7280; }
+  .status.no-ar i { background: var(--verde); box-shadow: 0 0 10px var(--verde); }
+  .status.fora i { background: var(--vermelho); }
+  nav { display: grid; gap: 12px; }
+  a.bt { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 18px; background: var(--card); border: 1px solid var(--borda);
+         color: var(--texto); text-decoration: none; transition: transform .15s, border-color .15s; }
+  a.bt:hover, a.bt:focus-visible { transform: translateY(-2px); border-color: var(--verde); outline: none; }
+  a.bt .ic { font-size: 30px; width: 44px; text-align: center; flex: none; }
+  a.bt .ic svg.carteira { display: block; width: 44px; height: 44px; filter: drop-shadow(0 3px 4px rgba(0,0,0,.35)); }
+  a.bt b { display: block; font-size: 17px; }
+  a.bt span.peq { display: block; color: var(--sub); font-size: 13px; margin-top: 2px; }
+  a.bt.destaque { background: linear-gradient(135deg, #14703f, #0b2418); border-color: var(--ouro); }
+  a.bt[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .video { margin-top: 22px; padding: 14px; border-radius: 18px; background: var(--card); border: 1px solid var(--borda); }
+  .video h2 { margin: 2px 4px 10px; font-size: 17px; }
+  .video h2 small { display: block; color: var(--sub); font-size: 13px; font-weight: 400; margin-top: 2px; }
+  .video video { display: block; width: 100%; aspect-ratio: 9 / 16; border-radius: 12px; background: #000; }
+  a.bt.yt { margin-top: 12px; border-color: #b91c1c; }
+  a.bt.ig { border-color: #c13584; }
+  .aviso { margin-top: 22px; padding: 14px 16px; border-radius: 14px; border: 1px dashed var(--borda); color: var(--sub); font-size: 13px; line-height: 1.5; text-align: center; }
+  .aviso b { color: var(--texto); }
+  footer { margin-top: 18px; text-align: center; font-size: 12px; color: #5f8f78; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="/app/icones/icone.svg" alt="Logo da Portgiga: pau-brasil com moedas douradas" width="96" height="96">
+    <h1>Portgiga<small>PTG</small></h1>
+    <p class="lema">Moeda de troca, de pessoa pra pessoa.</p>
+    <div class="status" id="status"><i></i><span id="status-txt">conferindo a rede…</span></div>
+  </header>
+  <nav>
+    <p id="convite-faixa" hidden style="margin:0 0 4px;padding:12px 14px;border-radius:14px;background:rgba(243,197,82,.14);border:1px solid rgba(243,197,82,.4);font-size:15px">🎁 Um amigo te convidou! Crie sua carteira, minere 1 minuto e ganhe PTG de boas-vindas.</p>
+    <a class="bt destaque" href="/app/"><span class="ic"><svg class="carteira" viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><defs><linearGradient id="ct-couro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6434"/><stop offset="1" stop-color="#5e3a1b"/></linearGradient><radialGradient id="ct-ouro" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff2b8"/><stop offset=".5" stop-color="#f3c552"/><stop offset="1" stop-color="#b9780f"/></radialGradient></defs><rect x="9" y="8" width="24" height="13" rx="2" fill="#86efac" stroke="#166534" stroke-width="1.2" transform="rotate(-9 21 14)"/><circle cx="33" cy="12" r="7.5" fill="url(#ct-ouro)" stroke="#a16207" stroke-width="1.2"/><text x="33" y="14.6" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="6.5" fill="#7a4c06">PTG</text><rect x="4" y="16" width="40" height="27" rx="6" fill="url(#ct-couro)" stroke="#3f2611" stroke-width="1.2"/><rect x="7.5" y="19.5" width="33" height="20" rx="3.5" fill="none" stroke="#e0a868" stroke-width="1" stroke-dasharray="2 1.6" opacity=".85"/><path d="M27 24h17v12H27a5 5 0 0 1-5-5v-2a5 5 0 0 1 5-5z" fill="#74471f" stroke="#3f2611" stroke-width="1.2"/><circle cx="29" cy="30" r="2.8" fill="url(#ct-ouro)" stroke="#a16207" stroke-width=".8"/></svg></span><div><b>Carteira</b><span class="peq">crie a sua grátis · funciona no celular e no PC</span></div></a>
+    <a class="bt" href="/app/Portgiga-Carteira.apk" download><span class="ic">📱</span><div><b>App para Android</b><span class="peq">baixar e instalar (APK)</span></div></a>
+    <a class="bt dia" data-caminho="/" aria-disabled="true"><span class="ic">⛏️</span><div><b>Rede e mineração</b><span class="peq">painel ao vivo · minerar no celular, PC ou ESP32</span></div></a>
+    <a class="bt dia" data-caminho="/corretora" aria-disabled="true"><span class="ic">💱</span><div><b>Corretora</b><span class="peq">crie sua moeda e negocie em PTG</span></div></a>
+    <a class="bt dia" data-caminho="/corretora#feira" aria-disabled="true"><span class="ic">🛍️</span><div><b>Feira</b><span class="peq">compre e venda pagando em PTG, com pagamento protegido</span></div></a>
+    <a class="bt" id="arena" aria-disabled="true"><span class="ic">🎮</span><div><b>Arena Fichas</b><span class="peq">jogos com fichas grátis · +18 · fichas não valem dinheiro</span></div></a>
+  </nav>
+  <section class="video">
+    <h2>🎬 A história da Vila Esperança<small>2 minutos · como uma vila começou a usar a Portgiga</small></h2>
+    <video src="/midia/vila-esperanca.mp4" poster="/midia/vila-esperanca.jpg" controls playsinline preload="none"></video>
+    <a class="bt yt" href="https://www.youtube.com/@portgiga" target="_blank" rel="noopener"><span class="ic">▶️</span><div><b>Canal no YouTube</b><span class="peq">youtube.com/@portgiga · mais vídeos da Portgiga</span></div></a>
+    <a class="bt ig" href="https://www.instagram.com/portgiga/" target="_blank" rel="noopener"><span class="ic">📸</span><div><b>Instagram</b><span class="peq">@portgiga · novidades, figurinhas e memes do Giga</span></div></a>
+  </section>
+  <p class="aviso">Tudo na Portgiga é só em PTG. <b>Não é investimento</b>: PTG não tem valor em dinheiro e não é vendido por reais, pix ou outras criptos.</p>
+  <footer>Rede de teste · código aberto · <span id="atualizado"></span></footer>
+</main>
+<script>
+// origem do link (?o=tiktok) e convite de amigo (?convite=ptg1...): guarda para a Carteira (mesmo site) e repassa no link
+(function () {
+  let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  const o = (q.get('o') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20);
+  const convite = /^ptg1[0-9a-f]{38}$/.test(q.get('convite') || '') ? q.get('convite') : null;
+  if (!o && !convite) return;
+  try { if (!localStorage.getItem('ptg-chegada')) localStorage.setItem('ptg-chegada', JSON.stringify({ o: o || 'convite', convite })); } catch (e) {}
+  const extra = '?' + new URLSearchParams(Object.assign(o ? { o } : {}, convite ? { convite } : {})).toString();
+  document.querySelectorAll('a[href="/app/"]').forEach(a => { a.href = '/app/' + extra; });
+  if (convite) { const b = document.getElementById('convite-faixa'); if (b) b.hidden = false; }
+})();
+(async function () {
+  const st = document.getElementById('status'), txt = document.getElementById('status-txt');
+  let d = {};
+  try { d = await (await fetch('/link.json?t=' + Date.now(), { cache: 'no-store' })).json(); } catch (e) {}
+  const base = String(d.portgiga || '').replace(/\/+$/, '');
+  if (base) document.querySelectorAll('a.dia').forEach(a => { a.href = base + a.dataset.caminho; a.removeAttribute('aria-disabled'); });
+  if (d.arena) { const a = document.getElementById('arena'); a.href = d.arena; a.removeAttribute('aria-disabled'); }
+  if (d.atualizado) document.getElementById('atualizado').textContent = 'links de ' + new Date(d.atualizado).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  if (!base) { st.className = 'status fora'; txt.textContent = 'rede em manutenção agora · suas moedas estão seguras'; return; }
+  try {
+    const c = new AbortController(); setTimeout(() => c.abort(), 6000);
+    const r = await fetch(base + '/api/servidor-publico', { cache: 'no-store', signal: c.signal });
+    if (!r.ok) throw 0;
+    st.className = 'status no-ar'; txt.textContent = 'rede no ar';
+  } catch (e) { st.className = 'status fora'; txt.textContent = 'rede em manutenção agora · volte em alguns minutos'; }
+})();
+</script>
+</body>
+</html>

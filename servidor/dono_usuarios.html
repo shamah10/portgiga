@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usuários da Portgiga</title>
+<style>
+:root{--fundo:#0d1512;--cartao:#15211c;--linha:#24352d;--txt:#e8f2ec;--txt2:#9db3a7;--verde:#34d27b;--ouro:#f6c94e;--verm:#f87171}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--txt);font:15px/1.45 system-ui,"Segoe UI",sans-serif;padding:20px 16px 40px}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--txt2);font-size:13px;margin:0 0 20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.k{background:var(--cartao);border:1px solid var(--linha);border-radius:14px;padding:14px}
+.k b{display:block;font-size:30px;font-variant-numeric:tabular-nums}
+.k small{color:var(--txt2)}
+.k.meta b{color:var(--ouro)}
+.barra{height:10px;border-radius:6px;background:var(--linha);overflow:hidden;margin-top:8px}
+.barra i{display:block;height:100%;background:var(--ouro)}
+section{background:var(--cartao);border:1px solid var(--linha);border-radius:14px;padding:16px;margin-bottom:16px}
+h2{font-size:15px;margin:0 0 12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--linha)}
+th{color:var(--txt2);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.mono{font-family:ui-monospace,monospace}
+.dias{display:flex;align-items:flex-end;gap:6px;height:130px;padding-top:10px}
+.dia{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--txt2);height:100%;justify-content:flex-end}
+.col{width:100%;max-width:34px;background:var(--verde);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.col span{position:absolute;top:-17px;left:0;right:0;text-align:center;color:var(--txt);font-size:11px}
+.sim{color:var(--verde)} .nao{color:var(--txt2)}
+.aviso{color:var(--verm)}
+.dois{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.dois{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>Usuários da Portgiga</h1>
+<p class="sub">Só conta gente de fora: carteiras novas, que não estavam na rede antes e não vêm do Wi-Fi de casa. Atualiza sozinho a cada 30 s. <span id="hora"></span></p>
+
+<div class="kpis">
+  <div class="k meta"><small>Carteiras de fora</small><b id="k-total">—</b><small>meta: 100</small><div class="barra"><i id="k-barra" style="width:0"></i></div></div>
+  <div class="k"><small>Mineraram pelo menos 1 vez</small><b id="k-min">—</b><small id="k-min-pct"></small></div>
+  <div class="k"><small>Voltaram depois de 7 dias</small><b id="k-volta">—</b><small id="k-volta-pct"></small></div>
+  <div class="k"><small>Novas hoje</small><b id="k-hoje">—</b></div>
+  <div class="k"><small>Presentes dados</small><b id="k-pres">—</b><small id="k-conv"></small></div>
+  <div class="k"><small>Fundo de boas-vindas</small><b id="k-fundo">—</b><small id="k-fundo-txt"></small></div>
+</div>
+
+<section><h2>Carteiras novas por dia (últimos 14 dias)</h2><div class="dias" id="dias"></div></section>
+
+<div class="dois">
+  <section><h2>De onde vieram</h2>
+    <table><thead><tr><th>Origem</th><th class="n">Carteiras</th><th class="n">Mineraram</th></tr></thead><tbody id="origens"></tbody></table>
+    <p class="sub" style="margin:10px 0 0">A origem vem do link: <span class="mono">portgiga.pages.dev/?o=tiktok</span>, <span class="mono">?o=youtube</span>, <span class="mono">?o=esp32</span>… Convite de amigo aparece como "convite".</p>
+  </section>
+  <section><h2>Últimas que chegaram</h2>
+    <table><thead><tr><th>Carteira</th><th>Quando</th><th>Origem</th><th>Minerou</th></tr></thead><tbody id="ultimas"></tbody></table>
+  </section>
+</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '';
+const quando = t => new Date(t * 1000).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+async function carregar() {
+  let d;
+  try { d = await (await fetch('/api/dono/usuarios', { cache: 'no-store' })).json(); }
+  catch (e) { $('hora').innerHTML = '<span class="aviso">sem resposta do servidor</span>'; return; }
+  $('hora').textContent = 'Última atualização: ' + new Date().toLocaleTimeString('pt-BR');
+  $('k-total').textContent = d.total_fora;
+  $('k-barra').style.width = Math.min(100, d.total_fora) + '%';
+  $('k-min').textContent = d.mineraram; $('k-min-pct').textContent = pct(d.mineraram, d.total_fora);
+  $('k-volta').textContent = d.voltaram_7d; $('k-volta-pct').textContent = pct(d.voltaram_7d, d.total_fora);
+  $('k-hoje').textContent = d.hoje;
+  $('k-pres').textContent = d.ganharam_presente; $('k-conv').textContent = d.convites_pagos + ' convites pagos';
+  $('k-fundo').textContent = d.fundo.saldo.toLocaleString('pt-BR') + ' PTG';
+  $('k-fundo-txt').innerHTML = d.fundo.endereco ? `dá para ${d.fundo.presentes_restantes} presentes de 10 PTG` : '<span class="aviso">sem carteira de boas-vindas</span>';
+  if (d.fundo.endereco && d.fundo.presentes_restantes < 20) $('k-fundo-txt').classList.add('aviso');
+  const max = Math.max(1, ...d.dias.map(x => x.novas));
+  $('dias').innerHTML = d.dias.map(x => `<div class="dia"><div class="col" style="height:${Math.round(100 * x.novas / max)}%"><span>${x.novas || ''}</span></div>${x.dia}</div>`).join('');
+  $('origens').innerHTML = d.origens.map(o => `<tr><td>${esc(o.origem)}</td><td class="n">${o.carteiras}</td><td class="n">${o.mineraram}</td></tr>`).join('') || '<tr><td colspan="3" class="nao">Ninguém de fora ainda.</td></tr>';
+  $('ultimas').innerHTML = d.ultimas.map(u => `<tr><td class="mono">${esc(u.endereco.slice(0, 10))}…</td><td>${quando(u.quando)}</td><td>${esc(u.origem)}</td><td class="${u.minerou ? 'sim' : 'nao'}">${u.minerou ? 'sim' + (u.bonus ? ' 🎁' : '') : 'não'}</td></tr>`).join('') || '<tr><td colspan="4" class="nao">Ninguém de fora ainda.</td></tr>';
+}
+carregar(); setInterval(carregar, 30000);
+</script>
+</body>
+</html>

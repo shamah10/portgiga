@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel do Dono</title>
+<style>
+:root{--bg:#f3f5f0;--bg2:#e9eee6;--card:#fff;--txt:#14201a;--sub:#5b6b62;--borda:#dfe6dc;--verde:#1f8a4c;--verde2:#e3f3e8;--vermelho:#c0392b;--vermelho2:#fbe7e4;--ouro:#b98a00;--grade:#e7ece4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a120e;--bg2:#0f1a15;--card:#111d17;--txt:#e6f0ea;--sub:#93a69b;--borda:#1d2e25;--verde:#3ccf7d;--verde2:#14301f;--vermelho:#ef5b4c;--vermelho2:#3a1714;--ouro:#f5c518;--grade:#1a2a21}}
+:root[data-theme="dark"]{--bg:#0a120e;--bg2:#0f1a15;--card:#111d17;--txt:#e6f0ea;--sub:#93a69b;--borda:#1d2e25;--verde:#3ccf7d;--verde2:#14301f;--vermelho:#ef5b4c;--vermelho2:#3a1714;--ouro:#f5c518;--grade:#1a2a21}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,sans-serif}
+button,input{font:inherit;color:inherit}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 50px}
+h1{margin:0 0 4px;font-size:22px}h1 b{color:var(--ouro)}
+.sub{color:var(--sub)}.num{font-variant-numeric:tabular-nums}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:14px}
+.kpi span{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}.kpi b{display:block;font-size:24px;margin-top:2px}
+.kpi.ouro b{color:var(--ouro)}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:16px}
+.card h2{font-size:15px;margin:0 0 12px}
+label{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--grade)}
+label span small{display:block;color:var(--sub);font-size:11px}
+input[type=number],input[type=text]{width:130px;background:var(--bg2);border:1px solid var(--borda);border-radius:8px;padding:7px 9px}
+input[type=text].largo{width:100%}
+.btn{border:0;background:var(--verde);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+.btn.verm{background:var(--vermelho)}.btn.peq{padding:5px 10px;font-size:12px}
+table{width:100%;border-collapse:collapse}th,td{padding:8px 6px;border-bottom:1px solid var(--grade);text-align:left}th{font-size:11px;color:var(--sub);text-transform:uppercase}
+.ok{color:var(--verde)}.erro{color:var(--vermelho)}
+.selo{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:700}.selo.ok{background:var(--verde2)}.selo.erro{background:var(--vermelho2)}
+@media (max-width:800px){.grade{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>👑 Painel do <b>Dono</b> · Corretora Portgiga</h1>
+<div class="sub">Só abre neste PC. Aqui você vê quanto ganhou e decide as regras. <a href="/corretora" style="color:var(--verde)">Abrir a corretora →</a></div>
+<div class="kpis" id="kpis"></div>
+<div class="grade">
+  <div class="card"><h2>⚙️ Minhas regras</h2><div id="regras"></div><button class="btn" id="salvar" style="margin-top:12px">Salvar regras</button> <span id="r-msg"></span></div>
+  <div class="card"><h2>🪙 Moedas <span class="sub" style="font-weight:400">(suspender = ninguém compra; quem tem ainda vende)</span></h2><div style="overflow:auto"><table><thead><tr><th>Moeda</th><th>Volume 24 h</th><th>Donos</th><th></th></tr></thead><tbody id="moedas"></tbody></table></div></div>
+</div>
+<div class="card" style="margin-top:16px"><h2>⚠️ PTG Social · denúncias</h2><div id="sc-den"></div></div>
+<div class="card" style="margin-top:16px"><h2>🏆 PTG Social · desafio da semana</h2><div id="sc-des"></div>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-top:10px"><input type="text" class="largo" id="d-tit" placeholder="Título (ex.: Foto da sua plaquinha)"><input type="text" class="largo" id="d-tag" placeholder="#hashtag"><input type="number" id="d-pre" placeholder="prêmio PTG" step="any"><input type="number" id="d-dias" placeholder="dias" value="7" step="any"></div>
+  <input type="text" class="largo" id="d-desc" placeholder="Descrição (opcional)" style="margin-top:8px;width:100%">
+  <div style="margin-top:8px"><button class="btn" id="d-criar">Criar desafio</button> <button class="btn" id="d-fim" style="background:var(--vermelho)">Encerrar agora e premiar</button> <span id="d-msg"></span></div>
+  <p class="sub" style="font-size:12px">O prêmio sai do seu saldo na corretora quando o desafio termina: 1º 50%, 2º 30%, 3º 20% (posts com a hashtag, mais curtidos, pessoas diferentes).</p></div>
+<div class="card" style="margin-top:16px"><h2>📸 PTG Social · últimos posts <span class="sub" style="font-weight:400" id="sc-resumo"></span></h2><div id="sc-posts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px"></div></div>
+<div class="card" style="margin-top:16px"><h2>🛍️ Feira · disputas <span class="sub" style="font-weight:400" id="fx-resumo"></span></h2><div id="fx-disp"></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n=(v,c=2)=>Number(v).toLocaleString('pt-BR',{minimumFractionDigits:c,maximumFractionDigits:c});
+async function api(c,corpo){const r=await fetch(c,corpo?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(corpo)}:{});return r.json()}
+const CAMPOS=[
+  ['taxa_criacao_ptg','Taxa para criar uma moeda (PTG)','vai inteira para você'],
+  ['taxa_dono_pct','Sua % em cada negócio','compra e venda · máx. 10%'],
+  ['taxa_criador_pct','% do criador da moeda em cada negócio','incentiva criar · máx. 5%'],
+  ['trava_criador_dias','Dias de trava da compra inicial do criador','anti-golpe'],
+  ['max_carteira_pct','Máximo que uma carteira pode ter de uma moeda (%)','anti-baleia'],
+  ['max_moedas_dia','Moedas novas por carteira por dia',''],
+  ['min_negocio_ptg','Negócio mínimo (PTG)',''],
+  ['reserva_virtual_ptg','Liquidez de partida da curva (PTG)','maior = preço mais estável · vale para moedas novas'],
+  ['oferta_moedas','Unidades de cada moeda nova','vale para moedas novas'],
+  ['taxa_feira_pct','Sua % em cada venda da Feira','máx. 10%'],
+  ['feira_liberar_dias','Dias para liberar sozinho depois de enviado','se o comprador não reclamar'],
+  ['max_anuncios','Anúncios abertos por carteira','Feira'],
+  ['social_max_posts_dia','Posts por carteira por dia','PTG Social'],
+  ['social_max_comentarios_hora','Comentários por carteira por hora','PTG Social'],
+  ['social_ptg_por_mil','PTG pago a cada 1000 visualizações','monetização · sai do seu saldo na corretora'],
+  ['social_monet_min_seguidores','Seguidores mínimos para monetizar',''],
+  ['social_monet_min_curtidas','Curtidas mínimas para monetizar',''],
+  ['social_monet_teto_dia','Máximo de PTG pago por dia','somando todos os criadores'],
+  ['social_denuncias_ocultar','Denúncias que escondem um post','até você decidir'],
+  ['social_real_min_ptg','Anti-robô: PTG minerado mínimo','para seguidor/curtida/visualização contar · 0 desliga'],
+  ['social_real_dias','Anti-robô: dias de perfil (quem só depositou)',''],
+];
+let P=null;
+async function carregar(){
+  P=await api('/api/cx/dono/painel');
+  const s=P.solvencia;
+  $('kpis').innerHTML=`<div class="kpi ouro"><span>Seu saldo na corretora</span><b class="num">${n(P.saldo_dono_corretora,2)} PTG</b></div>
+   <div class="kpi"><span>Ganho com negócios</span><b class="num">${n(P.receita_negocios,2)}</b></div>
+   <div class="kpi"><span>Ganho com criação</span><b class="num">${n(P.receita_criacao,2)}</b></div>
+   <div class="kpi"><span>Ganho últimas 24 h</span><b class="num">${n(P.receita_24h,2)}</b></div>
+   <div class="kpi"><span>Moedas · usuários</span><b class="num">${P.moedas} · ${P.usuarios}</b></div>
+   <div class="kpi"><span>Volume total</span><b class="num">${n(P.volume_total,2)}</b></div>
+   <div class="kpi"><span>Caixa da corretora</span><b class="num ${s.ok?'ok':'erro'}">${s.ok?'✔ em dia':'⚠ falta'}</b><small class="sub">tem ${n(s.na_carteira,2)} · deve ${n(s.devido,2)}</small></div>`;
+  const R=P.regras;
+  if(document.activeElement?.closest?.('#regras'))return;
+  $('regras').innerHTML=CAMPOS.map(([k,t,d])=>`<label><span>${t}${d?`<small>${d}</small>`:''}</span><input type="number" step="any" data-k="${k}" value="${R[k]}"></label>`).join('')+
+    `<label><span>Pausar compras<small>emergência: só vendas e saques continuam</small></span><input type="checkbox" data-k="compras_pausadas" ${R.compras_pausadas?'checked':''}></label>
+     <label><span>Pausar criação de moedas</span><input type="checkbox" data-k="criacao_pausada" ${R.criacao_pausada?'checked':''}></label>
+     <label><span>Pausar a Feira</span><input type="checkbox" data-k="feira_pausada" ${R.feira_pausada?'checked':''}></label>
+     <label><span>Pausar a PTG Social<small>ninguém posta nem comenta; ler continua</small></span><input type="checkbox" data-k="social_pausada" ${R.social_pausada?'checked':''}></label>
+     <label><span>Aceitar vídeos na PTG Social<small>até 60 s; o PC converte um por vez (desligue se o PC ficar pesado)</small></span><input type="checkbox" data-k="social_videos" ${R.social_videos!==false?'checked':''}></label>
+     <label><span>Monetização da PTG Social ligada<small>criadores elegíveis ganham PTG por visualização</small></span><input type="checkbox" data-k="social_monet_ativa" ${R.social_monet_ativa?'checked':''}></label>
+     <div style="padding:8px 0"><span>💛 Endereço bitcoin para doações <small class="sub">(vazio = área "Apoie o projeto" escondida · só o endereço, nunca as palavras secretas)</small></span><input type="text" class="largo" data-k="apoio_btc" value="${esc(R.apoio_btc||'')}" placeholder="bc1…"></div>
+     <div style="padding:8px 0"><span>Palavras proibidas em nomes <small class="sub">(separe por vírgula)</small></span><input type="text" class="largo" data-k="palavras_proibidas" value="${esc((R.palavras_proibidas||[]).join(', '))}"></div>`;
+  const m=await api('/api/cx/mercado');
+  $('moedas').innerHTML=m.moedas.map(x=>`<tr><td>${x.emoji} <b>${esc(x.simbolo)}</b> <span class="sub">${esc(x.nome)}</span> ${x.banida?'<span class="selo erro">suspensa</span>':'<span class="selo ok">ativa</span>'}</td><td class="num">${n(x.volume_24h,2)}</td><td class="num">${x.donos}</td>
+    <td><button class="btn peq ${x.banida?'':'verm'}" data-s="${esc(x.simbolo)}" data-b="${x.banida?0:1}">${x.banida?'reativar':'suspender'}</button></td></tr>`).join('')||'<tr><td colspan="4" class="sub">Nenhuma moeda ainda.</td></tr>';
+}
+$('salvar').onclick=async()=>{const regras={};
+  document.querySelectorAll('#regras [data-k]').forEach(i=>regras[i.dataset.k]=i.type==='checkbox'?i.checked:i.type==='number'?Number(i.value):i.value);
+  const r=await api('/api/cx/dono/regras',{regras});$('r-msg').textContent=r.ok?'✔ salvo':'Erro: '+r.erro;$('r-msg').className=r.ok?'ok':'erro';if(r.ok){document.activeElement.blur();carregar()}};
+$('moedas').onclick=async e=>{const b=e.target.closest('button[data-s]');if(!b)return;const banida=b.dataset.b==='1';
+  const motivo=banida?prompt('Motivo da suspensão (aparece para os usuários):','')??'':'';
+  await api('/api/cx/dono/banir',{simbolo:b.dataset.s,banida,motivo});carregar()};
+const curto=e=>e?e.slice(0,8)+'…'+e.slice(-4):'';
+async function feira(){const d=await api('/api/cx/feira/dono/disputas');
+  $('fx-resumo').textContent=`· ${d.anuncios} anúncios · ${d.vendas} vendas · volume ${n(d.volume,2)} PTG · você ganhou ${n(d.receita,2)} PTG`;
+  $('fx-disp').innerHTML=d.disputas.map(p=>`<div style="border:1px solid var(--borda);border-radius:12px;padding:12px;margin-bottom:10px">
+    <b>${esc(p.titulo)}</b> · <b>${n(p.preco,2)} PTG</b> · pedido #${p.id}<div class="sub" style="font-size:12px">comprador ${curto(p.comprador)} · vendedor ${curto(p.vendedor)} · motivo: <b>${esc(p.motivo)}</b></div>
+    <div style="font-size:12px;margin:8px 0;max-height:160px;overflow:auto">${p.mensagens.map(m=>`<div><span class="sub">${m.autor===p.comprador?'comprador':'vendedor'}:</span> ${esc(m.texto)}</div>`).join('')||'<span class="sub">sem mensagens</span>'}</div>
+    <button class="btn peq" data-r="${p.id}" data-d="vendedor">Dar razão ao vendedor (paga ele)</button> <button class="btn peq verm" data-r="${p.id}" data-d="comprador">Dar razão ao comprador (devolve)</button></div>`).join('')||'<p class="sub">Nenhuma disputa aberta. 👍</p>';
+  $('fx-disp').querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{if(!confirm('Confirmar a decisão? Não dá para desfazer.'))return;await api('/api/cx/feira/dono/resolver',{pedido:Number(b.dataset.r),decisao:b.dataset.d});feira();carregar()})}
+async function social(){const d=await api('/api/cx/social/dono/painel'),t=d.totais;
+  $('sc-resumo').textContent=`${t.posts} posts · ${t.perfis} perfis · ${t.curtidas} curtidas · ${t.comentarios} comentários · ${t.views} visualizações · ${t.pago} PTG pagos aos criadores`;
+  $('sc-posts').innerHTML=d.posts.map(p=>`<div style="border:1px solid var(--borda);border-radius:12px;overflow:hidden">${p.foto?`<img src="${esc(p.foto)}" style="width:100%;height:140px;object-fit:cover;display:block">`:''}<div style="padding:8px;font-size:12px"><b>${esc(p.autor.nome)}</b> ${p.moeda?'· '+esc(p.moeda):''}<div class="sub" style="margin:4px 0;max-height:52px;overflow:hidden">${esc(p.legenda)}</div><button class="btn" style="background:var(--vermelho);padding:5px 10px;font-size:12px" data-rm="${p.id}">Remover</button></div></div>`).join('')||'<p class="sub">Nenhum post ainda.</p>';
+  $('sc-posts').querySelectorAll('[data-rm]').forEach(b=>b.onclick=async()=>{if(!confirm('Remover este post da PTG Social?'))return;await api('/api/cx/social/dono/remover',{post:Number(b.dataset.rm)});social()})}
+async function denuncias(){const d=await api('/api/cx/social/dono/denuncias');
+  $('sc-den').innerHTML=d.itens.map(p=>`<div style="display:flex;gap:10px;align-items:center;border:1px solid var(--borda);border-radius:12px;padding:8px;margin-bottom:8px">${p.foto?`<img src="${esc(p.foto)}" style="width:70px;height:70px;object-fit:cover;border-radius:8px">`:''}<div style="flex:1;font-size:12.5px"><b>${esc(p.autor.nome)}</b> · ${p.denuncias} denúncia(s)${p.oculto?' · <b style="color:var(--vermelho)">escondido</b>':''}<div class="sub">${esc(p.legenda)}</div><div class="sub">Motivos: ${esc(p.motivos)}</div></div><button class="btn" style="background:var(--vermelho);font-size:12px;padding:6px 10px" data-dc="${p.id}" data-rm="1">Remover</button><button class="btn" style="font-size:12px;padding:6px 10px" data-dc="${p.id}" data-rm="0">Manter</button></div>`).join('')||'<p class="sub">Nenhuma denúncia. 👍</p>';
+  $('sc-den').querySelectorAll('[data-dc]').forEach(b=>b.onclick=async()=>{await api('/api/cx/social/dono/decidir',{post:Number(b.dataset.dc),remover:b.dataset.rm==='1'});denuncias();social()})}
+async function desafio(){const r=await api('/api/cx/social/desafio'),x=r.desafio;
+  $('sc-des').innerHTML=x?`<p><b>${esc(x.titulo)}</b> · #${esc(x.hashtag)} · prêmio ${x.premio} PTG · ${x.participantes} participantes · ${x.encerrado?'encerrado':'termina '+new Date(x.fim*1000).toLocaleString('pt-BR')}</p>`:'<p class="sub">Nenhum desafio no momento.</p>'}
+$('d-criar').onclick=async()=>{const r=await api('/api/cx/social/dono/desafio',{titulo:$('d-tit').value,hashtag:$('d-tag').value,premio:Number($('d-pre').value||0),dias:Number($('d-dias').value||7),descricao:$('d-desc').value});
+  $('d-msg').textContent=r.ok?'✔ desafio criado':'Erro: '+r.erro;$('d-msg').className=r.ok?'ok':'erro';desafio()};
+$('d-fim').onclick=async()=>{if(!confirm('Encerrar o desafio agora e pagar os vencedores?'))return;await api('/api/cx/social/dono/desafio_encerrar',{});desafio();carregar()};
+carregar();feira();social();denuncias();desafio();setInterval(()=>{carregar();feira();social();denuncias();desafio()},20000);
+</script></main></body></html>

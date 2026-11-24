@@ -1,0 +1,31 @@
+# segredos e coisas so deste PC
+carteira_principal.json
+gravar-placa.sh
+telegram/config.json
+telegram/sessao*
+telegram/estado_login.json
+telegram/canal.json
+telegram/.venv/
+# dados da rede e logs
+servidor/dados/
+*.log
+__pycache__/
+# compilados (vao como "release" no GitHub)
+minerador-esp32/.pio/
+*.zip
+distribuir/*.bin
+distribuir/*.sha256
+distribuir/codigo-fonte/
+minha_carteira.json
+carteira_premios.json
+carteira_boas_vindas.json
+.superpowers/
+servidor/app/*.apk
+.dominio-fixo
+corretora_carteira.json
+.wrangler/
+# canal do YouTube: atalhos para os vídeos da Área de trabalho e arquivo temporário da área de transferência
+# cópia local do papel de parede anterior (caminho deste PC)
+
+# binários de versões (vão como release) e atalho local para fora do repo
+distribuir/**/*.bin

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instalar Minerador Portgiga</title>
+<style>
+:root{--bg:#f4f6f1;--card:#fff;--txt:#14201a;--sub:#55665c;--borda:#dfe6dc;--verde:#1f8a4c;--verde2:#e3f3e8;--amarelo:#b88400;--amarelo2:#fdf3d6;--erro:#b42318;--code:#eef2ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a120e;--card:#111d17;--txt:#e6f0ea;--sub:#93a69b;--borda:#1d2e25;--verde:#3ccf7d;--verde2:#14301f;--amarelo:#f5c518;--amarelo2:#2e2709;--erro:#ef6b5c;--code:#0d1813}}
+:root[data-theme="dark"]{--bg:#0a120e;--card:#111d17;--txt:#e6f0ea;--sub:#93a69b;--borda:#1d2e25;--verde:#3ccf7d;--verde2:#14301f;--amarelo:#f5c518;--amarelo2:#2e2709;--erro:#ef6b5c;--code:#0d1813}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.topo{background:linear-gradient(135deg,#0f5132,#1f8a4c);color:#fff;padding:32px 16px}
+.topo .in,main{max-width:860px;margin:0 auto}
+.topo h1{margin:10px 0 4px;font-size:28px;line-height:1.2}.topo p{margin:0;opacity:.9}
+main{padding:20px 16px 60px}
+.passo{background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:18px 20px;margin:16px 0;position:relative}
+.passo h2{margin:0 0 10px;font-size:19px;display:flex;align-items:center;gap:10px}
+.n{width:32px;height:32px;border-radius:50%;background:var(--verde);color:#fff;display:inline-grid;place-items:center;font-size:15px;flex:none}
+ol,ul{padding-left:22px;margin:8px 0}li{margin:6px 0}
+code,.c{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;background:var(--code);padding:2px 6px;border-radius:6px;word-break:break-all}
+pre{background:var(--code);padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:13px;margin:8px 0}
+.aviso{background:var(--amarelo2);border-left:4px solid var(--amarelo);border-radius:10px;padding:12px 14px;margin:12px 0}
+.dica{background:var(--verde2);border-left:4px solid var(--verde);border-radius:10px;padding:12px 14px;margin:12px 0}
+.perigo{border-left-color:var(--erro)}
+table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:9px 8px;border-bottom:1px solid var(--borda);text-align:left;vertical-align:top}th{color:var(--sub);font-size:13px}
+a{color:var(--verde);font-weight:600}
+.led{display:inline-block;width:10px;height:10px;border-radius:50%;background:#2f80ed;margin-right:6px;vertical-align:middle}
+small{color:var(--sub)}
+</style></head><body>
+<div class="topo"><div class="in">
+  <svg width="56" height="56" viewBox="0 0 64 64" aria-label="pau-brasil"><circle cx="32" cy="32" r="31" fill="#0b3d26"/><rect x="29" y="34" width="6" height="22" rx="2" fill="#b3261e"/><path d="M32 40 L22 31 M32 44 L42 34" stroke="#b3261e" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="22" r="13" fill="#2e8b57"/><circle cx="20" cy="28" r="9" fill="#2e8b57"/><circle cx="44" cy="28" r="9" fill="#2e8b57"/><g fill="#f5c518"><circle cx="26" cy="18" r="2.6"/><circle cx="37" cy="15" r="2.6"/><circle cx="41" cy="25" r="2.6"/><circle cx="21" cy="27" r="2.6"/><circle cx="31" cy="27" r="2.6"/></g></svg>
+  <h1>Como instalar o Minerador Portgiga na sua ESP32</h1>
+  <p>Em uns 10 minutos, sem programar nada. Você grava um arquivo na placa e configura pelo celular.</p>
+</div></div>
+<main>
+<div class="aviso"><b>Antes de começar:</b> a Portgiga (PTG) está em <b>fase de teste</b> e <b>não tem valor em dinheiro</b>. Ninguém promete lucro. A placa só minera se conseguir falar com o <b>servidor da rede</b>, e o endereço atual dele aparece no site da Portgiga, na aba <b>Minerar</b> (cartão "Minerar com uma ESP32"), com um botão para copiar.</div>
+
+<section class="passo"><h2><span class="n">1</span>O que você precisa</h2>
+<ul>
+  <li><b>Uma placa ESP32</b> comum: "ESP32 DevKit", "ESP32-WROOM-32", "ESP32 30 ou 38 pinos".</li>
+  <li><b>Um cabo USB que passa dados.</b> Alguns cabos só carregam. Se o computador não reconhecer a placa, troque o cabo.</li>
+  <li><b>Um computador com Google Chrome ou Microsoft Edge</b> (Windows, Mac ou Linux). Firefox e Safari não servem para gravar.</li>
+  <li><b>Wi-Fi de 2,4 GHz.</b> A ESP32 não conecta em redes de 5 GHz.</li>
+  <li><b>Um celular</b> para configurar.</li>
+  <li><b>O arquivo</b> <code>portgiga-minerador-esp32.bin</code> que veio junto com este tutorial.</li>
+</ul></section>
+
+<section class="passo"><h2><span class="n">2</span>Tenha uma carteira Portgiga</h2>
+<p>É nela que caem as moedas que a sua placa minerar.</p>
+<ol>
+  <li>Abra o <b>painel da rede Portgiga</b> (o endereço do servidor) no navegador.</li>
+  <li>Vá na aba <b>Carteira</b> e toque em <b>Criar carteira nova</b>.</li>
+  <li><b>Anote a chave secreta</b> num lugar seguro. Quem tiver essa chave move as suas moedas, e se você perder, perde a carteira.</li>
+  <li>Copie o <b>endereço</b>, que começa com <code>ptg1</code>. É só ele que vai na placa.</li>
+</ol>
+<div class="dica perigo"><b>Nunca</b> coloque a chave secreta na placa nem mande para ninguém. A placa só precisa do endereço <code>ptg1...</code>.</div></section>
+
+<section class="passo"><h2><span class="n">3</span>Grave o programa na placa</h2>
+<ol>
+  <li>Ligue a ESP32 no computador pelo cabo USB.</li>
+  <li>No <b>Chrome ou Edge</b>, abra o gravador oficial da fabricante da ESP32 (Espressif):<br><a href="https://espressif.github.io/esptool-js/" target="_blank" rel="noopener">https://espressif.github.io/esptool-js/</a></li>
+  <li>Em <b>Baudrate</b> deixe <code>460800</code> e clique em <b>Connect</b>.</li>
+  <li>Escolha a porta da placa, que costuma aparecer como <i>CP2102</i>, <i>CH340</i> ou <i>USB Serial</i>, e clique em <b>Conectar</b>.
+    <br><small>Se ficar parado em "Connecting...", <b>segure o botão BOOT</b> da placa até começar.</small></li>
+  <li>Clique em <b>Erase Flash</b> e espere terminar. Isso apaga o que tinha na placa.</li>
+  <li>Em <b>Flash Address</b> escreva <code>0x0</code>. Ao lado, escolha o arquivo <code>portgiga-minerador-esp32.bin</code>.</li>
+  <li>Clique em <b>Program</b> e espere chegar a 100%.</li>
+  <li>Clique em <b>Disconnect</b> e aperte o botão <b>EN</b> (ou <b>RST</b>) da placa, ou tire e coloque o cabo de novo.</li>
+</ol>
+<div class="dica"><b>No Windows a porta não aparece?</b> Falta o driver. Olhe o chip perto da entrada USB da placa:
+  se estiver escrito <b>CP2102</b>, instale o driver "CP210x" da Silicon Labs; se for <b>CH340</b>, instale o driver "CH340/CH341". Depois tente de novo.</div>
+<details><summary><b>Prefere usar o terminal?</b> (opcional)</summary>
+<pre>pip install esptool
+esptool --chip esp32 erase-flash
+esptool --chip esp32 --baud 460800 write-flash 0x0 portgiga-minerador-esp32.bin</pre>
+<small>Em versões antigas do esptool os comandos se chamam <code>erase_flash</code> e <code>write_flash</code>.</small></details>
+</section>
+
+<section class="passo"><h2><span class="n">4</span>Configure pelo celular</h2>
+<p>Ao ligar pela primeira vez, a placa entra no <b>modo configuração</b>: o <span class="led"></span>LED azul dá <b>duas piscadas seguidas</b>, repetindo.</p>
+<ol>
+  <li>No celular, abra as configurações de <b>Wi-Fi</b> e conecte na rede <b>Portgiga-xxxxxx</b> (na primeira vez não tem senha).</li>
+  <li>A página de configuração abre sozinha. Se não abrir, entre no navegador e digite <code>192.168.4.1</code>.</li>
+  <li>Preencha:
+    <table>
+      <tr><th>Campo</th><th>O que colocar</th></tr>
+      <tr><td>Rede Wi-Fi da casa</td><td>o nome do seu Wi-Fi de 2,4 GHz (aparece na lista)</td></tr>
+      <tr><td>Senha do Wi-Fi</td><td>a senha do seu Wi-Fi</td></tr>
+      <tr><td>Senha da placa</td><td><b>crie uma senha</b> de 8 a 32 caracteres e <b>anote num papel</b>. Ela é pedida para mudar qualquer coisa na placa e vira a senha da rede Portgiga-xxxxxx. Assim ninguém na sua rede troca a sua carteira.</td></tr>
+      <tr><td>Carteira</td><td>o seu endereço <code>ptg1...</code> (42 letras e números)</td></tr>
+      <tr><td>Nome do minerador</td><td>como ela vai aparecer no painel, ex.: <i>Placa do João</i></td></tr>
+      <tr><td>Servidor</td><td>copie do site da Portgiga, aba <b>Minerar</b>: é um endereço <code>https://…trycloudflare.com</code> que funciona de <b>qualquer lugar do mundo</b>. (Na mesma casa do servidor também serve <code>http://10.0.0.186:7777</code>.) Esse endereço pode mudar: se a placa parar de minerar, confira no site e configure de novo.</td></tr>
+    </table></li>
+  <li>Toque em <b>Salvar e começar a minerar</b>. A placa reinicia e conecta no seu Wi-Fi.</li>
+</ol></section>
+
+<section class="passo"><h2><span class="n">5</span>Confira se está minerando</h2>
+<ul>
+  <li><span class="led"></span><b>Piscada curta de vez em quando</b> = resposta aceita pelo servidor. É a placa minerando de verdade.</li>
+  <li>No <b>painel da rede</b>, aba <b>Painel</b>, aparece um cartão com o nome que você deu, com a velocidade, as respostas aceitas, quanto já ganhou e a <b>prova de trabalho</b>, que tem um botão <b>verificar</b>.</li>
+  <li>As moedas caem na sua carteira a cada bloco (1 por minuto), divididas entre todos que mineraram naquele minuto.</li>
+</ul>
+<table>
+  <tr><th>O LED azul está...</th><th>Significa</th></tr>
+  <tr><td>dando piscadas curtas de vez em quando</td><td>minerando normalmente</td></tr>
+  <tr><td>aceso direto</td><td>conectando no Wi-Fi</td></tr>
+  <tr><td>piscando devagar (1 por segundo)</td><td>não consegue falar com o servidor (endereço errado ou servidor desligado)</td></tr>
+  <tr><td>piscando rápido (2 por segundo) ao ligar</td><td>procurando o Wi-Fi da casa: ela tenta sozinha a cada 30 segundos, não precisa fazer nada</td></tr>
+  <tr><td>duas piscadas seguidas, repetindo</td><td>modo configuração: conecte na rede <b>Portgiga-xxxxxx</b></td></tr>
+</table></section>
+
+<section class="passo"><h2><span class="n">6</span>Mudar a configuração depois</h2>
+<ul>
+  <li><b>Pelo navegador:</b> com a placa minerando, abra <code>http://IP-DA-PLACA/</code> num aparelho do mesmo Wi-Fi. O IP aparece no roteador ou no painel da rede. Lá você vê o status e muda o que quiser.</li>
+  <li><b>Pelo botão:</b> com a placa ligada, <b>segure o botão BOOT por 5 segundos</b>. Ela volta para o modo configuração (rede <b>Portgiga-xxxxxx</b>, que agora pede a <b>senha da placa</b>).</li>
+  <li>Se o Wi-Fi da casa cair ou faltar luz, ela <b>não</b> perde a configuração: fica tentando o Wi-Fi a cada 30 segundos e volta a minerar sozinha. Para trocar de Wi-Fi, use o botão BOOT (acima).</li>
+</ul></section>
+
+<section class="passo"><h2><span class="n">7</span>Problemas comuns</h2>
+<table>
+  <tr><th>Problema</th><th>Solução</th></tr>
+  <tr><td>O computador não acha a placa</td><td>Troque o cabo (precisa passar dados) e instale o driver CP210x ou CH340 (passo 3).</td></tr>
+  <tr><td>Fica em "Connecting..."</td><td>Segure o botão <b>BOOT</b> enquanto clica em Connect.</td></tr>
+  <tr><td>Não aparece a rede Portgiga-xxxxxx</td><td>Aperte <b>EN/RST</b>. Se ela já tinha configuração, segure <b>BOOT por 5 s</b>.</td></tr>
+  <tr><td>Esqueci a senha da placa</td><td>Grave a placa de novo pelo cabo USB (passo 3). Quem tem a placa na mão manda nela. 5 senhas erradas bloqueiam a página por 5 minutos.</td></tr>
+  <tr><td>Não conecta no Wi-Fi</td><td>Confira a senha e use uma rede de <b>2,4 GHz</b>.</td></tr>
+  <tr><td>"Carteira inválida"</td><td>O endereço começa com <code>ptg1</code> e tem 42 caracteres, sem espaços.</td></tr>
+  <tr><td>LED piscando devagar</td><td>O endereço do servidor está errado ou o servidor está desligado. Confira com quem administra a rede.</td></tr>
+</table></section>
+
+<section class="passo"><h2><span class="n">+</span>Para quem grava muitas placas</h2>
+<p>Dá para configurar pelo próprio cabo USB, sem celular. Abra um monitor serial a <b>115200</b>, aperte <b>EN/RST</b> e, nos primeiros 2 segundos, envie uma linha assim:</p>
+<pre>CONFIG nome-do-wifi|senha-do-wifi|ptg1seuendereco...|Placa 01|http://endereco-do-servidor:7777|senha-da-placa</pre>
+<p>A senha da placa (último campo, 8 a 32 caracteres) é opcional se a placa já tem uma: vazio mantém a atual.</p>
+<p>A placa responde <code>CONFIG salva, reiniciando</code> e já começa a minerar.</p></section>
+
+<p><small>Minerador Portgiga v1.4 para ESP32. O código-fonte está na pasta <code>codigo-fonte</code> deste pacote (PlatformIO, Arduino).</small></p>
+</main></body></html>

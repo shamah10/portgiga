@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rede Portgiga</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Ccircle cx=%2232%22 cy=%2232%22 r=%2231%22 fill=%22%230f5132%22/%3E%3Crect x=%2229%22 y=%2234%22 width=%226%22 height=%2222%22 fill=%22%23b3261e%22/%3E%3Ccircle cx=%2232%22 cy=%2224%22 r=%2216%22 fill=%22%232e8b57%22/%3E%3Ccircle cx=%2232%22 cy=%2222%22 r=%223%22 fill=%22%23f5c518%22/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f3f5f0;--bg2:#e9eee6;--card:#ffffff;--txt:#14201a;--sub:#5b6b62;--fraco:#8a988f;--borda:#dfe6dc;
+  --verde:#1f8a4c;--verde2:#e3f3e8;--verdeb:#2fb36a;--vermelho:#c0392b;--amarelo:#e0a800;--alerta:#b54708;--erro:#c0392b;
+  --sombra:0 1px 2px rgba(20,32,26,.06),0 4px 16px rgba(20,32,26,.05);--grade:#e7ece4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a120e;--bg2:#0f1a15;--card:#111d17;--txt:#e6f0ea;--sub:#93a69b;--fraco:#64776c;--borda:#1d2e25;
+  --verde:#3ccf7d;--verde2:#14301f;--verdeb:#58e094;--vermelho:#ef5b4c;--amarelo:#f5c518;--alerta:#f0a35e;--erro:#ef6b5c;--sombra:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25);--grade:#1a2a21}}
+:root[data-theme="dark"]{--bg:#0a120e;--bg2:#0f1a15;--card:#111d17;--txt:#e6f0ea;--sub:#93a69b;--fraco:#64776c;--borda:#1d2e25;
+  --verde:#3ccf7d;--verde2:#14301f;--verdeb:#58e094;--vermelho:#ef5b4c;--amarelo:#f5c518;--alerta:#f0a35e;--erro:#ef6b5c;--sombra:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25);--grade:#1a2a21}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(900px 400px at 10% -10%,color-mix(in srgb,var(--verde) 14%,transparent),transparent 70%),radial-gradient(700px 360px at 100% 0,color-mix(in srgb,var(--amarelo) 8%,transparent),transparent 70%)}
+button,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.sub{color:var(--sub)}.fraco{color:var(--fraco)}
+
+/* topo */
+.topo{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--borda)}
+.topo-in{max-width:1820px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.marca{display:flex;align-items:center;gap:12px;min-width:0}
+.marca h1{margin:0;font-size:19px;letter-spacing:.2px}.marca h1 small{font-size:12px;color:var(--sub);font-weight:600;margin-left:4px}
+.marca p{margin:0;font-size:12px;color:var(--sub)}
+.arvore{transform-origin:32px 58px;animation:balanco 6s ease-in-out infinite}
+.arvore .flor{animation:brilho 3s ease-in-out infinite}.arvore .flor:nth-child(2n){animation-delay:1.1s}.arvore .flor:nth-child(3n){animation-delay:2s}
+@keyframes balanco{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes brilho{0%,100%{opacity:1}50%{opacity:.55}}
+.abas{display:flex;gap:4px;background:var(--bg2);padding:4px;border-radius:12px;margin-left:auto}
+.abas button{border:0;background:transparent;padding:8px 16px;border-radius:9px;cursor:pointer;color:var(--sub);font-weight:600;display:flex;gap:7px;align-items:center;transition:background .2s,color .2s}
+.abas button.ativo{background:var(--card);color:var(--txt);box-shadow:var(--sombra)}
+.abas svg{width:16px;height:16px}
+.status{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--verde2);font-size:12px;font-weight:600;white-space:nowrap}
+.status.off{background:color-mix(in srgb,var(--erro) 18%,transparent)}
+.ponto{width:8px;height:8px;border-radius:50%;background:var(--verde);position:relative;flex:none}
+.ponto::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--verde);animation:pulso 1.8s ease-out infinite}
+.off .ponto,.ponto.off{background:var(--erro)}.off .ponto::after,.ponto.off::after{border-color:var(--erro)}
+@keyframes pulso{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+.icone-btn{border:1px solid var(--borda);background:var(--card);width:36px;height:36px;border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.icone-btn svg{width:18px;height:18px}
+
+main{max-width:1820px;margin:0 auto;padding:18px 20px 40px;position:relative}
+.aba{display:none}.aba.ativo{display:block;animation:entrar .35s ease}
+@keyframes entrar{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.layout{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(330px,1fr);gap:16px;align-items:start}
+.coluna{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:16px 18px;box-shadow:var(--sombra);min-width:0}
+.card h2{font-size:14px;margin:0 0 12px;display:flex;align-items:center;gap:8px;font-weight:700}
+.card h2 .dir{margin-left:auto;font-weight:500;font-size:12px;color:var(--sub);display:flex;gap:10px;align-items:center}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(color-mix(in srgb,var(--amarelo) 16%,transparent),transparent 70%);pointer-events:none}
+.anel{width:132px;height:132px;position:relative}
+.anel svg{width:100%;height:100%;transform:rotate(-90deg)}
+.anel .fundo{stroke:var(--grade)}.anel .frente{stroke:var(--verde);transition:stroke-dashoffset 1s linear}
+.anel .meio{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.anel .meio b{font-size:30px;line-height:1}.anel .meio span{font-size:11px;color:var(--sub);display:block;margin-top:3px}
+.hero h3{margin:0;font-size:13px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.hero .grande{font-size:38px;font-weight:800;line-height:1.1;margin:4px 0}
+.hero .grande em{font-style:normal;color:var(--verde)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{background:var(--bg2);border-radius:999px;padding:5px 11px;font-size:12px;color:var(--sub)}.chip b{color:var(--txt)}
+.ultimo{text-align:right;min-width:190px}
+.ultimo .mono{color:var(--sub)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.kpi small{color:var(--sub);font-size:12px;display:flex;align-items:center;gap:6px}
+.kpi b{display:block;font-size:26px;margin-top:6px;line-height:1.15}
+.kpi .det{font-size:12px;color:var(--sub);margin-top:4px}
+.barra{height:6px;background:var(--grade);border-radius:3px;overflow:hidden;margin-top:10px}
+.barra i{display:block;height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));border-radius:3px;transition:width 1s ease}
+
+/* grafico */
+.grafico{position:relative;height:220px}
+.grafico svg{width:100%;height:100%;display:block;overflow:visible}
+.grafico .eixo{fill:var(--fraco);font-size:11px}
+.grafico .linha-grade{stroke:var(--grade);stroke-width:1}
+.dica{position:absolute;pointer-events:none;background:var(--txt);color:var(--bg);padding:6px 9px;border-radius:8px;font-size:12px;white-space:nowrap;transform:translate(-50%,-115%);opacity:0;transition:opacity .12s}
+.vazio{display:grid;place-items:center;height:100%;color:var(--fraco)}
+
+/* mineradores */
+.grade-min{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.mcard{border:1px solid var(--borda);border-radius:14px;padding:12px 14px;background:var(--bg2);position:relative;transition:border-color .4s,box-shadow .4s,opacity .4s}
+.mcard.off{opacity:.55}
+.mcard.acertou{border-color:var(--verde);box-shadow:0 0 0 3px color-mix(in srgb,var(--verde) 25%,transparent)}
+.mtopo{display:flex;align-items:center;gap:10px}
+.avatar{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--card);border:1px solid var(--borda);flex:none}
+.avatar svg{width:20px;height:20px;color:var(--verde)}
+.mnome{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid{font-size:11px;color:var(--fraco)}
+.mtopo .ponto{margin-left:auto}
+.mnums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;font-size:12px}
+.mnums b{display:block;font-size:15px}
+.mbarra{height:4px;background:var(--grade);border-radius:2px;margin-top:10px;overflow:hidden}.mbarra i{display:block;height:100%;background:var(--verde);transition:width .8s}
+.prova{margin-top:10px;background:var(--card);border:1px dashed var(--borda);border-radius:10px;padding:8px 10px;font-size:11px;color:var(--sub)}
+.prova .mono{font-size:11px;color:var(--txt);word-break:break-all}
+.prova .linha-p{display:flex;gap:8px;align-items:center;margin-top:6px}
+.confere{font-weight:700}.confere.sim{color:var(--verde)}.confere.nao{color:var(--erro)}
+.vivo{font-weight:600;color:var(--txt)}
+.mais{position:absolute;right:12px;top:-8px;background:var(--verde);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;animation:sobe 1.4s ease forwards}
+@keyframes sobe{0%{opacity:0;transform:translateY(8px)}20%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateY(-12px)}}
+
+/* listas lado direito */
+.lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;max-height:380px;overflow:auto}
+.lista li{display:flex;gap:10px;align-items:flex-start;padding:8px 6px;border-radius:10px}
+.lista li.novo{animation:chega .8s ease}
+@keyframes chega{0%{opacity:0;transform:translateX(16px);background:color-mix(in srgb,var(--amarelo) 25%,transparent)}60%{opacity:1;transform:none;background:color-mix(in srgb,var(--amarelo) 18%,transparent)}100%{background:transparent}}
+.ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--bg2)}
+.ic svg{width:15px;height:15px}
+.ic.ok,.ic.bloco{color:var(--verde)}.ic.erro{color:var(--erro);background:color-mix(in srgb,var(--erro) 14%,transparent)}.ic.ouro,.ic.marco{color:var(--amarelo)}.ic.info{color:var(--sub)}
+.lista .t{font-size:13px}.lista .q{font-size:11px;color:var(--fraco)}
+.lista .v{margin-left:auto;text-align:right;font-size:12px;white-space:nowrap}
+.ricos .linha{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;margin:7px 0;font-size:12px}
+.ricos .linha .barra{margin:3px 0 0;height:4px}
+.opcoes{display:flex;gap:12px;flex-wrap:wrap}
+.opcoes label{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--sub);cursor:pointer}
+
+/* formularios */
+label.campo{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
+input.txt{width:100%;padding:10px 12px;border:1px solid var(--borda);border-radius:10px;background:var(--bg);margin-bottom:12px;outline:none;transition:border-color .2s}
+input.txt:focus{border-color:var(--verde)}
+.btn{padding:12px 18px;border:0;border-radius:12px;background:var(--verde);color:#fff;font-weight:700;cursor:pointer;width:100%;transition:transform .1s,filter .2s}
+.btn:hover{filter:brightness(1.07)}.btn:active{transform:scale(.98)}
+.btn.sec{background:var(--bg2);color:var(--txt)}.btn.peq{width:auto;padding:6px 10px;font-size:12px;border-radius:8px}
+.btn.parar{background:var(--vermelho)}
+.aviso{background:var(--verde2);border-radius:12px;padding:12px;font-size:13px}
+.erro-txt{color:var(--erro)}
+
+/* minerar */
+.minera{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;align-items:start}
+.motor{display:grid;place-items:center;padding:10px 0 4px}
+.motor svg{width:190px;height:190px}
+.motor .gira{transform-origin:100px 100px}
+.minerando .motor .gira{animation:girar 2.4s linear infinite}
+@keyframes girar{to{transform:rotate(360deg)}}
+.motor .busca{stroke:var(--verde);transition:stroke-dashoffset .4s}
+.hexa{font-family:ui-monospace,monospace;font-size:12px;color:var(--fraco);text-align:center;height:18px;overflow:hidden}
+.grande2{font-size:40px;font-weight:800}
+
+/* carteira */
+.ofertas{display:flex;flex-direction:column;gap:10px;max-height:640px;overflow:auto}
+.oferta{border:1px solid var(--borda);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+.oferta .t{font-weight:700;overflow-wrap:anywhere}.oferta .d{font-size:13px;color:var(--sub);grid-column:1/-1;overflow-wrap:anywhere;white-space:pre-line}
+.oferta .p{font-weight:800;color:var(--verde);white-space:nowrap}.oferta .r{grid-column:1/-1;display:flex;gap:8px;align-items:center;font-size:11px;color:var(--fraco);flex-wrap:wrap}
+.oferta .r .btn{margin-left:auto}.oferta.minha{border-color:var(--verde)}
+textarea.txt{width:100%;padding:10px 12px;border:1px solid var(--borda);border-radius:10px;background:var(--bg);color:inherit;font:inherit;margin-bottom:12px;outline:none;resize:vertical;box-sizing:border-box}
+.regras{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.cart{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.saldo{font-size:46px;font-weight:800;line-height:1.1}.saldo small{font-size:18px;color:var(--sub);font-weight:600}
+.endereco{display:flex;gap:8px;align-items:center;background:var(--bg2);border-radius:10px;padding:8px 10px;margin:8px 0}
+.endereco .mono{flex:1;word-break:break-all}
+.chave{filter:blur(6px);cursor:pointer;transition:filter .3s;word-break:break-all}.chave.ver{filter:none}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px 6px;border-bottom:1px solid var(--borda);text-align:left}th{color:var(--sub);font-weight:600;font-size:12px}
+td.d,th.d{text-align:right}
+
+/* toasts e petalas */
+#toasts{position:fixed;top:72px;right:20px;z-index:50;display:flex;flex-direction:column;gap:10px;width:min(360px,calc(100vw - 32px))}
+.toast{background:var(--card);border:1px solid var(--borda);border-left:4px solid var(--verde);border-radius:12px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);display:flex;gap:10px;align-items:flex-start;animation:toastIn .35s cubic-bezier(.2,.9,.3,1.2)}
+.toast.erro{border-left-color:var(--erro)}.toast.ouro,.toast.bloco,.toast.marco{border-left-color:var(--amarelo)}
+.toast b{display:block;font-size:13px}.toast span{font-size:12px;color:var(--sub)}
+.toast.sai{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(30px)}}
+.petala{position:fixed;width:10px;height:10px;border-radius:50% 0 50% 0;pointer-events:none;z-index:40;animation:cai 1.8s ease-out forwards}
+@keyframes cai{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(540deg)}}
+
+.arena-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:10px;font-weight:700;font-size:13px;white-space:nowrap;text-decoration:none;color:#1a1033;background:linear-gradient(90deg,#fbbf24,#f59e0b)}.arena-btn svg{width:18px;height:18px}.arena-btn:hover{filter:brightness(1.06)}
+.icone-btn[hidden]{display:none}
+.app-link{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:0 0 14px;border-radius:14px;text-decoration:none;color:inherit;background:color-mix(in srgb,var(--verde) 10%,transparent);border:1px solid color-mix(in srgb,var(--verde) 35%,transparent)}.app-link svg{width:26px;height:26px;color:var(--verde)}.app-link span{display:flex;flex-direction:column}.app-link small{color:var(--sub);font-size:12px}
+.arena-btn .idade{font-size:10px;font-weight:800;padding:1px 5px;border-radius:6px;background:rgba(26,16,51,.15)}
+.conta-btn{border:1px solid var(--borda);background:var(--card);height:36px;border-radius:10px;cursor:pointer;padding:0 12px;font-weight:700;font-size:13px;color:inherit;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.conta-abas{display:flex;gap:6px;margin-bottom:14px}.conta-abas button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--borda);background:var(--bg2);color:inherit;font-weight:700;cursor:pointer}
+.conta-abas button.ativo{background:var(--verde);border-color:var(--verde);color:#fff}
+.opcao{display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-bottom:8px;cursor:pointer}.opcao input{margin-top:3px}
+.privado{text-align:center;padding:18px 8px}.privado b{display:block;font-size:15px;margin-bottom:4px}
+@media (max-width:1100px){.layout,.minera,.cart{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:700px){.arena-btn span{display:none}.topo-in{flex-wrap:wrap;padding:10px 16px}.abas{order:3;width:100%;margin:0}.abas button{flex:1;justify-content:center;padding:8px}
+  main{padding:14px 16px 30px}.hero{grid-template-columns:1fr;text-align:center;justify-items:center}.ultimo{text-align:center}.chips{justify-content:center}.marca p{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+<symbol id="i-cel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+<symbol id="i-pc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+<symbol id="i-cubo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></symbol>
+<symbol id="i-raio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+<symbol id="i-sino" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-mudo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 9.3-5M18 8c0 7 3 9 3 9H9M10 21a2 2 0 0 0 4 0M3 3l18 18"/></symbol>
+<symbol id="i-carteira" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M16 15h2"/></symbol>
+<symbol id="i-painel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-6"/></symbol>
+<symbol id="i-picareta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4c3-1 6 0 7 2-3-1-6 0-8 2M10 8c-2-2-5-3-8-2 1-2 4-3 7-2"/><path d="M12 6 3 21"/></symbol>
+<symbol id="i-flor" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="3.2"/><circle cx="17.7" cy="10.2" r="3.2"/><circle cx="15.5" cy="17" r="3.2"/><circle cx="8.5" cy="17" r="3.2"/><circle cx="6.3" cy="10.2" r="3.2"/><circle cx="12" cy="12" r="2.2" fill="#c0392b"/></symbol>
+<symbol id="i-controle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10a5 5 0 0 1 4.9 6l-.6 3a3 3 0 0 1-5.2 1.3L14.5 15h-5l-1.6 2.3a3 3 0 0 1-5.2-1.3l-.6-3A5 5 0 0 1 7 7z"/><path d="M8 10v3M6.5 11.5h3M15.5 11h.01M18 12.5h.01"/></symbol>
+<symbol id="i-trofeu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M9.5 17h5l.5 4h-6z"/></symbol>
+<symbol id="i-alerta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></symbol>
+<symbol id="i-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-troca" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-4-4M20 16H6l4 4"/></symbol>
+<symbol id="i-copiar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></symbol>
+</defs></svg>
+
+<header class="topo"><div class="topo-in">
+  <div class="marca">
+    <svg width="44" height="44" viewBox="0 0 64 64" role="img" aria-label="pau-brasil"><circle cx="32" cy="32" r="31" fill="#0f5132"/>
+      <g class="arvore"><rect x="29" y="34" width="6" height="22" rx="2" fill="#b3261e"/><path d="M32 40 L22 31 M32 44 L42 34" stroke="#b3261e" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="32" cy="22" r="13" fill="#2e8b57"/><circle cx="20" cy="28" r="9" fill="#2e8b57"/><circle cx="44" cy="28" r="9" fill="#2e8b57"/>
+      <g fill="#f5c518"><circle class="flor" cx="26" cy="18" r="2.6"/><circle class="flor" cx="37" cy="15" r="2.6"/><circle class="flor" cx="41" cy="25" r="2.6"/><circle class="flor" cx="21" cy="27" r="2.6"/><circle class="flor" cx="31" cy="27" r="2.6"/></g></g></svg>
+    <div><h1>Portgiga<small>PTG</small></h1><p>Rede de teste · sem valor em dinheiro</p></div>
+  </div>
+  <nav class="abas">
+    <button data-aba="painel" class="ativo"><svg><use href="#i-painel"/></svg>Painel</button>
+    <button data-aba="minerar"><svg><use href="#i-picareta"/></svg>Minerar</button>
+    <button data-aba="carteira"><svg><use href="#i-carteira"/></svg>Carteira</button>
+    <button data-aba="trocas"><svg><use href="#i-troca"/></svg>Trocas</button>
+  </nav>
+  <div class="status" id="status"><span class="ponto"></span><span id="status-txt">conectando...</span></div>
+  <a class="arena-btn" href="/explorador" style="background:linear-gradient(90deg,#f5c518,#c99400);color:#3b2a00" title="Placas, carteiras, blocos e transferências da rede"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg><span>Explorador</span></a>
+  <a class="arena-btn" href="/corretora" style="background:linear-gradient(90deg,#3ccf7d,#1f8a4c);color:#fff" title="Crie sua moeda e negocie em PTG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Corretora</span></a>
+  <a class="arena-btn" href="/arena" target="_blank" rel="noopener" title="Jogue na Arena Fichas e ganhe PTG grátis por conquistas. Fichas grátis · 18+"><svg><use href="#i-controle"/></svg><span>Arena Fichas</span><small class="idade">18+</small></a>
+  <button class="conta-btn" id="conta-btn" title="Sua conta">Entrar</button>
+  <button class="icone-btn" id="som" title="Som dos alertas"><svg><use href="#i-sino"/></svg></button>
+</div></header>
+
+<main>
+<!-- ===================== PAINEL ===================== -->
+<section id="painel" class="aba ativo"><div class="layout">
+ <div class="coluna">
+  <div class="card hero">
+    <div class="anel"><svg viewBox="0 0 120 120"><circle class="fundo" cx="60" cy="60" r="52" fill="none" stroke-width="9"/>
+      <circle class="frente" id="anel" cx="60" cy="60" r="52" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0"/></svg>
+      <div class="meio"><div><b class="num" id="cont">--</b><span>segundos</span></div></div></div>
+    <div>
+      <h3>Bloco em formação</h3>
+      <div class="grande">#<span id="h-altura">-</span> · <em><span id="h-premio">10</span> PTG</em> em jogo</div>
+      <div class="chips"><span class="chip"><b id="h-resp">0</b> respostas neste minuto</span><span class="chip"><b id="h-min">0</b> mineradores</span><span class="chip" id="h-meu" hidden>você: <b id="h-meu-v">0</b></span></div>
+      <div class="chips" id="h-marco" hidden style="margin-top:6px"><span class="chip" style="border:1px solid #e0b100;background:#fff4c2;color:#7a5600;font-weight:800" id="h-marco-t"></span></div>
+    </div>
+    <div class="ultimo"><div class="sub" style="font-size:12px">Último bloco</div><div style="font-size:22px;font-weight:800">#<span id="u-alt">-</span></div>
+      <div class="mono" id="u-hash">-</div><div class="sub" style="font-size:12px" id="u-quando"></div></div>
+  </div>
+
+  <div class="kpis">
+    <div class="card kpi"><small><svg width="14" height="14"><use href="#i-chip"/></svg>Mineradores online</small><b class="num" id="k-min">-</b><div class="det" id="k-tipos">-</div></div>
+    <div class="card kpi"><small><svg width="14" height="14"><use href="#i-raio"/></svg>Velocidade da rede</small><b class="num" id="k-hps">-</b><div class="det" id="k-hps-det">soma de todos</div></div>
+    <div class="card kpi"><small><svg width="14" height="14"><use href="#i-flor"/></svg>PTG emitidos</small><b class="num" id="k-emit">-</b><div class="barra"><i id="k-barra" style="width:0"></i></div><div class="det"><span id="k-pct">0</span>% do limite de 21 milhões</div></div>
+    <div class="card kpi"><small><svg width="14" height="14"><use href="#i-cubo"/></svg>Próxima redução pela metade</small><b class="num" id="k-metade">-</b><div class="det">blocos até a emissão cair para <span id="k-metade-v">5</span> PTG</div></div>
+  </div>
+
+  <div class="card"><h2>Velocidade da rede<span class="dir">últimas horas · passe o mouse</span></h2>
+    <div class="grafico" id="grafico"><div class="vazio">juntando dados...</div></div></div>
+
+  <div class="card"><h2>Minhas placas<span class="dir"><span id="m-resumo"></span></span></h2>
+    <div class="grade-min" id="grade-min"><div class="sub">carregando...</div></div></div>
+ </div>
+
+ <aside class="coluna">
+  <div class="card"><h2><svg width="16" height="16"><use href="#i-sino"/></svg>Alertas<span class="dir"><button class="btn sec peq" id="limpar-alertas">limpar</button></span></h2>
+    <div class="opcoes" style="margin-bottom:10px">
+      <label><input type="checkbox" id="op-min" checked> minhas placas entrando/saindo</label>
+      <label><input type="checkbox" id="op-bloco"> cada bloco novo</label>
+      <label><input type="checkbox" id="op-cart" checked> minha carteira</label>
+    </div>
+    <ul class="lista" id="alertas"></ul></div>
+  <div class="card"><h2><svg width="16" height="16"><use href="#i-cubo"/></svg>Blocos<span class="dir">1 por minuto</span></h2><ul class="lista" id="blocos"></ul></div>
+  <div class="card ricos"><h2><svg width="16" height="16"><use href="#i-carteira"/></svg>Carteiras<span class="dir"><span id="ricos-n" class="fraco"></span></span></h2><div id="ricos" style="max-height:420px;overflow-y:auto;padding-right:4px"><div class="sub">ninguém ainda</div></div></div>
+ </aside>
+</div></section>
+
+<!-- ===================== MINERAR ===================== -->
+<section id="minerar" class="aba"><div class="minera">
+  <div class="card">
+    <h2><svg width="16" height="16"><use href="#i-picareta"/></svg>Minerar com este aparelho</h2>
+    <label class="campo" for="m-cart">Carteira que recebe (ptg1...)</label><input class="txt mono" id="m-cart" placeholder="ptg1..." autocomplete="off">
+    <label class="campo" for="m-nome">Nome deste aparelho no painel</label><input class="txt" id="m-nome" placeholder="ex.: Celular do João" maxlength="24">
+    <button class="btn" id="m-botao">Começar a minerar</button>
+    <p class="sub" style="font-size:12px;margin-bottom:0">Usa um núcleo do processador. Pode esquentar e gastar bateria: de preferência minere no carregador. Para a ESP32, use o programa da placa.</p>
+  </div>
+  <div class="card" style="grid-column:1"><h2><svg width="16" height="16"><use href="#i-chip"/></svg>Minerar com uma ESP32</h2>
+    <p class="sub" style="margin-top:0">Baixe o minerador pronto: um arquivo para gravar na placa + passo a passo. A configuração é feita pelo celular, sem programar. O download é só para quem tem conta.</p>
+    <div class="sub" style="font-size:12px;margin-bottom:4px">Endereço do servidor para colocar na placa (campo "Endereço do servidor")</div>
+    <div class="endereco" style="margin-bottom:6px"><span class="mono" id="srv-pub">carregando...</span><button class="icone-btn" id="srv-copiar" title="Copiar"><svg><use href="#i-copiar"/></svg></button></div>
+    <p class="sub" id="srv-pub-nota" style="font-size:12px;margin:0 0 12px">Funciona de qualquer lugar do mundo. Se a placa parar de minerar, confira aqui se o endereço mudou.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" style="text-decoration:none;text-align:center;flex:1" href="/baixar" id="m-baixar">Baixar minerador (.zip)</a>
+    <a class="btn sec" style="text-decoration:none;text-align:center;flex:1" href="/como-instalar" target="_blank">Ver o tutorial</a></div></div>
+  <div class="card" id="m-painel">
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center">
+      <div class="motor"><svg viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--grade)" stroke-width="12"/>
+        <circle class="busca" id="m-arco" cx="100" cy="100" r="80" fill="none" stroke-width="12" stroke-linecap="round" stroke-dasharray="502.6" stroke-dashoffset="502.6" transform="rotate(-90 100 100)"/>
+        <g class="gira"><circle cx="100" cy="28" r="6" fill="var(--amarelo)"/></g>
+        <text x="100" y="98" text-anchor="middle" font-size="30" font-weight="800" fill="var(--txt)" id="m-pct">0%</text>
+        <text x="100" y="122" text-anchor="middle" font-size="12" fill="var(--sub)">da busca atual</text></svg></div>
+      <div>
+        <div class="sub" style="font-size:12px">Velocidade</div><div class="grande2 num" id="m-hps">-</div>
+        <div class="hexa" id="m-hex"></div>
+        <div class="chips"><span class="chip">aceitas <b id="m-ok">0</b></span><span class="chip">saldo <b id="m-saldo">-</b></span></div>
+        <div style="margin-top:10px"><b>Situação:</b> <span id="m-sit" class="sub">parado</span></div>
+      </div>
+    </div>
+    <h2 style="margin-top:16px">Respostas desta sessão</h2><ul class="lista" id="m-log" style="max-height:220px"></ul>
+  </div>
+</div></section>
+
+<!-- ===================== CARTEIRA ===================== -->
+<section id="carteira" class="aba"><div class="cart">
+ <div class="coluna">
+  <div class="card">
+    <h2><svg width="16" height="16"><use href="#i-carteira"/></svg>Minha carteira</h2>
+    <a class="app-link" href="/app/" target="_blank" rel="noopener"><svg><use href="#i-cel"/></svg><span><b>App da carteira para celular</b><small>Android e iPhone · envie e receba PTG</small></span></a>
+    <div id="c-vazia">
+      <div class="conta-abas" role="tablist"><button id="ca-entrar" class="ativo" role="tab">Entrar</button><button id="ca-criar" role="tab">Criar conta</button></div>
+      <form id="f-entrar" autocomplete="on">
+        <label class="campo" for="l-usuario">Usuário</label><input class="txt" id="l-usuario" autocomplete="username" required>
+        <label class="campo" for="l-senha">Senha</label><input class="txt" id="l-senha" type="password" autocomplete="current-password" required>
+        <button class="btn" type="submit">Entrar</button>
+      </form>
+      <form id="f-criar" hidden autocomplete="on">
+        <p id="r-aviso" class="aviso" hidden style="margin-top:0">Você já tem uma carteira neste aparelho. Crie a conta com ela para continuar usando.</p>
+        <label class="campo" for="r-usuario">Usuário (3 a 20 letras ou números)</label><input class="txt" id="r-usuario" autocomplete="username" maxlength="20" required>
+        <label class="campo" for="r-senha">Senha (mínimo 8 caracteres)</label><input class="txt" id="r-senha" type="password" autocomplete="new-password" minlength="8" required>
+        <label class="campo" for="r-senha2">Repita a senha</label><input class="txt" id="r-senha2" type="password" autocomplete="new-password" minlength="8" required>
+        <label class="opcao"><input type="radio" name="r-tipo" value="nova" checked> <span><b>Criar uma carteira nova</b> junto com a conta</span></label>
+        <label class="opcao"><input type="radio" name="r-tipo" value="minha"> <span><b>Usar a carteira que já tenho</b> (cole a chave secreta)</span></label>
+        <input class="txt mono" id="r-chave" placeholder="chave secreta (64 caracteres)" autocomplete="off" hidden>
+        <button class="btn" type="submit">Criar conta</button>
+      </form>
+      <p id="l-msg" class="sub" style="margin-bottom:0"></p>
+      <p class="fraco" style="font-size:12px;margin-bottom:0">A chave da carteira fica guardada trancada com a sua senha: nem o servidor consegue abrir. Se esquecer a senha, só a chave secreta anotada recupera a carteira.</p>
+    </div>
+    <div id="c-cheia" hidden>
+      <div class="sub" style="font-size:12px;margin-bottom:6px">Conta: <b id="c-usuario"></b></div>
+      <div class="saldo num"><span id="c-saldo">0</span> <small>PTG</small></div>
+      <div class="sub" style="font-size:12px">minerado no total: <b id="c-minerado">0</b> PTG</div>
+      <div class="sub" style="font-size:12px;margin-top:12px">Endereço (pode compartilhar)</div>
+      <div class="endereco"><span class="mono" id="c-end"></span><button class="icone-btn" id="c-copiar" title="Copiar"><svg><use href="#i-copiar"/></svg></button></div>
+      <div class="aviso"><b>Chave secreta: NÃO compartilhe.</b> Quem tiver ela move suas moedas. Se perder, perde a carteira. Clique para mostrar:
+        <div class="mono chave" id="c-chave" style="margin-top:6px"></div></div>
+      <button class="btn sec" id="c-sair" style="margin-top:12px">Sair da conta</button>
+    </div>
+  </div>
+  <div class="card" id="c-rede-nova" hidden><h2><svg width="16" height="16"><use href="#i-cubo"/></svg>Rede nova (independente)</h2>
+    <p class="sub" style="margin-top:0">A Portgiga vai virar uma rede independente. Seu saldo passa para ela com a mesma chave secreta; o endereço muda para o formato abaixo. Registre para garantir o saldo na rede nova.</p>
+    <div class="sub" style="font-size:12px">Seu endereço na rede nova</div>
+    <div class="endereco"><span class="mono" id="rn-end">calculando...</span></div>
+    <p id="rn-sit" class="sub"></p>
+    <button class="btn" id="rn-registrar">Registrar para a rede nova</button></div>
+  <div class="card" id="c-envio" hidden><h2><svg width="16" height="16"><use href="#i-seta"/></svg>Enviar PTG</h2>
+    <label class="campo">Para (endereço ptg1...)</label><input class="txt mono" id="e-para" autocomplete="off">
+    <label class="campo">Valor</label><input class="txt" id="e-valor" type="number" min="0" step="0.00000001">
+    <button class="btn" id="e-enviar">Enviar</button><p id="e-msg" class="sub" style="margin-bottom:0"></p></div>
+ </div>
+ <div class="coluna">
+  <div class="card" id="c-mins" hidden><h2><svg width="16" height="16"><use href="#i-chip"/></svg>Minhas placas<span class="dir">só você vê · dê um nome para cada uma</span></h2>
+    <table><thead><tr><th>Nome</th><th>Aparelho</th><th class="d">Velocidade</th><th class="d">Ganhou</th><th></th></tr></thead><tbody id="t-mins"></tbody></table></div>
+  <div class="card" id="c-movs" hidden><h2>Movimentos</h2><div style="max-height:360px;overflow:auto"><table><thead><tr><th>Bloco</th><th>Tipo</th><th class="d">Valor</th></tr></thead><tbody id="t-movs"></tbody></table></div></div>
+  <div class="card"><h2>Confira você mesmo</h2>
+    <p class="sub">Qualquer pessoa pode baixar a corrente de blocos inteira e conferir no próprio computador que nenhum bloco foi alterado, que nunca nasceu mais PTG do que a regra permite e que nenhuma moeda saiu de uma carteira sem a assinatura do dono.</p>
+    <a class="btn sec" href="/verificar.py" download style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">Baixar o verificador</a>
+    <p class="sub" style="margin-bottom:0">Depois rode: <span class="mono" id="v-cmd"></span><br><span class="fraco">O que ele ainda não prova: quem ganha cada bloco é decidido por este servidor (a rede ainda é centralizada).</span></p></div>
+  <div class="card"><h2>Consultar qualquer carteira</h2><input class="txt mono" id="q-end" placeholder="ptg1..."><button class="btn sec" id="q-ver">Ver saldo</button><p id="q-res" class="sub" style="margin-bottom:0"></p></div>
+ </div>
+</div></section>
+
+<!-- ===================== TROCAS ===================== -->
+<section id="trocas" class="aba"><div class="cart">
+ <div class="coluna">
+  <div class="card"><h2><svg width="16" height="16"><use href="#i-troca"/></svg>Mural de trocas<span class="dir" id="o-total"></span></h2>
+    <p class="sub">Coisas e serviços que as pessoas aceitam trocar por PTG. O pagamento é uma transferência assinada pela sua carteira; a entrega é combinada entre vocês, então troque com quem você confia.</p>
+    <div id="o-lista" class="ofertas"></div></div>
+ </div>
+ <div class="coluna">
+  <div class="card"><h2>Anunciar</h2>
+    <div id="o-sem" class="sub">Entre na sua conta (aba Carteira) para anunciar.</div>
+    <div id="o-form" hidden>
+      <label class="campo">O que você oferece</label><input class="txt" id="o-titulo" maxlength="60" placeholder="ex.: gravo o minerador na sua ESP32">
+      <label class="campo">Detalhes (opcional)</label><textarea class="txt" id="o-desc" maxlength="300" rows="3" placeholder="como combinar a entrega, prazo..."></textarea>
+      <label class="campo">Preço em PTG</label><input class="txt" id="o-preco" type="number" min="0" step="0.00000001">
+      <button class="btn" id="o-anunciar">Publicar anúncio</button><p id="o-msg" class="sub" style="margin-bottom:0"></p>
+    </div></div>
+  <div class="card"><h2>Regras do mural</h2><ul class="sub regras">
+    <li>Só trocas de PTG por coisas e serviços. Venda de PTG por dinheiro ou outras moedas não é aceita.</li>
+    <li>PTG não tem valor em dinheiro e ninguém promete que vai ter.</li>
+    <li>Só o dono da carteira que assinou o anúncio consegue encerrá-lo.</li></ul></div>
+ </div>
+</div></section>
+</main>
+<div id="toasts" aria-live="polite"></div>
+
+<script src="/vendor/ptg-endereco.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let conta=null;   // conta logada {usuario, carteira}
+const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const put=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+const vel=h=>h>=1e6?(h/1e6).toFixed(2)+' MH/s':h>=1e3?(h/1e3).toFixed(1)+' kH/s':Math.round(h||0)+' H/s';
+const moeda=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:4});
+const curto=e=>e?e.slice(0,9)+'…'+e.slice(-5):'';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hora=t=>new Date(t*1000).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const ha=t=>{const s=Math.max(0,Math.round(Date.now()/1000-t));return s<60?s+' s':s<3600?Math.round(s/60)+' min':Math.round(s/3600)+' h'};
+const icone=a=>a==='esp32'?'i-chip':a==='celular'?'i-cel':'i-pc';
+const menosMovimento=matchMedia('(prefers-reduced-motion: reduce)').matches;
+async function api(c,corpo){const r=await fetch(c,corpo?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(corpo)}:{});return r.json()}
+
+// ---------- abas
+document.querySelectorAll('.abas button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.abas button,.aba').forEach(x=>x.classList.remove('ativo'));
+  b.classList.add('ativo');$(b.dataset.aba).classList.add('ativo');put('aba',b.dataset.aba)});
+const abaSalva=location.pathname==='/minerar'?'minerar':get('aba');
+if(abaSalva&&$(abaSalva))document.querySelector(`.abas button[data-aba="${abaSalva}"]`).click();
+
+// ---------- numeros animados
+const alvoNum={};
+function contar(id,valor,fmt=moeda){
+  const el=$(id);if(!el)return;const de=alvoNum[id]??valor;alvoNum[id]=valor;
+  if(menosMovimento||de===valor){el.textContent=fmt(valor);return}
+  const t0=performance.now(),dur=900;
+  (function passo(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(de+(valor-de)*e);if(p<1&&alvoNum[id]===valor)requestAnimationFrame(passo)})(t0);
+}
+
+// ---------- som e alertas
+let somLigado=get('som')!=='0';
+function desenharSom(){$('som').innerHTML=`<svg><use href="#${somLigado?'i-sino':'i-mudo'}"/></svg>`;$('som').title=somLigado?'Som ligado (clique para desligar)':'Som desligado'}
+$('som').onclick=()=>{somLigado=!somLigado;put('som',somLigado?'1':'0');desenharSom();if(somLigado)tocar('ok')};desenharSom();
+let audio;
+function tocar(tipo){
+  if(!somLigado)return;try{audio=audio||new AudioContext();
+    const notas=tipo==='erro'?[440,330]:tipo==='ouro'||tipo==='bloco'||tipo==='marco'?[660,880,1100]:[740,988];
+    notas.forEach((f,i)=>{const o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.value=f;
+      const t=audio.currentTime+i*.12;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.08,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.35);
+      o.connect(g).connect(audio.destination);o.start(t);o.stop(t+.4)})}catch(e){}
+}
+['op-min','op-bloco','op-cart'].forEach(id=>{const v=get(id);if(v!==null)$(id).checked=v==='1';$(id).onchange=()=>put(id,$(id).checked?'1':'0')});
+let alertas=[];try{alertas=JSON.parse(get('alertas')||'[]')}catch(e){}
+alertas.forEach(a=>{if(a.tipo==='ouro'&&/^Bloco #\d+ criado$/.test(a.titulo))a.tipo='bloco';if(a.tipo==='ouro'&&/^Você chegou a /.test(a.titulo))a.tipo='marco'});   // alertas antigos de bloco: cubo no lugar da flor
+const ICONE_ALERTA={ok:'i-chip',erro:'i-alerta',ouro:'i-flor',bloco:'i-cubo',marco:'i-trofeu',info:'i-cubo'};
+function desenharAlertas(novo){
+  $('alertas').innerHTML=alertas.map((a,i)=>`<li class="${i===0&&novo?'novo':''}"><span class="ic ${a.tipo}"><svg><use href="#${ICONE_ALERTA[a.tipo]||'i-sino'}"/></svg></span><div><div class="t">${esc(a.titulo)}</div><div class="q">${esc(a.texto)} · ${hora(a.t)}</div></div></li>`).join('')||'<li class="sub">Nenhum alerta. Os avisos de mineradores, blocos e da sua carteira aparecem aqui.</li>';
+}
+function alertar(tipo,titulo,texto,opcao,toast=true){
+  if(opcao&&!$(opcao).checked)return;
+  alertas.unshift({t:Date.now()/1000,tipo,titulo,texto});alertas=alertas.slice(0,40);put('alertas',JSON.stringify(alertas));desenharAlertas(true);
+  if(!toast)return;tocar(tipo);
+  const d=document.createElement('div');d.className='toast '+tipo;
+  d.innerHTML=`<span class="ic ${tipo}"><svg><use href="#${ICONE_ALERTA[tipo]||'i-sino'}"/></svg></span><div><b>${esc(titulo)}</b><span>${esc(texto)}</span></div>`;
+  d.onclick=()=>d.remove();$('toasts').prepend(d);
+  setTimeout(()=>{d.classList.add('sai');setTimeout(()=>d.remove(),300)},6000);
+  while($('toasts').children.length>4)$('toasts').lastChild.remove();
+}
+$('limpar-alertas').onclick=()=>{alertas=[];put('alertas','[]');desenharAlertas()};desenharAlertas();
+
+function petalas(el,n=18){
+  if(menosMovimento)return;const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  for(let i=0;i<n;i++){const p=document.createElement('span');p.className='petala';
+    p.style.left=cx+'px';p.style.top=cy+'px';p.style.background=i%4===0?'#c0392b':'#f5c518';
+    const ang=Math.random()*Math.PI*2,dist=60+Math.random()*120;
+    p.style.setProperty('--dx',Math.cos(ang)*dist+'px');p.style.setProperty('--dy',Math.sin(ang)*dist+60+'px');
+    p.style.animationDelay=(Math.random()*.15)+'s';document.body.appendChild(p);setTimeout(()=>p.remove(),2200)}
+}
+
+// ---------- painel
+let estado=null,ultimaAltura=null,minAntes=null,aceitasAntes={},proxBloco=60,blocoS=60;
+// marco do bloco 20.000 (= 200 mil PTG emitidos): contagem antes, comemoração no dia
+const MARCO=20000;
+function marco(d){const el=$('h-marco'),t=$('h-marco-t');
+  if(d.altura<MARCO){const f=MARCO-d.altura,min=f+Math.max(0,(d.proximo_bloco_s||60)/60-1),h=Math.floor(min/60),m=Math.round(min%60);
+    el.hidden=f>2880;t.textContent=`🏁 Faltam ${f.toLocaleString('pt-BR')} blocos para o bloco 20.000 · ~${h?h+'h':''}${String(m).padStart(h?2:1,'0')}${h?'':' min'}`}
+  else if(d.altura<MARCO+1440){el.hidden=false;t.textContent='🎉 Bloco 20.000 alcançado · 200 mil PTG emitidos!'}
+  else el.hidden=true;
+  if(ultimaAltura!==null&&ultimaAltura<MARCO&&d.altura>=MARCO){const a=document.querySelector('.anel');petalas(a,60);setTimeout(()=>petalas(a,60),700);setTimeout(()=>petalas(a,60),1400);
+    window.Giga&&Giga.ganho('🎉 Bloco 20.000!');alertar('bloco','🎉 Bloco 20.000!','200 mil PTG emitidos. Obrigado a todo mundo que minerou.','op-bloco')}}
+async function atualizarRede(){
+  let d;try{d=await api('/api/estado')}catch(e){$('status').classList.add('off');$('status-txt').textContent='servidor fora do ar';return}
+  estado=d;$('status').classList.remove('off');$('status-txt').textContent=`rede no ar · bloco #${d.altura}`;
+  proxBloco=d.proximo_bloco_s;blocoS=d.bloco_s;
+  $('h-altura').textContent=d.altura+1;$('h-premio').textContent=moeda(d.emissao_por_bloco);
+  contar('h-resp',d.respostas_no_bloco_atual,v=>Math.round(v*100)/100);$('h-min').textContent=d.mineradores_online;
+  const minha=get('endereco');
+  const ult=d.blocos[0];
+  if(ult){$('u-alt').textContent=ult.altura;$('u-hash').textContent=ult.hash.slice(0,20)+'…';$('u-quando').textContent=ult.altura?('há '+ha(ult.quando)):'bloco inicial'}
+  contar('k-min',d.mineradores_online,v=>Math.round(v));
+  $('k-tipos').textContent=Object.entries(d.por_aparelho).map(([k,v])=>v+' '+k).join(' · ')||'nenhum';
+  contar('k-hps',d.hps_total,vel);
+  contar('k-emit',d.emitido);const p=d.emitido/d.oferta_max*100;$('k-pct').textContent=p.toFixed(4);$('k-barra').style.width=Math.max(p,.4)+'%';
+  const falta=1051200-(d.altura%1051200);contar('k-metade',falta,v=>Math.round(v).toLocaleString('pt-BR'));$('k-metade-v').textContent=moeda(d.emissao_por_bloco/2);
+  // blocos
+  const novoBloco=ultimaAltura!==null&&d.altura>ultimaAltura;
+  $('blocos').innerHTML=d.blocos.filter(b=>b.altura>0).map((b,i)=>`<li class="${novoBloco&&i===0?'novo':''}"><span class="ic ok"><svg><use href="#i-cubo"/></svg></span><div><div class="t"><b>#${b.altura}</b> · ${b.recompensas} minerador${b.recompensas===1?'':'es'}</div><div class="q mono">${b.hash.slice(0,18)}… · ${hora(b.quando)}</div></div><div class="v"><b>+${moeda(b.emissao)}</b> PTG<div class="q">${b.respostas} resp.</div></div></li>`).join('')||'<li class="sub">Esperando o primeiro bloco...</li>';
+  if(novoBloco){petalas(document.querySelector('.anel'),22);window.Giga&&(Giga.pula(),Giga.ganho('+'+moeda(d.blocos[0].emissao)+' PTG'));alertar('bloco',`Bloco #${d.altura} criado`,`${moeda(d.blocos[0].emissao)} PTG divididos entre ${d.blocos[0].recompensas} minerador(es)`,'op-bloco')}
+  marco(d);
+  ultimaAltura=d.altura;
+  // ricos
+  const lista=d.carteiras||d.maiores_saldos,maxS=Math.max(1,...lista.map(r=>r.saldo));
+  $('ricos-n').textContent=(d.total_carteiras||lista.length)+' carteiras';
+  $('ricos').innerHTML=lista.map((r,i)=>`<div class="linha"><span class="fraco">${i+1}º</span><div><span class="mono">${curto(r.endereco)}</span>${r.endereco===minha?' <b style="color:var(--verde)">(você)</b>':''}${r.minerando?' <b style="color:var(--verde)" title="minerando agora">● minerando</b>':''}<div class="barra"><i style="width:${r.saldo/maxS*100}%"></i></div></div><b class="num">${moeda(r.saldo)}</b></div>`).join('')||'<div class="sub">ninguém ainda</div>';
+  desenharGrafico(d.historico);
+  atualizarPlacas();
+}
+// As placas só aparecem para o dono da carteira, logado na conta
+let placas=null;
+async function atualizarPlacas(){
+  if(!conta){placas=null;$('h-meu').hidden=true;$('m-resumo').textContent='';
+    $('grade-min').innerHTML='<div class="privado"><b>As placas são privadas</b><span class="sub">Cada pessoa só vê as placas da própria carteira. Acima está a força total da rede.</span><button class="btn" style="margin-top:12px" data-ir-conta>Entrar ou criar conta</button></div>';return}
+  let d;try{const r=await fetch('/api/minhas-placas');if(r.status===401){sessaoCaiu();return}d=await r.json()}catch(e){return}
+  placas=d.mineradores;const on=placas.filter(m=>m.online);
+  $('h-meu').hidden=!on.length;$('h-meu-v').textContent=on.length+(on.length===1?' placa ativa':' placas ativas');
+  desenharMineradores({mineradores:placas});desenharTabelaPlacas();
+}
+// confere a prova no proprio navegador: refaz o sha256 e compara com o que o minerador achou
+$('grade-min').addEventListener('click',async ev=>{
+  if(ev.target.closest('[data-ir-conta]')){irConta();return}
+  const b=ev.target.closest('[data-verificar]');if(!b)return;
+  const m=(placas||[]).find(x=>x.carteira+'|'+x.id===b.dataset.verificar);if(!m||!m.prova)return;
+  const el=$('conf-'+m.id);
+  if(!crypto.subtle){el.className='confere';el.textContent='abra pelo atalho do PC para verificar';return}
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m.prova.base+m.prova.n));
+  const h=[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  const ok=h===m.prova.hash;el.className='confere '+(ok?'sim':'nao');el.textContent=ok?'✓ confere: o trabalho foi feito de verdade':'✗ não confere';
+  pausaMin=Date.now()+8000;
+});
+let pausaMin=0;
+// "ultimo contato ha X s" anda sozinho a cada segundo; passou de 40 s sem contato = parado
+setInterval(()=>document.querySelectorAll('[data-visto]').forEach(e=>{const t=+e.dataset.visto;e.textContent=ha(t);
+  const card=e.closest('.mcard');if(card&&Date.now()/1000-t>40){card.classList.add('off');card.querySelector('.ponto')?.classList.add('off')}}),1000);
+function desenharMineradores(d){
+  if(Date.now()<pausaMin)return;   // nao redesenha enquanto mostra o resultado da verificacao
+  const maxH=Math.max(1,...d.mineradores.map(m=>m.hps));
+  const on=d.mineradores.filter(m=>m.online).length;$('m-resumo').textContent=`${on} online · ${d.mineradores.length-on} paradas`;
+  const atual={};
+  $('grade-min').innerHTML=d.mineradores.map(m=>{const k=m.carteira+'|'+m.id;atual[k]=m;const acertou=aceitasAntes[k]!==undefined&&m.aceitas>aceitasAntes[k];
+    return `<div class="mcard ${m.online?'':'off'} ${acertou?'acertou':''}" data-k="${esc(k)}">${acertou?`<span class="mais">+${m.aceitas-aceitasAntes[k]} resposta</span>`:''}
+    <div class="mtopo"><span class="avatar"><svg><use href="#${icone(m.aparelho)}"/></svg></span><div style="min-width:0"><div class="mnome">${esc(m.nome)}</div><div class="mid">${esc(m.aparelho)} · ${esc(m.id)}</div></div><span class="ponto ${m.online?'':'off'}" title="${m.online?'online':'parado'}"></span></div>
+    <div class="mnums"><div><span class="fraco">velocidade</span><b class="num">${vel(m.hps)}</b></div><div><span class="fraco">aceitas</span><b class="num">${m.aceitas}</b></div><div><span class="fraco">ganhou</span><b class="num">${moeda(m.ganho)}</b></div></div>
+    <div class="mbarra"><i style="width:${m.hps/maxH*100}%"></i></div>
+    <div class="q fraco" style="font-size:11px;margin-top:6px">IP <span class="mono">${esc(m.ip)}</span>${m.ip==='127.0.0.1'?' <b>(este PC)</b>':''} · último contato há <span class="vivo" data-visto="${m.visto}">${ha(m.visto)}</span></div>
+    ${m.prova?`<div class="prova">Última prova de trabalho (${hora(m.prova.quando)}): testou <b>${m.prova.tentativas.toLocaleString('pt-BR')}</b> números em ${m.prova.segundos} s
+      <div class="mono">sha256("${m.prova.base}" + "${m.prova.n}") =<br>${m.prova.hash}</div>
+      <div class="linha-p"><button class="btn sec peq" data-verificar="${esc(k)}">verificar</button><span class="confere" id="conf-${esc(m.id)}"></span></div></div>`:''}</div>`}).join('')||'<div class="sub">Nenhuma placa minerando para a sua carteira nas últimas 24 h. Grave o endereço dela na placa ou mine pela aba Minerar.</div>';
+  setTimeout(()=>document.querySelectorAll('.mcard.acertou').forEach(e=>e.classList.remove('acertou')),1400);
+  if(minAntes){
+    for(const [k,m] of Object.entries(atual)){const a=minAntes[k];
+      if(m.online&&(!a||!a.online))alertar('ok',`${m.nome} começou a minerar`,m.aparelho,'op-min');
+      if(!m.online&&a&&a.online)alertar('erro',`${m.nome} parou de minerar`,'sem contato com o servidor há mais de 40 s','op-min')}
+  }
+  minAntes=atual;for(const[k,m]of Object.entries(atual))aceitasAntes[k]=m.aceitas;
+}
+// contagem regressiva do bloco (anda sozinha entre as consultas)
+setInterval(()=>{proxBloco=Math.max(0,proxBloco-1);$('cont').textContent=proxBloco;$('anel').style.strokeDashoffset=(326.7*(1-proxBloco/blocoS)).toFixed(1)},1000);
+
+// ---------- grafico (uma serie: velocidade total; linha 2px, area suave, mira + dica)
+function desenharGrafico(h){
+  const box=$('grafico');if(!h||h.length<2){box.innerHTML='<div class="vazio">juntando dados... (um ponto a cada 15 s)</div>';return}
+  const W=box.clientWidth,H=box.clientHeight,pe=46,pd=10,pt=10,pb=24;if(W<pe+pd+40)return;  // aba escondida
+  const t0=h[0][0],t1=h[h.length-1][0],maxV=Math.max(...h.map(p=>p[1]))*1.15||1;
+  const x=t=>pe+(t-t0)/Math.max(1,t1-t0)*(W-pe-pd),y=v=>pt+(1-v/maxV)*(H-pt-pb);
+  const pts=h.map(p=>[x(p[0]),y(p[1])]);
+  const linha=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  let grade='';for(let i=0;i<=3;i++){const v=maxV/3*i,yy=y(v);grade+=`<line class="linha-grade" x1="${pe}" x2="${W-pd}" y1="${yy}" y2="${yy}"/><text class="eixo" x="${pe-6}" y="${yy+4}" text-anchor="end">${vel(v).replace(' ',' ')}</text>`}
+  const marcas=[0,.5,1].map(f=>{const t=t0+(t1-t0)*f;return `<text class="eixo" x="${x(t)}" y="${H-6}" text-anchor="${f===0?'start':f===1?'end':'middle'}">${new Date(t*1000).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</text>`}).join('');
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Velocidade total da rede ao longo do tempo"><defs><linearGradient id="gv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--verde)" stop-opacity=".28"/><stop offset="1" stop-color="var(--verde)" stop-opacity="0"/></linearGradient></defs>
+    ${grade}${marcas}<path d="${linha} L${pts[pts.length-1][0]} ${y(0)} L${pts[0][0]} ${y(0)} Z" fill="url(#gv)"/><path d="${linha}" fill="none" stroke="var(--verde)" stroke-width="2" stroke-linejoin="round"/>
+    <line id="mira" y1="${pt}" y2="${H-pb}" stroke="var(--fraco)" stroke-dasharray="3 3" opacity="0"/><circle id="mira-p" r="5" fill="var(--verde)" stroke="var(--card)" stroke-width="2" opacity="0"/>
+    <rect x="${pe}" y="0" width="${W-pe-pd}" height="${H}" fill="transparent" id="area-mira"/></svg><div class="dica" id="dica"></div>`;
+  const area=$('area-mira');
+  area.onmousemove=ev=>{const r=box.getBoundingClientRect(),mx=ev.clientX-r.left;let i=0,best=1e9;pts.forEach((p,j)=>{const dd=Math.abs(p[0]-mx);if(dd<best){best=dd;i=j}});
+    const p=pts[i];$('mira').setAttribute('x1',p[0]);$('mira').setAttribute('x2',p[0]);$('mira').setAttribute('opacity',1);
+    $('mira-p').setAttribute('cx',p[0]);$('mira-p').setAttribute('cy',p[1]);$('mira-p').setAttribute('opacity',1);
+    const dc=$('dica');dc.style.left=p[0]+'px';dc.style.top=p[1]+'px';dc.style.opacity=1;
+    dc.innerHTML=`<b>${vel(h[i][1])}</b> · ${h[i][2]} minerador(es)<br>${hora(h[i][0])}`};
+  area.onmouseleave=()=>{['mira','mira-p'].forEach(id=>$(id).setAttribute('opacity',0));$('dica').style.opacity=0};
+}
+addEventListener('resize',()=>estado&&desenharGrafico(estado.historico));
+atualizarRede();setInterval(atualizarRede,3000);
+
+// ---------- carteira
+let saldoAntes=null,movAntes=null,ativando=false;
+function mostrarCarteira(){
+  const ch=conta&&get('chave'),end=get('endereco');
+  $('c-vazia').hidden=!!ch;['c-cheia','c-envio','c-movs','c-mins','c-rede-nova'].forEach(id=>$(id).hidden=!ch);
+  if(ch)atualizarRedeNova();
+  $('conta-btn').textContent=conta?conta.usuario:'Entrar';
+  if(!conta&&get('chave')){$('r-aviso').hidden=false;document.querySelector('input[name="r-tipo"][value="minha"]').checked=true;$('r-chave').hidden=false;$('r-chave').value=get('chave')}
+  if(ch){$('c-usuario').textContent=conta.usuario;$('c-end').textContent=end;$('c-chave').textContent=ch;if(!$('m-cart').value)$('m-cart').value=end;atualizarCarteira()}
+  $('o-sem').hidden=!!ch;$('o-form').hidden=!ch;
+}
+async function atualizarCarteira(){
+  const end=get('endereco');if(!end)return;let d;try{d=await api('/api/carteira?endereco='+end)}catch(e){return}if(d.erro)return;
+  if(d.tipo==='antigo'&&!d.ativada&&!ativando&&['127.0.0.1','localhost'].includes(location.hostname)){ativando=true;
+    api('/api/vincular',{chave:get('chave')}).then(r=>{if(r.ok&&!r.ja_estava)alertar('ok','Carteira ativada','agora ela assina as transferências; vale a partir do próximo bloco',null,false)}).finally(()=>setTimeout(()=>ativando=false,70000))}
+  contar('c-saldo',d.saldo);$('c-minerado').textContent=moeda(d.minerado);
+  if(saldoAntes!==null){const marco=100;if(Math.floor(d.saldo/marco)>Math.floor(saldoAntes/marco)){alertar('marco',`Você chegou a ${moeda(Math.floor(d.saldo/marco)*marco)} PTG!`,'marco da sua carteira','op-cart');petalas($('status'),30);window.Giga&&Giga.comemora(`Você chegou a ${moeda(Math.floor(d.saldo/marco)*marco)} PTG! 🎉`)}}
+  saldoAntes=d.saldo;
+  const recebidos=d.movimentos.filter(m=>m.tipo==='recebido');
+  if(movAntes!==null)recebidos.filter(m=>m.bloco>movAntes).forEach(m=>alertar('ouro',`Você recebeu ${moeda(m.valor)} PTG`,'de '+curto(m.outro),'op-cart'));
+  movAntes=Math.max(0,...d.movimentos.map(m=>m.bloco));
+  $('t-movs').innerHTML=d.movimentos.map(m=>`<tr><td>#${m.bloco}</td><td>${m.tipo}${m.outro?' <span class="mono fraco">'+curto(m.outro)+'</span>':''}</td><td class="d num" style="color:${m.tipo==='enviado'?'var(--erro)':'var(--verde)'}">${m.tipo==='enviado'?'−':'+'}${moeda(m.valor)}</td></tr>`).join('')||'<tr><td colspan="3" class="sub">nenhum ainda</td></tr>';
+}
+function desenharTabelaPlacas(){
+  if(!placas)return;
+  $('t-mins').innerHTML=placas.map(m=>`<tr><td><span class="ponto ${m.online?'':'off'}" style="display:inline-block;margin-right:8px"></span><b>${esc(m.nome)}</b><div class="fraco" style="font-size:11px">${esc(m.id)}</div></td><td>${esc(m.aparelho)}</td><td class="d num">${vel(m.hps)}</td><td class="d num">${moeda(m.ganho)}</td><td class="d"><button class="btn sec peq" data-renomear="${esc(m.id)}" data-nome="${esc(m.nome)}">renomear</button></td></tr>`).join('')||'<tr><td colspan="5" class="sub">nenhuma placa nesta carteira ainda</td></tr>';
+}
+$('t-mins').onclick=async ev=>{const b=ev.target.closest('[data-renomear]');if(!b)return;
+  const nome=prompt('Novo nome para este minerador (até 24 letras):',b.dataset.nome);if(nome===null)return;
+  const carteira=get('endereco'),id=b.dataset.renomear,quando=Math.floor(Date.now()/1000);let r;
+  try{r=await api('/api/renomear',{carteira,id,nome,quando,...await assinar('portgiga-renomear:'+JSON.stringify([carteira,id,nome,quando]))})}catch(e){r={erro:SEM_ASSINATURA}}
+  if(r.ok){alertar('ok','Placa renomeada','agora se chama '+r.nome,null,false);atualizarPlacas()}else alert(r.erro)};
+// assinaturas: a chave secreta nunca sai deste aparelho. Dela sai um par Ed25519 (o servidor faz a mesma conta em pub_da_chave)
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const deHex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
+const sha=async t=>hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)));
+const b64u=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(s+'==='.slice((s.length+3)%4)),c=>c.charCodeAt(0))};
+const SEM_ASSINATURA='Este navegador não consegue assinar. Use o atalho do PC ou abra pelo endereço https da rede, num navegador atualizado.';
+async function parDe(chave){
+  const pk8=new Uint8Array([0x30,0x2e,0x02,0x01,0x00,0x30,0x05,0x06,0x03,0x2b,0x65,0x70,0x04,0x22,0x04,0x20,...deHex(await sha('ptg-ed25519:'+chave))]);
+  const priv=await crypto.subtle.importKey('pkcs8',pk8,{name:'Ed25519'},true,['sign']);
+  return {priv,pub:hex(b64u((await crypto.subtle.exportKey('jwk',priv)).x))};
+}
+async function assinar(msg){const p=await parDe(get('chave'));return {pub:p.pub,assinatura:hex(await crypto.subtle.sign('Ed25519',p.priv,new TextEncoder().encode(msg)))}}
+const enderecoNovo=async pub=>'ptg1'+(await sha('ptg-pub:'+pub)).slice(0,38);
+const enderecoAntigo=async chave=>'ptg1'+(await sha('ptg:'+chave)).slice(0,38);
+// "1,5" ou "1.5" -> 150000000 unidades, sem erro de arredondamento
+function unidadesDe(txt){const m=String(txt).trim().replace(',','.').match(/^(\d+)(?:\.(\d{0,8}))?$/);return m?Number(m[1])*1e8+Number((m[2]||'').padEnd(8,'0')):null}
+// ---------- conta: a senha nunca vai para o servidor. Dela saem duas chaves (PBKDF2):
+// uma vira a "senha" do login; a outra tranca a chave da carteira, que o servidor guarda sem conseguir abrir.
+const SEM_COFRE='Este navegador não consegue proteger a carteira. Abra pelo endereço https da rede (o link público) ou pelo atalho do PC, num navegador atualizado.';
+async function pbkdf2(senha,sal){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(senha),'PBKDF2',false,['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:typeof sal==='string'?new TextEncoder().encode(sal):sal,iterations:210000},k,256))}
+const senhaLogin=async(usuario,senha)=>hex(await pbkdf2(senha,'portgiga-login:'+usuario.toLowerCase()));
+async function trancar(chave,senha){const sal=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+  const k=await crypto.subtle.importKey('raw',await pbkdf2(senha,sal),'AES-GCM',false,['encrypt']);
+  return JSON.stringify({v:1,sal:hex(sal),iv:hex(iv),dados:hex(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(chave)))})}
+async function destrancar(cifrada,senha){const c=JSON.parse(cifrada);
+  const k=await crypto.subtle.importKey('raw',await pbkdf2(senha,deHex(c.sal)),'AES-GCM',false,['decrypt']);
+  return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:deHex(c.iv)},k,deHex(c.dados)))}
+async function enderecoDaChave(ch){const antigo=await enderecoAntigo(ch);const d=await api('/api/carteira?endereco='+antigo);
+  return d.tipo==='antigo'?antigo:await enderecoNovo((await parDe(ch)).pub)}
+function msgConta(t,erro){$('l-msg').textContent=t;$('l-msg').className=erro?'erro-txt':'sub'}
+function irConta(){document.querySelector('.abas button[data-aba="carteira"]').click();scrollTo({top:0,behavior:'smooth'})}
+$('conta-btn').onclick=irConta;
+$('ca-entrar').onclick=()=>{$('ca-entrar').classList.add('ativo');$('ca-criar').classList.remove('ativo');$('f-entrar').hidden=false;$('f-criar').hidden=true;msgConta('')};
+$('ca-criar').onclick=()=>{$('ca-criar').classList.add('ativo');$('ca-entrar').classList.remove('ativo');$('f-criar').hidden=false;$('f-entrar').hidden=true;msgConta('')};
+document.querySelectorAll('input[name="r-tipo"]').forEach(r=>r.onchange=()=>{$('r-chave').hidden=r.value!=='minha'||!r.checked});
+function entrou(r,chave,endereco){conta={usuario:r.usuario,carteira:r.carteira};put('chave',chave);put('endereco',endereco);saldoAntes=null;movAntes=null;minAntes=null;
+  ['l-senha','r-senha','r-senha2','r-chave'].forEach(id=>$(id).value='');mostrarCarteira();atualizarPlacas();atualizarMural()}
+$('f-entrar').onsubmit=async ev=>{ev.preventDefault();const usuario=$('l-usuario').value.trim(),senha=$('l-senha').value;
+  if(!crypto.subtle){msgConta(SEM_COFRE,1);return}
+  msgConta('Entrando...');let r;
+  try{r=await api('/api/entrar',{usuario,senha:await senhaLogin(usuario,senha)})}catch(e){msgConta('Sem conexão com o servidor',1);return}
+  if(!r.ok){msgConta(r.erro,1);return}
+  let ch;try{ch=await destrancar(r.chave_cifrada,senha)}catch(e){msgConta('Não foi possível abrir a carteira com esta senha',1);return}
+  entrou(r,ch,r.carteira);msgConta('');alertar('ok','Bem-vindo, '+r.usuario,'sua carteira e suas placas estão abertas',null,false)};
+$('f-criar').onsubmit=async ev=>{ev.preventDefault();
+  const usuario=$('r-usuario').value.trim(),senha=$('r-senha').value,tipo=document.querySelector('input[name="r-tipo"]:checked').value;
+  if(!/^[A-Za-z0-9_.-]{3,20}$/.test(usuario)){msgConta('Usuário: 3 a 20 letras, números, ponto, traço ou _',1);return}
+  if(senha.length<8){msgConta('A senha precisa de pelo menos 8 caracteres',1);return}
+  if(senha!==$('r-senha2').value){msgConta('As senhas não são iguais',1);return}
+  if(!crypto.subtle){msgConta(SEM_COFRE,1);return}
+  let ch=tipo==='minha'?$('r-chave').value.trim():hex(crypto.getRandomValues(new Uint8Array(32)));
+  if(!/^[0-9a-f]{64}$/.test(ch)){msgConta('A chave secreta tem 64 caracteres (0-9, a-f).',1);return}
+  msgConta('Criando a conta...');let r,carteira;
+  try{carteira=await enderecoDaChave(ch);const quando=Math.floor(Date.now()/1000);
+    const p=await parDe(ch),assinatura=hex(await crypto.subtle.sign('Ed25519',p.priv,new TextEncoder().encode('portgiga-cadastro:'+JSON.stringify([usuario,carteira,quando]))));
+    r=await api('/api/cadastro',{usuario,senha:await senhaLogin(usuario,senha),carteira,quando,pub:p.pub,assinatura,chave_cifrada:await trancar(ch,senha)})}
+  catch(e){msgConta(SEM_COFRE,1);return}
+  if(!r.ok){msgConta(r.erro,1);return}
+  entrou(r,ch,carteira);msgConta('');
+  alertar('ok','Conta criada',tipo==='nova'?'anote a chave secreta num lugar seguro: ela recupera a carteira se você esquecer a senha':'sua carteira agora está na conta',null)};
+$('c-sair').onclick=async()=>{if(!confirm('Sair da conta neste aparelho? Para voltar, entre com usuário e senha.'))return;
+  await fetch('/api/sair',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).catch(()=>{});sessaoCaiu()};
+function sessaoCaiu(){conta=null;put('chave',null);put('endereco',null);placas=null;$('r-aviso').hidden=true;mostrarCarteira();atualizarPlacas();atualizarMural()}
+async function carregarConta(){
+  let r;try{r=await api('/api/eu')}catch(e){r={logado:false}}
+  if(r.logado&&get('chave')&&get('endereco')===r.carteira)conta={usuario:r.usuario,carteira:r.carteira};
+  else if(r.logado){ // sessão sem a chave aberta neste aparelho: pede a senha de novo
+    await fetch('/api/sair',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).catch(()=>{});$('l-usuario').value=r.usuario}
+  mostrarCarteira();atualizarPlacas();atualizarMural();
+}
+$('c-chave').onclick=e=>e.target.classList.toggle('ver');
+// endereço público do servidor (túnel): o que as placas de fora usam
+function copiarTexto(t){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t);
+  const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+async function servidorPublico(){let u=null;try{u=(await api('/api/servidor-publico')).url}catch(e){}
+  $('srv-pub').textContent=u||'link público fechado agora';$('srv-copiar').hidden=!u;
+  $('srv-pub-nota').textContent=u?'Funciona de qualquer lugar do mundo. Se a placa parar de minerar, confira aqui se o endereço mudou.':'Por enquanto só funciona na mesma rede Wi-Fi do servidor (http://10.0.0.186:7777). Peça ao dono da rede para abrir o link público.'}
+$('srv-copiar').onclick=()=>{copiarTexto($('srv-pub').textContent);alertar('ok','Endereço do servidor copiado','cole no campo "Endereço do servidor" da placa',null,false)};
+servidorPublico();setInterval(servidorPublico,60000);
+$('c-copiar').onclick=()=>{navigator.clipboard?.writeText(get('endereco')||'');alertar('ok','Endereço copiado','cole onde quiser receber PTG',null,false)};
+$('e-enviar').onclick=async()=>{
+  const de=get('endereco'),para=$('e-para').value.trim(),unidades=unidadesDe($('e-valor').value);let d;
+  if(!/^ptg1[0-9a-f]{38}$/.test(para))d={erro:'endereço de destino inválido'};
+  else if(!unidades)d={erro:'valor inválido (até 8 casas depois da vírgula)'};
+  else try{const nonce=(await api('/api/carteira?endereco='+de)).proximo_nonce;
+    d=await api('/api/enviar',{de,para,unidades,nonce,...await assinar('portgiga-tx:'+JSON.stringify([de,para,unidades,nonce]))})}
+  catch(e){d={erro:SEM_ASSINATURA}}
+  $('e-msg').textContent=d.ok?`Enviado ${moeda(d.valor)} PTG. Entra no próximo bloco.`:'Erro: '+d.erro;$('e-msg').className=d.ok?'sub':'erro-txt';
+  if(d.ok){alertar('ok',`Você enviou ${moeda(d.valor)} PTG`,'para '+curto(d.para),null);atualizarCarteira()}};
+$('q-ver').onclick=async()=>{const d=await api('/api/carteira?endereco='+encodeURIComponent($('q-end').value.trim()));
+  $('q-res').textContent=d.erro?d.erro:`Saldo: ${moeda(d.saldo)} PTG · minerado: ${moeda(d.minerado)}`};
+// ---------- mural de trocas
+async function atualizarMural(){
+  let d;try{d=await api('/api/mural')}catch(e){return}
+  const minha=get('endereco');$('o-total').textContent=d.ofertas.length+' anúncio'+(d.ofertas.length===1?'':'s');
+  $('o-sem').hidden=!!(conta&&get('chave'));$('o-form').hidden=!(conta&&get('chave'));
+  $('o-lista').innerHTML=d.ofertas.map(o=>`<div class="oferta${o.carteira===minha?' minha':''}"><div class="t">${esc(o.titulo)}</div><div class="p num">${moeda(o.preco)} PTG</div>${o.descricao?`<div class="d">${esc(o.descricao)}</div>`:''}<div class="r"><span class="mono">${curto(o.carteira)}</span>${o.carteira===minha?'<b style="color:var(--verde)">seu anúncio</b>':''}<span>há ${ha(o.criada)}</span>${o.carteira===minha?`<button class="btn sec peq" data-encerrar="${o.id}">encerrar</button>`:`<button class="btn peq" data-pagar="${esc(o.carteira)}" data-valor="${o.preco}">pagar</button>`}</div></div>`).join('')||'<p class="sub">Nenhum anúncio ainda. Seja o primeiro.</p>';
+}
+async function pedidoAssinado(prefixo,campos){const carteira=get('endereco'),quando=Math.floor(Date.now()/1000);
+  return {carteira,quando,...await assinar(prefixo+JSON.stringify([carteira,...campos,quando]))}}
+$('o-anunciar').onclick=async()=>{const titulo=$('o-titulo').value.trim(),descricao=$('o-desc').value.trim(),preco=unidadesDe($('o-preco').value);let r;
+  if(!preco)r={erro:'preço inválido (até 8 casas depois da vírgula)'};
+  else try{r=await api('/api/anunciar',{titulo,descricao,preco,...await pedidoAssinado('portgiga-oferta:',[titulo,descricao,preco])})}catch(e){r={erro:SEM_ASSINATURA}}
+  $('o-msg').textContent=r.ok?'Anúncio publicado.':'Erro: '+r.erro;$('o-msg').className=r.ok?'sub':'erro-txt';
+  if(r.ok){$('o-titulo').value=$('o-desc').value=$('o-preco').value='';atualizarMural()}};
+$('o-lista').onclick=async ev=>{
+  const p=ev.target.closest('[data-pagar]');
+  if(p){if(!conta){alert('Entre na sua conta (aba Carteira) primeiro.');irConta();return}
+    document.querySelector('.abas button[data-aba="carteira"]').click();$('e-para').value=p.dataset.pagar;$('e-valor').value=p.dataset.valor;
+    $('e-msg').textContent='Confira o endereço e o valor e clique em Enviar.';$('e-msg').className='sub';$('e-valor').focus();return}
+  const e=ev.target.closest('[data-encerrar]');if(!e||!confirm('Encerrar este anúncio?'))return;
+  let r;try{r=await api('/api/encerrar',{id:+e.dataset.encerrar,...await pedidoAssinado('portgiga-encerrar:',[+e.dataset.encerrar])})}catch(x){r={erro:SEM_ASSINATURA}}
+  if(r.ok)atualizarMural();else alert(r.erro)};
+atualizarMural();setInterval(atualizarMural,15000);
+$('v-cmd').textContent='python3 verificar.py '+location.origin;
+$('m-baixar').onclick=ev=>{if(!conta){ev.preventDefault();irConta();msgConta('Entre na sua conta (ou crie uma) para baixar o minerador da ESP32.')}};
+if(new URLSearchParams(location.search).get('entrar')==='baixar'){history.replaceState(null,'','/');setTimeout(()=>{if(!conta){irConta();msgConta('Entre na sua conta (ou crie uma) para baixar o minerador da ESP32.')}},300)}
+// ---------- rede nova: registra (assinando com a chave) o endereço da rede independente
+async function atualizarRedeNova(){
+  const ch=get('chave'),end=get('endereco');if(!ch||!end)return;
+  let novo;try{novo=await window.ptgEnderecoNovo(ch)}catch(e){$('rn-end').textContent='este navegador não consegue calcular';return}
+  $('rn-end').textContent=novo;
+  let r;try{r=await api('/api/migracao?endereco='+end)}catch(e){return}
+  const ok=r.endereco_novo===novo;
+  const prazo=r.congela_em!=null&&!r.encerrado?` O registro fecha no bloco #${r.congela_em}.`:'';
+  $('rn-sit').textContent=(r.encerrado?'Registro encerrado.':ok?'✓ Registrado. Seu saldo vai para este endereço na rede nova.':r.endereco_novo?'Registrado para outro endereço: registre de novo.':'Ainda não registrado.')+prazo;
+  $('rn-sit').className=ok?'sub':'erro-txt';$('rn-registrar').hidden=ok||r.encerrado;
+}
+$('rn-registrar').onclick=async()=>{
+  const carteira=get('endereco'),quando=Math.floor(Date.now()/1000);let r;
+  try{const novo=await window.ptgEnderecoNovo(get('chave'));
+    r=await api('/api/migrar',{carteira,endereco_novo:novo,quando,...await assinar('portgiga-migrar:'+JSON.stringify([carteira,novo,quando]))})}
+  catch(e){r={erro:SEM_ASSINATURA}}
+  if(r.ok){alertar('ok','Registrado para a rede nova','seu saldo vai para o endereço novo',null,false)}else{$('rn-sit').textContent='Erro: '+r.erro;$('rn-sit').className='erro-txt'}
+  atualizarRedeNova()};
+carregarConta();setInterval(()=>conta&&atualizarCarteira(),6000);
+if(get('carteira_mineracao'))$('m-cart').value=get('carteira_mineracao');
+if(get('nome_aparelho'))$('m-nome').value=get('nome_aparelho');
+
+// ---------- minerador (SHA-256 em JS puro, num Worker para nao travar a tela)
+const codigoWorker=`
+const K=new Int32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+const W=new Int32Array(64),B=new Uint8Array(64);
+function h0(L){ // primeira palavra do sha256 de B[0..L) (mensagem de um bloco so); as outras sao conferidas depois
+  B.fill(0,L);B[L]=0x80;B[62]=(L*8)>>>8;B[63]=(L*8)&255;
+  for(let i=0;i<16;i++)W[i]=(B[4*i]<<24)|(B[4*i+1]<<16)|(B[4*i+2]<<8)|B[4*i+3];
+  for(let i=16;i<64;i++){const a=W[i-15],b=W[i-2];
+    W[i]=(W[i-16]+(((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3))+W[i-7]+(((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10)))|0}
+  let a=0x6a09e667,b=0xbb67ae85|0,c=0x3c6ef372,d=0xa54ff53a|0,e=0x510e527f,f=0x9b05688c|0,g=0x1f83d9ab,h=0x5be0cd19;
+  for(let i=0;i<64;i++){
+    const t1=(h+(((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)))+((e&f)^(~e&g))+K[i]+W[i])|0;
+    const t2=((((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)))+((a&b)^(a&c)^(b&c)))|0;
+    h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0}
+  return [(0x6a09e667+a)|0,(0xbb67ae85+b)|0,(0x3c6ef372+c)|0,(0xa54ff53a+d)|0,(0x510e527f+e)|0,(0x9b05688c+f)|0,(0x1f83d9ab+g)|0,(0x5be0cd19+h)|0];
+}
+onmessage=ev=>{
+  const {base,alvo,max}=ev.data,alv=[];for(let i=0;i<8;i++)alv.push(parseInt(alvo.substr(i*8,8),16)|0);
+  const t0=Date.now();let ultimo=t0;
+  for(let n=0;n<max;n++){
+    for(let i=0;i<base.length;i++)B[i]=base.charCodeAt(i);
+    const s=''+n;for(let i=0;i<s.length;i++)B[base.length+i]=s.charCodeAt(i);
+    const r=h0(base.length+s.length);
+    if(r[0]===alv[0]&&r[1]===alv[1]&&r[7]===alv[7]){postMessage({fim:true,nonce:n,hps:(n+1)/Math.max(.001,(Date.now()-t0)/1000)});return}
+    if((n&16383)===0){const ag=Date.now();if(ag-ultimo>250){ultimo=ag;postMessage({hps:n/Math.max(.001,(ag-t0)/1000),n:n,hash:(r[0]>>>0).toString(16).padStart(8,'0')+(r[1]>>>0).toString(16).padStart(8,'0')+(r[2]>>>0).toString(16).padStart(8,'0')+'…'})}}
+  }
+  postMessage({fim:true,nonce:-1});
+};`;
+let worker=null,minerando=false,aceitas=0;
+const idAparelho=get('id_aparelho')||('cel-'+Math.random().toString(36).slice(2,8));put('id_aparelho',idAparelho);
+function sit(t,erro){$('m-sit').textContent=t;$('m-sit').className=erro?'erro-txt':'sub'}
+function progresso(f){$('m-arco').style.strokeDashoffset=(502.6*(1-f)).toFixed(1);$('m-pct').textContent=Math.round(f*100)+'%'}
+async function ciclo(){
+  while(minerando){
+    const cart=$('m-cart').value.trim(),nome=encodeURIComponent($('m-nome').value.trim());
+    let tr;try{tr=await api(`/api/trabalho?carteira=${cart}&aparelho=celular&id=${idAparelho}&nome=${nome}`)}catch(e){sit('sem conexão com o servidor, tentando de novo...',1);await new Promise(r=>setTimeout(r,5000));continue}
+    if(tr.erro){sit(tr.erro,1);parar();return}
+    sit('procurando o número certo entre '+tr.max.toLocaleString('pt-BR'));progresso(0);
+    const res=await new Promise(ok=>{worker.onmessage=e=>{if(e.data.fim)ok(e.data);else{$('m-hps').textContent=vel(e.data.hps);progresso(e.data.n/tr.max);$('m-hex').textContent=e.data.hash||''}};worker.postMessage(tr)});
+    if(!minerando)return;
+    if(res.nonce<0)continue;
+    progresso(1);
+    const r=await api(`/api/resultado?trabalho=${tr.trabalho}&nonce=${res.nonce}`).catch(()=>({}));
+    if(r.aceito){aceitas++;window.Giga&&Giga.ganho('aceita ✓');$('m-ok').textContent=aceitas;$('m-saldo').textContent=moeda(r.saldo)+' PTG';$('m-hps').textContent=vel(r.hps);
+      $('m-log').insertAdjacentHTML('afterbegin',`<li class="novo"><span class="ic ok"><svg><use href="#i-flor"/></svg></span><div><div class="t">Resposta aceita: número ${res.nonce.toLocaleString('pt-BR')}</div><div class="q">${hora(Date.now()/1000)} · próximo bloco em ${r.proximo_bloco_s} s</div></div></li>`);
+      petalas($('m-arco'),10)}
+    else{sit('resposta recusada: '+(r.erro||'?'),1);$('m-log').insertAdjacentHTML('afterbegin',`<li><span class="ic erro"><svg><use href="#i-alerta"/></svg></span><div class="t">Recusada: ${esc(r.erro||'?')}</div></li>`)}
+  }
+}
+function parar(){minerando=false;window.Giga&&Giga.minera(false);if(worker){worker.terminate();worker=null}$('m-botao').textContent='Começar a minerar';$('m-botao').classList.remove('parar');$('m-hps').textContent='-';$('m-hex').textContent='';$('m-painel').classList.remove('minerando');progresso(0)}
+$('m-botao').onclick=()=>{
+  if(minerando){parar();sit('parado');return}
+  const cart=$('m-cart').value.trim();if(!/^ptg1[0-9a-f]{38}$/.test(cart)){sit('coloque um endereço de carteira válido (crie na aba Carteira)',1);return}
+  put('carteira_mineracao',cart);put('nome_aparelho',$('m-nome').value.trim());
+  worker=new Worker(URL.createObjectURL(new Blob([codigoWorker],{type:'text/javascript'})));
+  minerando=true;window.Giga&&Giga.minera(true);$('m-botao').textContent='Parar';$('m-botao').classList.add('parar');$('m-painel').classList.add('minerando');ciclo();
+};
+/* GIGA-INICIO (gerado por divulgacao/mascote/widget.py) */
+(function () {
+  if (window.Giga) return;
+  const CSS = ".gg-w{position:fixed;right:14px;bottom:14px;width:116px;z-index:9000;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}.gg-w svg{display:block;width:100%;height:auto;overflow:visible}.gg-w.gg-oculto{display:none}.gg-x{position:absolute;right:-4px;top:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font:700 14px/24px sans-serif;cursor:pointer;opacity:0;transition:opacity .2s}.gg-w:hover .gg-x{opacity:1}.gg-volta{position:fixed;right:14px;bottom:14px;width:46px;height:46px;border-radius:50%;border:0;z-index:9000;cursor:pointer;display:none;background:radial-gradient(circle at 35% 30%,#fff1b8,#f6c94e 45%,#c98a12 80%);box-shadow:0 6px 14px rgba(0,0,0,.4);font:900 13px sans-serif;color:#7a4c06}.gg-volta.gg-on{display:block}.gg-fala{position:absolute;right:8px;bottom:100%;margin-bottom:6px;max-width:230px;width:max-content;background:#fff;color:#1b1b1b;font:800 14px/1.3 Outfit,system-ui,sans-serif;padding:9px 13px;border-radius:14px;box-shadow:0 8px 20px rgba(0,0,0,.35);opacity:0;transform:translateY(8px) scale(.9);transform-origin:90% 100%;transition:opacity .2s,transform .25s cubic-bezier(.3,1.6,.5,1);pointer-events:none}.gg-fala::after{content:'';position:absolute;right:30px;bottom:-9px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}.gg-fala.gg-on{opacity:1;transform:none}.gg-w #gg-giga{transform-box:view-box;transform-origin:200px 490px;animation:gg-respira 1.6s ease-in-out infinite}.gg-w #gg-sombra{transform-box:view-box;transform-origin:200px 492px;animation:gg-sombra 1.6s ease-in-out infinite}.gg-w #gg-olhoE,.gg-w #gg-olhoD{transform-box:fill-box;transform-origin:center;animation:gg-pisca 4.2s infinite}.gg-w #gg-folhaE{transform-box:view-box;transform-origin:200px 128px;animation:gg-folhaE 2.4s ease-in-out infinite}.gg-w #gg-folhaD{transform-box:view-box;transform-origin:202px 112px;animation:gg-folhaD 2.4s ease-in-out infinite}.gg-w #gg-bracoD,.gg-w #gg-bracoE{transform-box:view-box}.gg-w #gg-bracoD{transform-origin:320px 300px}.gg-w #gg-bracoE{transform-origin:80px 300px}.gg-w #gg-corpo,.gg-w #gg-rosto,.gg-w #gg-broto{transform-box:view-box;transform-origin:200px 300px}.gg-w #gg-copa{transform-box:view-box;transform-origin:200px 150px;transition:opacity .6s,transform .8s cubic-bezier(.3,1.6,.5,1);transform:scale(.2)}.gg-w.gg-arvore #gg-copa{opacity:1!important;transform:translateY(-40px) scale(1.35)}.gg-w.gg-arvore #gg-folhaE,.gg-w.gg-arvore #gg-folhaD{opacity:0;transition:opacity .4s}.gg-w .gg-pupila{transition:transform .3s}.gg-w.gg-pulando #gg-giga{animation:gg-pulo .7s cubic-bezier(.3,.7,.4,1)}.gg-w.gg-festa #gg-giga{animation:gg-festa 1.3s ease-in-out}.gg-w.gg-festa #gg-bracoE{animation:gg-maosE 1.3s ease-in-out}.gg-w.gg-festa #gg-bracoD{animation:gg-maosD 1.3s ease-in-out}.gg-w.gg-festa #gg-boca,.gg-w.gg-minerando #gg-boca{transform-box:view-box;transform-origin:200px 330px}.gg-w.gg-festa #gg-boca{transform:scaleY(1.25)}.gg-w.gg-minerando #gg-picareta,.gg-w.gg-minerando #gg-pedra{opacity:1!important}.gg-w.gg-minerando #gg-bracoD{animation:gg-bate .75s cubic-bezier(.5,0,.8,.4) infinite}.gg-w.gg-minerando #gg-boca{transform:scaleY(.6)}.gg-w.gg-gira #gg-corpo,.gg-w.gg-gira #gg-rosto,.gg-w.gg-gira #gg-broto{animation:gg-gira .9s ease-in-out}.gg-conf{position:fixed;width:9px;height:13px;border-radius:2px;z-index:9001;pointer-events:none;animation:gg-conf 1.5s cubic-bezier(.2,.6,.4,1) forwards}.gg-ganho{position:fixed;z-index:9001;pointer-events:none;font:900 18px Outfit,system-ui,sans-serif;color:#fbbf24;text-shadow:0 2px 0 #7a4c06;animation:gg-sobe 1.2s ease-out forwards;white-space:nowrap}@keyframes gg-respira{0%,100%{transform:translateY(0) scale(1.03,.97)}50%{transform:translateY(-14px) scale(.98,1.02)}}@keyframes gg-sombra{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.84);opacity:.7}}@keyframes gg-pisca{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}@keyframes gg-folhaE{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(7deg)}}@keyframes gg-folhaD{0%,100%{transform:rotate(5deg)}50%{transform:rotate(-6deg)}}@keyframes gg-pulo{0%{transform:scale(1.1,.85)}35%{transform:translateY(-120px) scale(.92,1.1)}70%{transform:translateY(0) scale(1.12,.86)}100%{transform:scale(1)}}@keyframes gg-festa{0%{transform:scale(1.12,.84)}25%{transform:translateY(-150px) rotate(0)}55%{transform:translateY(-150px) rotate(360deg)}80%{transform:translateY(0) rotate(360deg) scale(1.12,.86)}100%{transform:rotate(360deg)}}@keyframes gg-maosE{0%,100%{transform:rotate(0)}20%,80%{transform:rotate(150deg)}}@keyframes gg-maosD{0%,100%{transform:rotate(0)}20%,80%{transform:rotate(-150deg)}}@keyframes gg-bate{0%{transform:rotate(-70deg)}70%{transform:rotate(28deg)}100%{transform:rotate(-70deg)}}@keyframes gg-gira{0%,100%{transform:scaleX(1)}15%,45%,75%{transform:scaleX(.06)}30%,60%,90%{transform:scaleX(1)}}@keyframes gg-conf{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}@keyframes gg-sobe{0%{transform:translateY(0) scale(.6);opacity:1}100%{transform:translateY(-70px) scale(1.1);opacity:0}}@media (max-width:560px){.gg-w{width:84px;right:8px;bottom:8px}.gg-fala{font-size:13px;max-width:190px}}@media (prefers-reduced-motion:reduce){.gg-w *{animation:none!important}}", SVG = "<defs> <radialGradient id=\"gg-gOuro\" cx=\"38%\" cy=\"32%\" r=\"75%\"> <stop offset=\"0\" stop-color=\"#fff4c2\"/><stop offset=\".42\" stop-color=\"#f7cd52\"/><stop offset=\".78\" stop-color=\"#d4951a\"/><stop offset=\"1\" stop-color=\"#f3d175\"/> </radialGradient> <linearGradient id=\"gg-gBorda\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#b9780f\"/><stop offset=\"1\" stop-color=\"#7a4c06\"/></linearGradient> <linearGradient id=\"gg-gFolha\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#4fbf72\"/><stop offset=\"1\" stop-color=\"#1f7a45\"/></linearGradient> <radialGradient id=\"gg-gSombra\"><stop offset=\"0\" stop-color=\"#000\" stop-opacity=\".35\"/><stop offset=\"1\" stop-color=\"#000\" stop-opacity=\"0\"/></radialGradient> </defs> <ellipse id=\"gg-sombra\" cx=\"200\" cy=\"492\" rx=\"120\" ry=\"16\" fill=\"url(#gg-gSombra)\"/> <g id=\"gg-giga\"> <g id=\"gg-pedra\" opacity=\"0\"> <path d=\"M318 490 L332 452 L362 440 L392 456 L398 490 Z\" fill=\"#6b7280\"/><path d=\"M332 452 L362 440 L372 462 L345 470 Z\" fill=\"#9ca3af\"/> <g fill=\"#f7cd52\"><circle cx=\"352\" cy=\"478\" r=\"5\"/><circle cx=\"378\" cy=\"470\" r=\"4\"/><circle cx=\"366\" cy=\"484\" r=\"3\"/></g> </g> <g id=\"gg-pernas\"> <path d=\"M168 412 Q164 446 158 470\" stroke=\"#8a5a08\" stroke-width=\"11\" fill=\"none\" stroke-linecap=\"round\"/> <path d=\"M232 412 Q236 446 242 470\" stroke=\"#8a5a08\" stroke-width=\"11\" fill=\"none\" stroke-linecap=\"round\"/> <g id=\"gg-peE\"><ellipse cx=\"150\" cy=\"478\" rx=\"30\" ry=\"15\" fill=\"#16a34a\"/><rect x=\"120\" y=\"482\" width=\"60\" height=\"7\" rx=\"3.5\" fill=\"#f8fafc\"/><path d=\"M140 470 L156 474 M144 465 L159 469\" stroke=\"#facc15\" stroke-width=\"3\" stroke-linecap=\"round\"/></g> <g id=\"gg-peD\"><ellipse cx=\"250\" cy=\"478\" rx=\"30\" ry=\"15\" fill=\"#16a34a\"/><rect x=\"220\" y=\"482\" width=\"60\" height=\"7\" rx=\"3.5\" fill=\"#f8fafc\"/><path d=\"M244 474 L260 470 M241 469 L256 465\" stroke=\"#facc15\" stroke-width=\"3\" stroke-linecap=\"round\"/></g> </g> <g id=\"gg-bracoE\"> <path d=\"M80 300 Q52 320 44 356\" stroke=\"#8a5a08\" stroke-width=\"11\" fill=\"none\" stroke-linecap=\"round\"/> <circle cx=\"42\" cy=\"362\" r=\"17\" fill=\"#fff\"/><path d=\"M30 356 Q42 350 54 356\" stroke=\"#e5e7eb\" stroke-width=\"3\" fill=\"none\"/> </g> <g id=\"gg-bracoD\"> <g id=\"gg-picareta\" opacity=\"0\"> <path d=\"M358 362 L420 250\" stroke=\"#7c4a1e\" stroke-width=\"10\" stroke-linecap=\"round\"/> <path d=\"M372 236 Q420 228 456 262 Q424 244 394 250 Z\" fill=\"#9ca3af\" stroke=\"#4b5563\" stroke-width=\"3\"/> <path d=\"M372 236 Q392 238 404 262\" stroke=\"#4b5563\" stroke-width=\"3\" fill=\"none\"/> </g> <path d=\"M320 300 Q348 320 356 356\" stroke=\"#8a5a08\" stroke-width=\"11\" fill=\"none\" stroke-linecap=\"round\"/> <circle cx=\"358\" cy=\"362\" r=\"17\" fill=\"#fff\"/><path d=\"M346 356 Q358 350 370 356\" stroke=\"#e5e7eb\" stroke-width=\"3\" fill=\"none\"/> </g> <g id=\"gg-corpo\"> <ellipse cx=\"200\" cy=\"312\" rx=\"132\" ry=\"132\" fill=\"url(#gg-gBorda)\"/> <circle cx=\"200\" cy=\"300\" r=\"132\" fill=\"url(#gg-gOuro)\"/> <circle cx=\"200\" cy=\"300\" r=\"118\" fill=\"none\" stroke=\"#c98a12\" stroke-width=\"5\"/> <circle cx=\"200\" cy=\"300\" r=\"111\" fill=\"none\" stroke=\"#fff3bf\" stroke-width=\"2\" stroke-dasharray=\"3 7\" opacity=\".9\"/> <path id=\"gg-brilho\" d=\"M112 236 Q140 186 196 176\" stroke=\"#fffbe6\" stroke-width=\"12\" fill=\"none\" stroke-linecap=\"round\" opacity=\".75\"/> <text x=\"200\" y=\"398\" text-anchor=\"middle\" font-family=\"Outfit, Arial Black, sans-serif\" font-weight=\"900\" font-size=\"24\" letter-spacing=\"4\" fill=\"#a16207\" opacity=\".75\">PTG</text> </g> <g id=\"gg-rosto\"> <g id=\"gg-sobrancelhas\" fill=\"none\" stroke=\"#5b3a06\" stroke-width=\"7\" stroke-linecap=\"round\"> <path id=\"gg-sbE\" d=\"M136 244 Q158 232 180 242\"/><path id=\"gg-sbD\" d=\"M220 242 Q242 232 264 244\"/> </g> <g id=\"gg-olhoE\"><ellipse cx=\"160\" cy=\"284\" rx=\"25\" ry=\"31\" fill=\"#fff\"/><g class=\"gg-pupila\"><circle cx=\"164\" cy=\"290\" r=\"14\" fill=\"#1f2937\"/><circle cx=\"169\" cy=\"284\" r=\"5\" fill=\"#fff\"/></g></g> <g id=\"gg-olhoD\"><ellipse cx=\"240\" cy=\"284\" rx=\"25\" ry=\"31\" fill=\"#fff\"/><g class=\"gg-pupila\"><circle cx=\"244\" cy=\"290\" r=\"14\" fill=\"#1f2937\"/><circle cx=\"249\" cy=\"284\" r=\"5\" fill=\"#fff\"/></g></g> <ellipse cx=\"126\" cy=\"330\" rx=\"18\" ry=\"11\" fill=\"#f97316\" opacity=\".35\"/><ellipse cx=\"274\" cy=\"330\" rx=\"18\" ry=\"11\" fill=\"#f97316\" opacity=\".35\"/> <g id=\"gg-boca\"> <path id=\"gg-bocaAberta\" d=\"M168 330 Q200 376 232 330 Q200 344 168 330 Z\" fill=\"#7c2d12\"/> <path id=\"gg-lingua\" d=\"M184 350 Q200 362 216 350 Q200 344 184 350 Z\" fill=\"#ef4444\"/> </g> </g> <g id=\"gg-broto\"> <g id=\"gg-copa\" opacity=\"0\"> <circle cx=\"200\" cy=\"96\" r=\"44\" fill=\"url(#gg-gFolha)\"/><circle cx=\"160\" cy=\"118\" r=\"32\" fill=\"url(#gg-gFolha)\"/><circle cx=\"240\" cy=\"118\" r=\"32\" fill=\"url(#gg-gFolha)\"/> <g id=\"gg-flores\" fill=\"#f5c518\"><circle cx=\"186\" cy=\"80\" r=\"7\"/><circle cx=\"216\" cy=\"74\" r=\"7\"/><circle cx=\"230\" cy=\"108\" r=\"7\"/><circle cx=\"168\" cy=\"112\" r=\"7\"/><circle cx=\"202\" cy=\"104\" r=\"7\"/></g> </g> <path id=\"gg-caule\" d=\"M200 172 Q194 140 202 104\" stroke=\"#b3261e\" stroke-width=\"10\" fill=\"none\" stroke-linecap=\"round\"/> <g id=\"gg-folhaE\"><path d=\"M200 128 Q168 96 140 112 Q164 140 200 128 Z\" fill=\"url(#gg-gFolha)\"/><path d=\"M196 126 Q170 116 150 114\" stroke=\"#a7f3d0\" stroke-width=\"2.5\" fill=\"none\"/></g> <g id=\"gg-folhaD\"><path d=\"M202 112 Q228 70 262 84 Q244 118 202 112 Z\" fill=\"url(#gg-gFolha)\"/><path d=\"M206 110 Q232 96 252 88\" stroke=\"#a7f3d0\" stroke-width=\"2.5\" fill=\"none\"/></g> </g> </g>", DICAS = ["Oi! Eu sou o Giga, a moeda-broto da Portgiga! 🌱", "Cada bloco sai a cada 1 minuto. Bora minerar? ⛏️", "Vão existir só pouco mais de 21 milhões de PTG. Nem uma a mais. 🪙", "Guarde sua chave secreta num lugar seguro. Ela é a sua carteira! 🔑", "Nunca mande sua chave ou PIN pra ninguém. Nem pra mim! 🙅", "PTG é troca de pessoa pra pessoa. Não é investimento. 🤝", "Meu broto cresce quando a rede cresce. 🌳", "Tem uma plaquinha ESP32? Ela também minera! 🔌"];
+  const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
+  const w = document.createElement('div'); w.className = 'gg-w'; w.setAttribute('role', 'button'); w.setAttribute('aria-label', 'Giga, mascote da Portgiga');
+  w.innerHTML = '<div class="gg-fala"></div><button class="gg-x" aria-label="Esconder o Giga">×</button><svg viewBox="0 0 400 520" aria-hidden="true">' + SVG + '</svg>';
+  const volta = document.createElement('button'); volta.className = 'gg-volta'; volta.textContent = 'PTG'; volta.setAttribute('aria-label', 'Mostrar o Giga');
+  const ler = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const gravar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  function pronto() {
+    document.body.appendChild(w); document.body.appendChild(volta);
+    if (ler('giga-oculto') === '1') { w.classList.add('gg-oculto'); volta.classList.add('gg-on'); }
+  }
+  if (document.body) pronto(); else document.addEventListener('DOMContentLoaded', pronto);
+  const fala = w.querySelector('.gg-fala');
+  let tFala = null, iDica = 0, tMina = null;
+  function aula(cls, ms) { w.classList.remove(cls); void w.offsetWidth; w.classList.add(cls); setTimeout(() => w.classList.remove(cls), ms); }
+  const G = {
+    fala(txt, ms = 3200) { fala.textContent = txt; fala.classList.add('gg-on'); clearTimeout(tFala); tFala = setTimeout(() => fala.classList.remove('gg-on'), ms); },
+    pula() { aula('gg-pulando', 720); },
+    gira() { aula('gg-gira', 920); },
+    comemora(txt) {
+      aula('gg-festa', 1320); if (txt) G.fala(txt, 3800);
+      if (w.classList.contains('gg-oculto')) return;
+      const r = w.getBoundingClientRect(), cores = ['#fbbf24', '#22c55e', '#ef4444', '#38bdf8', '#fff'];
+      for (let i = 0; i < 34; i++) {
+        const c = document.createElement('i'); c.className = 'gg-conf'; c.style.background = cores[i % 5];
+        c.style.left = (r.left + r.width / 2) + 'px'; c.style.top = (r.top + r.height * .3) + 'px';
+        c.style.setProperty('--dx', (Math.random() * 360 - 300) + 'px'); c.style.setProperty('--dy', (Math.random() * 300 - 260) + 'px'); c.style.setProperty('--r', (Math.random() * 900 - 450) + 'deg');
+        document.body.appendChild(c); setTimeout(() => c.remove(), 1600);
+      }
+    },
+    ganho(txt) {
+      if (w.classList.contains('gg-oculto')) return;
+      const r = w.getBoundingClientRect(), g = document.createElement('div'); g.className = 'gg-ganho'; g.textContent = txt;
+      g.style.left = (r.left + r.width * .55) + 'px'; g.style.top = (r.top + r.height * .55) + 'px'; document.body.appendChild(g); setTimeout(() => g.remove(), 1250);
+    },
+    minera(liga) {
+      w.classList.toggle('gg-minerando', !!liga); clearInterval(tMina);
+      if (liga) G.fala('Bora minerar! ⛏️', 2500);
+    },
+    arvore(liga) { w.classList.toggle('gg-arvore', !!liga); },
+    dica() { G.fala(DICAS[iDica++ % DICAS.length], 4200); G.pula(); },
+  };
+  w.addEventListener('click', e => { if (e.target.closest('.gg-x')) return; G.dica(); });
+  w.querySelector('.gg-x').addEventListener('click', e => { e.stopPropagation(); w.classList.add('gg-oculto'); volta.classList.add('gg-on'); gravar('giga-oculto', '1'); });
+  volta.addEventListener('click', () => { w.classList.remove('gg-oculto'); volta.classList.remove('gg-on'); gravar('giga-oculto', '0'); G.comemora('Voltei! 🌱'); });
+  // olhar para os lados de vez em quando
+  setInterval(() => { const x = (Math.random() * 12 - 6).toFixed(1), y = (Math.random() * 10 - 5).toFixed(1); w.querySelectorAll('.gg-pupila').forEach(p => p.style.transform = `translate(${x}px,${y}px)`); }, 2600);
+  try { if (!sessionStorage.getItem('giga-oi')) { sessionStorage.setItem('giga-oi', '1'); setTimeout(() => { G.pula(); G.fala(DICAS[0], 4200); iDica = 1; }, 1800); } } catch (e) {}
+  window.Giga = G;
+})();
+/* GIGA-FIM */
+</script></body></html>

@@ -1,0 +1,18 @@
+MINERADOR PORTGIGA (PTG) PARA ESP32 - v1.4
+
+1. Abra o arquivo COMO-INSTALAR.html (no navegador) e siga o passo a passo.
+2. O arquivo para gravar na placa e: portgiga-minerador-esp32.bin (endereco 0x0).
+3. Grave pelo site oficial da Espressif, no Chrome ou Edge: https://espressif.github.io/esptool-js/
+4. Depois de gravar, conecte o celular na rede Wi-Fi "Portgiga-xxxxxx" e preencha:
+   Wi-Fi da casa, senha, sua carteira (ptg1...), um nome para a placa, o endereco do servidor
+   e crie a SENHA DA PLACA (8 a 32 caracteres). Anote essa senha num papel.
+5. O endereco do servidor esta no site da Portgiga, aba Minerar (botao de copiar). Ele funciona de
+   qualquer lugar do mundo. Se a placa parar de minerar, confira no site se o endereco mudou.
+
+Novo na v1.4: a placa tem senha. Ninguem na sua rede consegue trocar a carteira ou o Wi-Fi dela
+sem a senha (5 senhas erradas bloqueiam a pagina por 5 minutos). Por https a placa confere o
+certificado do servidor. Esqueceu a senha? Grave a placa de novo pelo cabo USB.
+Da v1.3: se faltar luz ou o Wi-Fi cair, a placa nao perde a configuracao e volta sozinha.
+
+Aviso: a Portgiga esta em fase de teste e nao tem valor em dinheiro.
+Nunca coloque a chave secreta da sua carteira na placa: ela so precisa do endereco ptg1.

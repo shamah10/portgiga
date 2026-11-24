@@ -1,0 +1,1495 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Corretora Portgiga</title>
+<meta name="theme-color" content="#070d0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22%230f5132%22/%3E%3Cpath d=%22M12 44 L26 30 L34 38 L52 18%22 stroke=%22%23f0be50%22 stroke-width=%226%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+<script src="/corretora/graficos.js"></script>
+<script src="/app/qrcode.js"></script>
+<style>
+:root{--bg:#f2f5f1;--bg2:#e8eee7;--card:#ffffff;--card2:#f7faf6;--txt:#101a14;--sub:#5a6b61;--fraco:#8b998f;--borda:#dce5da;--grade:#e9efe7;
+  --verde:#16a35a;--verde2:#dff5e8;--vermelho:#dc3d32;--vermelho2:#fde6e3;--ouro:#c58f00;--ouro2:#fff3cf;
+  --sombra:0 1px 2px rgba(16,26,20,.06),0 8px 28px rgba(16,26,20,.07)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070d0a;--bg2:#0d1712;--card:#0f1a14;--card2:#13211a;--txt:#e8f2ec;--sub:#92a69a;--fraco:#5f7267;--borda:#1c2d24;--grade:#16241d;
+  --verde:#2ee07f;--verde2:#0f2e1c;--vermelho:#ff5a4e;--vermelho2:#3a1512;--ouro:#f7c843;--ouro2:#33290c;
+  --sombra:0 1px 2px rgba(0,0,0,.35),0 10px 34px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--bg:#070d0a;--bg2:#0d1712;--card:#0f1a14;--card2:#13211a;--txt:#e8f2ec;--sub:#92a69a;--fraco:#5f7267;--borda:#1c2d24;--grade:#16241d;
+  --verde:#2ee07f;--verde2:#0f2e1c;--vermelho:#ff5a4e;--vermelho2:#3a1512;--ouro:#f7c843;--ouro2:#33290c;
+  --sombra:0 1px 2px rgba(0,0,0,.35),0 10px 34px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html,body{margin:0}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--txt);font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(1000px 500px at 0% -10%,color-mix(in srgb,var(--verde) 13%,transparent),transparent 70%),
+  radial-gradient(800px 420px at 100% 0%,color-mix(in srgb,var(--ouro) 9%,transparent),transparent 70%)}
+button,input,textarea{font:inherit;color:inherit}a{color:var(--verde)}
+.num{font-variant-numeric:tabular-nums}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.sub{color:var(--sub)}.fraco{color:var(--fraco)}.sobe{color:var(--verde)}.desce{color:var(--vermelho)}
+.topo{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--borda)}
+.topo-in{max-width:1560px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.marca{display:flex;align-items:center;gap:11px;cursor:pointer;text-decoration:none;color:inherit}
+.marca svg{filter:drop-shadow(0 4px 12px color-mix(in srgb,var(--verde) 40%,transparent))}
+.marca h1{margin:0;font-size:18px;letter-spacing:-.2px}.marca h1 b{color:var(--verde)}
+.marca p{margin:0;font-size:11px;color:var(--sub);letter-spacing:.04em;text-transform:uppercase}
+.nav{display:flex;gap:2px;background:var(--bg2);padding:4px;border-radius:12px}
+.nav a{padding:7px 14px;border-radius:9px;color:var(--sub);text-decoration:none;font-weight:600;transition:all .2s}
+.nav a.ativo{background:var(--card);color:var(--txt);box-shadow:var(--sombra)}
+.dir-topo{margin-left:auto;display:flex;gap:10px;align-items:center}
+.pilula{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--card);border:1px solid var(--borda);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}
+.ponto{width:8px;height:8px;border-radius:50%;background:var(--verde);animation:pulsa 2s infinite;flex:none}
+@keyframes pulsa{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--verde) 60%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.btn{display:inline-block;text-decoration:none;border:0;background:linear-gradient(180deg,color-mix(in srgb,var(--verde) 92%,#fff),var(--verde));color:#04140a;padding:10px 16px;border-radius:11px;font-weight:800;cursor:pointer;transition:transform .12s,filter .2s;box-shadow:0 6px 18px color-mix(in srgb,var(--verde) 30%,transparent)}
+.btn:hover{filter:brightness(1.07)}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:default;box-shadow:none}
+.btn.verm{background:linear-gradient(180deg,color-mix(in srgb,var(--vermelho) 90%,#fff),var(--vermelho));color:#fff;box-shadow:0 6px 18px color-mix(in srgb,var(--vermelho) 30%,transparent)}
+.btn.sec{background:var(--card);color:var(--txt);border:1px solid var(--borda);box-shadow:none}
+.btn.peq{padding:6px 11px;font-size:12px}.btn.cheio{width:100%;padding:13px;text-align:center}
+.fita{border-bottom:1px solid var(--borda);background:color-mix(in srgb,var(--card) 70%,transparent);overflow:hidden;position:relative;z-index:1}
+.fita-in{display:flex;gap:34px;padding:8px 0;white-space:nowrap;width:max-content;animation:correr 45s linear infinite}
+.fita:hover .fita-in{animation-play-state:paused}
+.fita-in>span{font-size:12px;cursor:pointer}.fita-in b{margin-right:6px}
+@keyframes correr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.aviso{max-width:1560px;margin:12px auto 0;padding:0 20px;position:relative;z-index:1}
+.aviso div{border:1px dashed var(--borda);border-radius:12px;padding:7px 14px;font-size:12px;color:var(--sub);text-align:center;background:color-mix(in srgb,var(--card) 60%,transparent)}
+main{max-width:1560px;margin:0 auto;padding:16px 20px 60px;position:relative;z-index:1}
+.vista{display:none}.vista.ativo{display:block;animation:entra .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes entra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:16px 18px;box-shadow:var(--sombra);min-width:0;position:relative}
+.card h2{font-size:14px;margin:0 0 12px;display:flex;align-items:center;gap:8px;letter-spacing:-.1px;flex-wrap:wrap}
+.card h2 .dir{margin-left:auto;font-weight:500;font-size:12px;color:var(--sub);display:flex;gap:6px;align-items:center}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px;align-items:start}
+.coluna{display:flex;flex-direction:column;gap:16px;min-width:0}
+.hero{display:grid;grid-template-columns:1.2fr 2fr;gap:16px;margin-bottom:16px}
+.hero-txt{background:linear-gradient(135deg,color-mix(in srgb,var(--verde) 22%,var(--card)),var(--card) 60%);overflow:hidden}
+.hero-txt h2{font-size:26px;line-height:1.15;margin:8px 0;letter-spacing:-.6px;display:block}
+.hero-txt h2 b{background:linear-gradient(90deg,var(--verde),var(--ouro));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-txt p{margin:0 0 14px;color:var(--sub);max-width:460px}
+.orbita{position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--verde) 40%,transparent);animation:gira 30s linear infinite;pointer-events:none}
+:root{--ptg-logo:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='f' cx='50%25' cy='35%25' r='75%25'%3E%3Cstop offset='0' stop-color='%2314703f'/%3E%3Cstop offset='1' stop-color='%23062b18'/%3E%3C/radialGradient%3E%3ClinearGradient id='o' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23fde68a'/%3E%3Cstop offset='.5' stop-color='%23f59e0b'/%3E%3Cstop offset='1' stop-color='%23fff7d6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='31' fill='url(%23o)'/%3E%3Ccircle cx='32' cy='32' r='27.5' fill='url(%23f)'/%3E%3Cg transform='translate(5.6 4.6) scale(0.825)'%3E%3Cg%3E%3Crect x='29' y='34' width='6' height='22' rx='2' fill='%23b3261e'/%3E%3Cpath d='M32 40 L22 31 M32 44 L42 34' stroke='%23b3261e' stroke-width='3' stroke-linecap='round'/%3E%0A%3Ccircle cx='32' cy='22' r='13' fill='%232e8b57'/%3E%3Ccircle cx='20' cy='28' r='9' fill='%232e8b57'/%3E%3Ccircle cx='44' cy='28' r='9' fill='%232e8b57'/%3E%0A%3Cg fill='%23f5c518'%3E%3Ccircle cx='26' cy='18' r='2.6'/%3E%3Ccircle cx='37' cy='15' r='2.6'/%3E%3Ccircle cx='41' cy='25' r='2.6'/%3E%3Ccircle cx='21' cy='27' r='2.6'/%3E%3Ccircle cx='31' cy='27' r='2.6'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ptg-ic{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;background:var(--ptg-logo) center/contain no-repeat;margin-right:2px}
+.orbita::after{content:"";position:absolute;top:-15px;left:50%;width:30px;height:30px;background:var(--ptg-logo) center/contain no-repeat}
+@keyframes gira{to{transform:rotate(360deg)}}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--sombra)}
+.kpi span{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.07em}
+.kpi b{font-size:28px;letter-spacing:-.6px;margin-top:6px}.kpi small{color:var(--fraco);font-size:11px}
+.destaques{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+.dest{cursor:pointer;transition:transform .2s,border-color .2s;overflow:hidden}
+.dest:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--verde) 45%,var(--borda))}
+.dest .eti{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--sub)}
+.dest .lin1{display:flex;align-items:center;gap:10px;margin-top:10px}
+.dest .lin1 .p{margin-left:auto;text-align:right}
+.dest canvas{width:100%;height:54px;display:block;margin-top:10px}
+.ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:21px;flex:none}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;color:var(--fraco);text-align:left;font-weight:700;padding:9px 8px;border-bottom:1px solid var(--borda);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+td{padding:11px 8px;border-bottom:1px solid var(--grade);vertical-align:middle}
+tr.lin{cursor:pointer;transition:background .15s}tr.lin:hover{background:var(--card2)}
+.r{text-align:right}
+.nome{display:flex;gap:11px;align-items:center}.nome b{display:block}.nome small{color:var(--sub);font-size:12px}
+.spark{width:110px;height:34px;display:block}
+.forca-mini{display:flex;align-items:center;gap:7px;min-width:92px}
+.trilho{flex:1;height:6px;border-radius:9px;background:var(--grade);overflow:hidden}
+.trilho i{display:block;height:100%;border-radius:9px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.curva{height:6px;border-radius:9px;background:var(--grade);overflow:hidden;min-width:70px}.curva i{display:block;height:100%;background:linear-gradient(90deg,var(--verde),var(--ouro));transition:width .8s}
+.selo{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:800;background:var(--vermelho2);color:var(--vermelho);margin-left:6px;letter-spacing:.03em;vertical-align:middle;display:inline-block}
+.selo.ok{background:var(--verde2);color:var(--verde)}.selo.ouro{background:var(--ouro2);color:var(--ouro)}
+.var{display:inline-block;padding:3px 8px;border-radius:8px;font-weight:700;font-size:12px;white-space:nowrap}
+.var.s{background:var(--verde2);color:var(--verde)}.var.d{background:var(--vermelho2);color:var(--vermelho)}.var.z{background:var(--bg2);color:var(--sub)}
+.pisca-s{animation:piscaS 1.2s ease}.pisca-d{animation:piscaD 1.2s ease}
+@keyframes piscaS{0%{background:color-mix(in srgb,var(--verde) 40%,transparent)}100%{background:transparent}}
+@keyframes piscaD{0%{background:color-mix(in srgb,var(--vermelho) 40%,transparent)}100%{background:transparent}}
+.busca{background:var(--bg2);border:1px solid var(--borda);border-radius:10px;padding:6px 11px;width:170px;outline:none}
+.filtros{display:flex;gap:4px;flex-wrap:wrap}.filtros button{border:1px solid var(--borda);background:transparent;border-radius:9px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer}
+.filtros button.ativo{background:var(--verde2);border-color:transparent;color:var(--verde)}
+.feed{display:flex;flex-direction:column;gap:2px;max-height:380px;overflow:hidden}
+.feed>div{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;font-size:12.5px;cursor:pointer;animation:desliza .5s cubic-bezier(.2,.8,.2,1)}
+.feed>div:hover{background:var(--card2)}
+.tag{font-weight:800;font-size:10px;padding:2px 6px;border-radius:6px;letter-spacing:.04em}
+.tag.c{background:var(--verde2);color:var(--verde)}.tag.v{background:var(--vermelho2);color:var(--vermelho)}
+@keyframes desliza{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+label.campo{display:block;margin-bottom:12px}label.campo>span{display:block;font-size:12px;color:var(--sub);margin-bottom:5px;font-weight:600}
+input[type=text],textarea{width:100%;background:var(--bg2);border:1px solid var(--borda);border-radius:11px;padding:11px 13px;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus{border-color:var(--verde);box-shadow:0 0 0 3px color-mix(in srgb,var(--verde) 18%,transparent)}
+.escolhas{display:flex;flex-wrap:wrap;gap:6px}
+.escolhas button{border:1px solid var(--borda);background:var(--bg2);border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:19px;transition:transform .12s}
+.escolhas button:hover{transform:scale(1.08)}.escolhas button.sel{border-color:var(--verde);box-shadow:0 0 0 2px var(--verde)}
+.msg{font-size:13px;margin-top:8px;min-height:18px}.msg.erro{color:var(--vermelho)}.msg.ok{color:var(--verde)}
+.abas2{display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin-bottom:14px;position:relative}
+.abas2 button{flex:1;border:0;background:transparent;padding:9px;border-radius:9px;font-weight:800;cursor:pointer;color:var(--sub);position:relative;z-index:1;transition:color .25s}
+.abas2 .bolha{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:9px;background:var(--verde);transition:transform .3s cubic-bezier(.2,.8,.2,1),background .3s}
+.abas2.venda .bolha{transform:translateX(100%);background:var(--vermelho)}
+.abas2.compra button.ativo{color:#04140a}.abas2.venda button.ativo{color:#fff}
+.abas2.neutra .bolha{background:var(--card);box-shadow:var(--sombra)}.abas2.neutra button.ativo{color:var(--txt)}
+.cot{background:var(--card2);border:1px solid var(--borda);border-radius:12px;padding:11px 13px;font-size:13px;margin:10px 0}
+.cot>div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.porcentos{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 2px}
+.porcentos button{border:1px solid var(--borda);background:var(--bg2);border-radius:9px;padding:6px 0;font-size:12px;font-weight:700;cursor:pointer;color:var(--sub);transition:all .15s}
+.porcentos button:hover{border-color:var(--verde);color:var(--verde)}
+.campo-valor{position:relative}.campo-valor input{font-size:20px;font-weight:700;padding-right:80px}
+.campo-valor em{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--sub);font-weight:700}
+.moeda-topo{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.moeda-topo .ico{width:64px;height:64px;font-size:34px;border-radius:18px}
+.moeda-topo h2{margin:0;font-size:24px;letter-spacing:-.5px}
+.moeda-topo .preco{margin-left:auto;text-align:right}
+.moeda-topo .preco b{font-size:30px;display:block;letter-spacing:-.8px;border-radius:8px;padding:0 6px}
+.faixa-num{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--borda);border-radius:12px;overflow:hidden;margin-top:14px}
+.faixa-num div{background:var(--card2);padding:10px 12px}.faixa-num span{font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;display:block}.faixa-num b{font-size:14px}
+.seg{display:flex;background:var(--bg2);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;color:var(--sub);cursor:pointer}
+.seg button.ativo{background:var(--card);color:var(--txt);box-shadow:var(--sombra)}
+#grafico{height:420px;width:100%;position:relative}
+.legenda{position:absolute;left:12px;top:8px;z-index:3;font-size:12px;pointer-events:none;display:flex;gap:10px;color:var(--sub)}
+.legenda b{color:var(--txt)}
+.medidor{display:grid;place-items:center;position:relative}
+.medidor svg{width:240px;height:140px;overflow:visible}
+.agulha{transform-origin:120px 120px;transition:transform 1.4s cubic-bezier(.2,.9,.25,1.15)}
+.medidor .nota{text-align:center;margin-top:2px}
+.medidor .nota b{font-size:34px;letter-spacing:-1px;display:block;line-height:1}.medidor .nota span{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.partes{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.parte{display:grid;grid-template-columns:150px 1fr 30px;align-items:center;gap:8px;font-size:12px}
+.parte .trilho{height:7px}.parte .trilho i{width:0}
+.pressao{display:flex;height:9px;border-radius:9px;overflow:hidden;margin:6px 0 4px;background:var(--grade)}
+.pressao i{display:block;height:100%;transition:width 1s}
+.donut{display:flex;gap:16px;align-items:center}
+.donut svg{width:124px;height:124px;flex:none}
+.lista-donos{flex:1;font-size:12px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.lista-donos div{display:flex;align-items:center;gap:6px}.lista-donos i{width:9px;height:9px;border-radius:3px;flex:none}
+.lista-donos b{margin-left:auto}
+.tabela-neg{max-height:420px;overflow:auto}
+tr.novo{animation:novaLinha 1.6s ease}
+@keyframes novaLinha{0%{background:color-mix(in srgb,var(--ouro) 30%,transparent)}100%{background:transparent}}
+.criar-grade{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:16px;align-items:start}
+.previa{position:sticky;top:90px}
+.cartao-moeda{border-radius:22px;padding:22px;color:#fff;position:relative;overflow:hidden;min-height:240px;transition:background .4s;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.cartao-moeda::before{content:"";position:absolute;inset:-50%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.16),transparent 30%);animation:gira 6s linear infinite}
+.cartao-moeda>*{position:relative}
+.cartao-moeda .grande{font-size:56px;line-height:1;margin-bottom:12px;display:inline-block;animation:flutua 3s ease-in-out infinite}
+@keyframes flutua{50%{transform:translateY(-6px) rotate(-4deg)}}
+.cartao-moeda h3{margin:0;font-size:26px;letter-spacing:-.5px}.cartao-moeda .s{opacity:.85;font-weight:800;letter-spacing:.1em}
+.cartao-moeda p{opacity:.9;margin:10px 0 0;font-size:13px;min-height:36px}
+.passos{display:flex;flex-direction:column;gap:10px}
+.passo{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.passo b.n{width:24px;height:24px;border-radius:50%;background:var(--verde2);color:var(--verde);display:grid;place-items:center;flex:none;font-size:12px}
+.conta-grade{display:grid;grid-template-columns:420px minmax(0,1fr);gap:16px;align-items:start}
+.saldo-grande{font-size:38px;font-weight:800;letter-spacing:-1px;margin:4px 0}
+.vazio{padding:34px 10px;text-align:center;color:var(--sub)}
+.esqueleto{background:linear-gradient(90deg,var(--grade),var(--card2),var(--grade));background-size:200% 100%;animation:brilha 1.2s infinite;border-radius:8px;height:14px}
+@keyframes brilha{to{background-position:-200% 0}}
+#confete{position:fixed;inset:0;pointer-events:none;z-index:99}
+.toast{position:fixed;left:50%;bottom:24px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(140px);background:var(--card);border:1px solid var(--borda);box-shadow:var(--sombra);padding:12px 18px;border-radius:14px;font-weight:700;z-index:98;transition:transform .45s cubic-bezier(.2,.9,.25,1.2)}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+.tema{width:36px;height:36px;border-radius:11px;border:1px solid var(--borda);background:var(--card);cursor:pointer;display:grid;place-items:center;font-size:16px;transition:transform .3s}
+.tema:hover{transform:rotate(20deg)}
+#fundo-hero{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+.hero-txt>*:not(#fundo-hero):not(.orbita){position:relative}
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+.dest{border:1px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,conic-gradient(from var(--ang),var(--borda),color-mix(in srgb,var(--verde) 70%,transparent),var(--borda) 30%,var(--borda) 70%,color-mix(in srgb,var(--ouro) 70%,transparent),var(--borda)) border-box;animation:borda 6s linear infinite}
+@keyframes borda{to{--ang:360deg}}
+.mapa{display:flex;flex-wrap:wrap;gap:6px;min-height:120px}
+.bloco{border-radius:12px;padding:12px;color:#fff;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;min-width:110px;height:108px;position:relative;overflow:hidden;transition:transform .2s,filter .2s}
+.bloco:hover{transform:scale(1.03);filter:brightness(1.1);z-index:2}
+.bloco b{font-size:16px;letter-spacing:-.2px}.bloco .e{position:absolute;right:8px;top:4px;font-size:34px;opacity:.35}
+.bloco small{font-size:12px;opacity:.92;font-weight:700}
+.faixa24{margin-top:10px;min-width:240px}
+.faixa24 .t{display:flex;justify-content:space-between;font-size:11px;color:var(--sub)}
+.faixa24 .barra{position:relative;height:6px;border-radius:9px;background:linear-gradient(90deg,var(--vermelho),var(--ouro),var(--verde));margin:5px 0;opacity:.85}
+.faixa24 .barra i{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--txt);border:3px solid var(--card);transform:translate(-50%,-50%);transition:left 1s cubic-bezier(.2,.8,.2,1)}
+#curva{width:100%;height:220px;display:block}
+.top{display:flex;flex-direction:column;gap:4px}
+.top>div{display:flex;align-items:center;gap:10px;padding:7px 6px;border-radius:10px;font-size:12.5px}
+.top>div:hover{background:var(--card2)}
+.medalha{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:12px;background:var(--bg2);color:var(--sub);flex:none}
+.top>div:nth-child(1) .medalha{background:linear-gradient(135deg,#ffd75e,#c58f00);color:#3a2a00}
+.top>div:nth-child(2) .medalha{background:linear-gradient(135deg,#e5e7eb,#9ca3af);color:#222}
+.top>div:nth-child(3) .medalha{background:linear-gradient(135deg,#f0a35e,#a0522d);color:#2a1300}
+:focus-visible{outline:2px solid var(--verde);outline-offset:2px;border-radius:8px}
+.olho{width:36px;height:36px;border-radius:11px;border:1px solid var(--borda);background:var(--card);cursor:pointer;display:grid;place-items:center;font-size:15px}
+body.oculto .sens{filter:blur(7px);user-select:none}
+.ajustes{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub);margin:10px 0 2px}
+.tol{display:flex;gap:4px}.tol button{border:1px solid var(--borda);background:var(--bg2);border-radius:8px;padding:3px 8px;font-size:11px;font-weight:700;color:var(--sub);cursor:pointer}
+.tol button.ativo{border-color:var(--verde);color:var(--verde);background:var(--verde2)}
+.progresso{margin-top:14px}
+.progresso .t{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.progresso .barra{height:12px;border-radius:99px;background:var(--grade);overflow:hidden;position:relative}
+.progresso .barra i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:linear-gradient(90deg,var(--verde),var(--ouro));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.progresso .barra i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:brilhoBarra 2.4s infinite}
+@keyframes brilhoBarra{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.fundo-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:90;display:none;place-items:center;padding:16px}
+.fundo-modal.on{display:grid;animation:aparece .2s}
+@keyframes aparece{from{opacity:0}to{opacity:1}}
+.modal{max-height:calc(100vh - 32px);overflow:auto;background:var(--card);border:1px solid var(--borda);border-radius:20px;padding:20px;width:min(420px,100%);box-shadow:0 30px 80px rgba(0,0,0,.5);animation:sobe .3s cubic-bezier(.2,.9,.25,1.15)}
+@keyframes sobe{from{transform:translateY(20px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal h3{margin:0 0 4px;font-size:18px}.modal .grande{font-size:26px;font-weight:800;letter-spacing:-.5px;margin:10px 0}
+.alerta{background:var(--vermelho2);color:var(--vermelho);border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600;margin:8px 0}
+.etapas{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.etapa{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--fraco);transition:color .3s}
+.etapa .b{width:20px;height:20px;border-radius:50%;border:2px solid var(--borda);display:grid;place-items:center;font-size:11px;flex:none;transition:all .3s}
+.etapa.on{color:var(--txt)}.etapa.on .b{border-color:var(--verde);border-top-color:transparent;animation:gira .8s linear infinite}
+.etapa.ok{color:var(--verde)}.etapa.ok .b{background:var(--verde);border-color:var(--verde);color:#04140a;animation:none}
+.etapa.erro{color:var(--vermelho)}.etapa.erro .b{background:var(--vermelho);border-color:var(--vermelho);color:#fff;animation:none}
+.segurar{position:relative;overflow:hidden}.segurar i{position:absolute;inset:0;width:0;background:rgba(255,255,255,.25);transition:none}
+.hero2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:14px}
+.hero2 .hero-txt{padding:26px 26px 22px;min-height:250px;display:flex;flex-direction:column;justify-content:center}
+.hero2 .hero-txt h2{font-size:34px;line-height:1.08;letter-spacing:-1px;margin:10px 0}
+.hero2 .hero-txt h2 b{background:linear-gradient(90deg,var(--verde),var(--ouro),var(--verde));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:degrade 5s linear infinite}
+@keyframes degrade{to{background-position:200% center}}
+#fundo-hero{-webkit-mask-image:linear-gradient(90deg,transparent 35%,#000 85%);mask-image:linear-gradient(90deg,transparent 35%,#000 85%);opacity:.5}
+.btn.brilho{position:relative;overflow:hidden}
+.btn.brilho::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:varre 3.2s ease-in-out infinite}
+@keyframes varre{0%,60%{left:-60%}100%{left:130%}}
+.rei{position:relative;overflow:hidden;cursor:pointer;padding:22px;display:flex;flex-direction:column;gap:12px;min-height:250px;
+  background:radial-gradient(500px 220px at 85% 0%,color-mix(in srgb,var(--ouro) 22%,transparent),transparent 70%),var(--card);border-color:color-mix(in srgb,var(--ouro) 35%,var(--borda))}
+.rei:hover{border-color:var(--ouro)}
+.rei .coroa{font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--ouro);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.rei .linha1{display:flex;align-items:center;gap:14px}
+.rei .icone-rei{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;font-size:40px;position:relative;flex:none}
+.rei .icone-rei::before{content:"";position:absolute;inset:-4px;border-radius:26px;background:conic-gradient(from var(--ang),var(--ouro),transparent 40%,var(--verde),transparent 80%,var(--ouro));animation:borda 4s linear infinite;z-index:-1}
+.rei .icone-rei::after{content:"";position:absolute;inset:-1px;border-radius:23px;background:inherit;z-index:-1}
+.rei .icone-rei span{position:relative;z-index:1;animation:flutua 3s ease-in-out infinite}
+.rei h3{margin:0;font-size:24px;letter-spacing:-.5px}.rei .sub2{color:var(--sub);font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rei .numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rei .numeros div{background:var(--card2);border:1px solid var(--borda);border-radius:12px;padding:8px 10px}
+.rei .numeros span{display:block;font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}.rei .numeros b{font-size:15px}
+.rei canvas{width:100%;height:56px;display:block}
+.faixa-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.faixa-kpi>div{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:12px 14px;box-shadow:var(--sombra)}
+.faixa-kpi .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none}
+.faixa-kpi span{display:block;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}
+.faixa-kpi b{font-size:22px;letter-spacing:-.4px}.faixa-kpi small{color:var(--fraco);font-size:11px;margin-left:4px}
+.fita-in>span{background:var(--card2);border:1px solid var(--borda);border-radius:99px;padding:3px 10px}
+.bloco{background-image:linear-gradient(135deg,rgba(255,255,255,.14),transparent 55%),radial-gradient(circle at 100% 0,rgba(255,255,255,.18),transparent 45%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 8px 22px rgba(0,0,0,.25)}
+.bloco b{font-size:20px}.bloco .e{font-size:54px;opacity:.5;right:10px;top:6px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.3))}
+.regras-grade{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.regra{background:var(--card2);border:1px solid var(--borda);border-radius:12px;padding:10px;font-size:12px;color:var(--sub);line-height:1.35}
+.regra b.t{display:block;color:var(--txt);font-size:13px;margin:3px 0 2px}.regra .i{font-size:18px}
+.aovivo{font-size:10px;font-weight:900;letter-spacing:.1em;color:#fff;background:var(--vermelho);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px}
+.aovivo::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;animation:pisca 1s infinite}
+@keyframes pisca{50%{opacity:.2}}
+@media (max-width:760px){.hero2{grid-template-columns:1fr}.hero2 .hero-txt h2{font-size:28px}.faixa-kpi{grid-template-columns:repeat(2,1fr)}.faixa-kpi b{font-size:18px}.faixa-kpi .ic{width:34px;height:34px;font-size:16px}
+  .destaques{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:2px 2px 8px;scroll-padding:2px}
+  .destaques .dest{flex:0 0 82%;scroll-snap-align:start}.regra{padding:9px;font-size:11.5px}#olho{display:none}}
+.feira-topo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.feira-topo h2{margin:0;font-size:24px;letter-spacing:-.5px}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+.fa-fotos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:-4px 0 12px}
+.fa-fotos .ft{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--card2) center/cover no-repeat;border:1px solid var(--borda);display:grid;place-items:center;font-size:11px;color:var(--sub);text-align:center}
+.fa-fotos .ft b{position:absolute;left:4px;bottom:4px;font-size:9.5px;background:rgba(0,0,0,.55);color:#fff;padding:1px 6px;border-radius:99px}
+.fa-fotos .ft button{position:absolute;right:4px;top:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:14px;line-height:1;cursor:pointer}
+.fa-fotos .mais{cursor:pointer;border-style:dashed;font-size:26px;color:var(--verde)}
+.fa-fotos .mais small{display:block;font-size:10px;color:var(--sub)}
+.galeria{display:flex;gap:6px;margin:-4px 0 12px;overflow-x:auto}.galeria img{width:58px;height:58px;object-fit:cover;border-radius:10px;border:2px solid transparent;cursor:pointer;flex:none}.galeria img.ativo{border-color:var(--verde)}
+@media (max-width:760px){.fa-fotos{grid-template-columns:repeat(3,1fr)}}
+.cats button{border:1px solid var(--borda);background:var(--card);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;white-space:nowrap}
+.cats button.ativo{background:var(--verde2);color:var(--verde);border-color:transparent}
+.vitrine{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.item{background:var(--card);border:1px solid var(--borda);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
+.item:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--verde) 45%,var(--borda));box-shadow:0 14px 34px rgba(0,0,0,.25)}
+.item .capa.com-foto{height:auto;aspect-ratio:1/1}.item .capa.com-foto .est{top:auto;bottom:10px}
+.item .capa{height:180px;display:grid;place-items:center;font-size:52px;position:relative}
+.item .capa .est{position:absolute;left:10px;top:10px;font-size:11px;font-weight:800;background:rgba(0,0,0,.45);color:#fff;padding:3px 8px;border-radius:99px}
+.item .corpo{padding:12px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.item .corpo b.t{font-size:14.5px;line-height:1.3}
+.item .preco-item{font-size:18px;font-weight:800;color:var(--verde);margin-top:auto}
+.item .vend{font-size:11.5px;color:var(--sub);display:flex;gap:6px;align-items:center}
+.pedido{border:1px solid var(--borda);border-radius:14px;padding:12px;margin-bottom:10px;background:var(--card2)}
+.pedido .cab{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.est-pedido{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+.est-pago{background:var(--ouro2);color:var(--ouro)}.est-enviado{background:color-mix(in srgb,#3cb6ff 20%,transparent);color:#3cb6ff}
+.est-concluido{background:var(--verde2);color:var(--verde)}.est-cancelado,.est-reembolsado{background:var(--bg2);color:var(--sub)}.est-disputa{background:var(--vermelho2);color:var(--vermelho)}
+.chat{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:5px;margin:10px 0 8px}
+.chat div{max-width:80%;padding:7px 10px;border-radius:12px;font-size:13px;background:var(--card);border:1px solid var(--borda)}
+.chat div.eu{align-self:flex-end;background:var(--verde2);border-color:transparent}
+.chat small{display:block;font-size:10px;color:var(--fraco)}
+.linha-acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.passos-feira{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.passos-feira div{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:12px;font-size:12.5px;color:var(--sub)}
+.passos-feira b{display:block;color:var(--txt);font-size:14px;margin:4px 0 2px}
+@media (max-width:760px){.passos-feira{grid-template-columns:repeat(3,1fr);gap:6px}.passos-feira div{padding:8px;font-size:0;text-align:center}.passos-feira div b{font-size:11.5px;margin:2px 0 0}.passos-feira div b+*{display:none}.passos-feira div{font-size:0}.passos-feira div::first-letter{font-size:18px}.vitrine{grid-template-columns:repeat(2,1fr);gap:10px}.item .capa{height:140px;font-size:40px}}
+.nav-baixo{display:none}
+.ico-carteira{display:inline-block;width:1em;height:1em;vertical-align:-.12em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2322b866'/%3E%3Cstop offset='1' stop-color='%230f6b3a'/%3E%3C/linearGradient%3E%3ClinearGradient id='o' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23fde68a'/%3E%3Cstop offset='.55' stop-color='%23f59e0b'/%3E%3Cstop offset='1' stop-color='%23fff2c2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='40' cy='15' r='11' fill='url%28%23o%29'/%3E%3Ccircle cx='40' cy='15' r='7.5' fill='none' stroke='%23b7791f' stroke-width='1.6'/%3E%3Ctext x='40' y='18.6' text-anchor='middle' font-family='Arial,sans-serif' font-weight='900' font-size='9' fill='%238a5a00'%3EP%3C/text%3E%3Crect x='6' y='20' width='50' height='36' rx='9' fill='url%28%23c%29'/%3E%3Crect x='6' y='20' width='50' height='9' rx='4.5' fill='%230b4f2b' opacity='.45'/%3E%3Crect x='38' y='32' width='22' height='14' rx='7' fill='%230b4f2b'/%3E%3Ccircle cx='46' cy='39' r='3.6' fill='url%28%23o%29'/%3E%3C/svg%3E") center/contain no-repeat}
+.nav-baixo .ico-carteira{width:1.2em;height:1.2em;vertical-align:-.2em}
+body:has(.fundo-modal.on) .nav-baixo{display:none!important}
+@media (max-width:760px){.nav-baixo{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--borda);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .nav-baixo a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--sub);font-size:11px;font-weight:700;padding:4px 0;border-radius:10px}
+  .nav-baixo a span{font-size:20px;line-height:1}.nav-baixo a.ativo{color:var(--verde);background:var(--verde2)}
+  main{padding-bottom:90px}.toast{bottom:84px}}
+.qr-dep{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.qr-dep .qr{width:170px;height:170px;border-radius:16px;background:#fff;padding:8px;flex:none;box-shadow:0 10px 30px rgba(0,0,0,.25);position:relative}
+.qr-dep .qr img{width:100%;height:100%;display:block}
+.qr-dep .qr::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;background:#fff var(--ptg-logo) center/28px no-repeat;border-radius:50%}
+.qr-dep .end{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all;background:var(--card2);border:1px solid var(--borda);border-radius:10px;padding:8px 10px;margin:8px 0}
+.qr-dep ol{margin:0;padding-left:18px;font-size:13px;color:var(--sub);line-height:1.6}
+@media (max-width:1150px){#v-moeda .layout{display:flex;flex-direction:column}#v-moeda .coluna{display:contents}#v-moeda [data-o]{order:var(--o)}.layout,.criar-grade,.conta-grade{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.previa{position:static}.faixa-num{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.destaques{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.esconde{display:none}.nav{display:none}.marca p{display:none}#grafico{height:320px}}
+@media (max-width:520px){main,.topo-in,.aviso{padding-left:16px;padding-right:16px}td,th{padding:9px 4px}.faixa-num{grid-template-columns:repeat(2,1fr)}.moeda-topo .preco{margin-left:0;text-align:left;width:100%}.kpi b{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ================= PTG SOCIAL (tema próprio: grafite + azul neon, vermelho, amarelo e verde) ================= */
+body.modo-social{--bg:#14161b;--bg2:#1c1f26;--card:#1d2028;--card2:#252933;--txt:#eef2f7;--sub:#9aa3b2;--fraco:#677084;--borda:#2c313d;--grade:#232731;
+  --verde:#22d3ff;--verde2:#0c2e3a;--vermelho:#ff3d5a;--vermelho2:#3a1219;--ouro:#ffd23f;--ouro2:#3a300c;
+  --scA:#22d3ff;--scV:#ff3d5a;--scY:#ffd23f;--scG:#3dff8f;--scGrad:linear-gradient(90deg,#22d3ff,#3dff8f 35%,#ffd23f 68%,#ff3d5a);
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 10px 34px rgba(0,0,0,.4)}
+body.modo-social::before{background:radial-gradient(900px 480px at 0% -10%,rgba(34,211,255,.13),transparent 70%),radial-gradient(700px 420px at 100% 0%,rgba(255,61,90,.10),transparent 70%),radial-gradient(700px 500px at 50% 110%,rgba(61,255,143,.07),transparent 70%)!important}
+body.modo-social .btn{color:#04121a}
+.sc{max-width:1000px;margin:0 auto}
+.sc-topo{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
+.sc-logo{margin:0;font-size:28px;font-weight:900;letter-spacing:-.8px;background:var(--scGrad);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(34,211,255,.25))}
+.sc-logo small{font-size:11px;letter-spacing:.12em;-webkit-text-fill-color:var(--sub);margin-left:6px;vertical-align:middle;font-weight:800}
+.sc-acoes{margin-left:auto;display:flex;gap:8px;align-items:center}
+.sc-btn{border:0;border-radius:12px;padding:10px 16px;font-weight:900;cursor:pointer;color:#06131a;background:linear-gradient(135deg,#22d3ff,#3dff8f);box-shadow:0 0 0 1px rgba(34,211,255,.4),0 8px 26px rgba(34,211,255,.28);transition:transform .12s,filter .2s}
+.sc-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.sc-btn:active{transform:scale(.97)}
+.sc-btn.sec{background:var(--card2);color:var(--txt);box-shadow:0 0 0 1px var(--borda)}
+.sc-btn.verm{background:linear-gradient(135deg,#ff3d5a,#ff8a3d);color:#fff;box-shadow:0 8px 24px rgba(255,61,90,.3)}
+.sc-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+.sc-col{max-width:600px;width:100%;margin:0 auto}
+.sc-lado{position:sticky;top:84px;display:flex;flex-direction:column;gap:14px}
+.sc-box{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:14px}
+.sc-box h4{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+/* bolinhas tipo stories: moedas em alta */
+.sc-stories{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}.sc-stories::-webkit-scrollbar{display:none}
+.sc-story{flex:none;width:70px;text-align:center;cursor:pointer;background:none;border:0;color:var(--txt);padding:0}
+.sc-anel{width:66px;height:66px;border-radius:50%;padding:3px;background:conic-gradient(#22d3ff,#3dff8f,#ffd23f,#ff3d5a,#22d3ff);margin:0 auto 5px;transition:transform .2s}
+.sc-story:hover .sc-anel{transform:scale(1.06)}.sc-story.sel .sc-anel{box-shadow:0 0 18px rgba(34,211,255,.6)}
+.sc-anel i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--bg);border:3px solid var(--bg);font-style:normal;font-size:28px}
+.sc-anel i .ptg-ic{width:34px;height:34px}
+.sc-story span{font-size:11px;font-weight:800;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.sc-chips button{border:1px solid var(--borda);background:var(--card);color:var(--sub);border-radius:999px;padding:7px 14px;font-weight:800;font-size:12.5px;cursor:pointer}
+.sc-chips button.ativo{color:#06131a;border-color:transparent;background:var(--scA);box-shadow:0 0 16px rgba(34,211,255,.35)}
+.sc-chips button.c-ptg.ativo{background:var(--scY)}.sc-chips button.c-seg.ativo{background:var(--scG)}.sc-chips button.c-moeda{color:var(--scY);border-color:rgba(255,210,63,.4)}
+/* card do post */
+.sc-post{background:var(--card);border:1px solid var(--borda);border-radius:20px;margin-bottom:18px;overflow:hidden;box-shadow:var(--sombra);animation:scEntra .35s ease both}
+@keyframes scEntra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sc-cab{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.sc-av{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:900;color:#06131a;background:var(--scGrad);background-size:cover;background-position:center;cursor:pointer;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--scA)}
+.sc-av.g{width:86px;height:86px;font-size:34px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--scA),0 0 30px rgba(34,211,255,.35)}
+.sc-av.p{width:28px;height:28px;font-size:12px;box-shadow:none}
+.sc-quem{min-width:0;cursor:pointer}.sc-quem b{display:block;font-size:14px}.sc-quem small{color:var(--sub);font-size:12px}
+.sc-tagm{margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,210,63,.12);color:var(--scY);border:1px solid rgba(255,210,63,.35);cursor:pointer;white-space:nowrap}
+.sc-tagm.ptg{background:rgba(61,255,143,.1);color:var(--scG);border-color:rgba(61,255,143,.35)}
+.sc-foto{position:relative;background:#0d0f13;cursor:pointer;user-select:none}
+.sc-foto img{display:block;width:100%;max-height:640px;object-fit:cover}
+.sc-texto-grande{padding:34px 22px;font-size:21px;font-weight:800;line-height:1.35;background:linear-gradient(135deg,rgba(34,211,255,.18),rgba(255,61,90,.14));white-space:pre-wrap;word-wrap:break-word;cursor:pointer}
+.sc-coracao{position:absolute;left:50%;top:50%;font-size:96px;transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;filter:drop-shadow(0 0 22px rgba(255,61,90,.9))}
+.sc-coracao.on{animation:scCor .9s ease forwards}
+@keyframes scCor{0%{transform:translate(-50%,-50%) scale(0);opacity:0}25%{transform:translate(-50%,-50%) scale(1.2);opacity:1}45%{transform:translate(-50%,-50%) scale(.95)}80%{opacity:1}100%{transform:translate(-50%,-50%) scale(1.1);opacity:0}}
+.sc-barra{display:flex;align-items:center;gap:4px;padding:8px 8px 2px}
+.sc-ic{border:0;background:none;cursor:pointer;font-size:24px;line-height:1;padding:6px;border-radius:10px;color:var(--txt);transition:transform .15s}
+.sc-ic:hover{background:var(--card2)}.sc-ic:active{transform:scale(.85)}
+.sc-ic svg{width:26px;height:26px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sc-ic.curtido{color:var(--scV)}.sc-ic.curtido svg{fill:var(--scV);filter:drop-shadow(0 0 8px rgba(255,61,90,.7))}
+.sc-ic.pulo{animation:scPulo .4s}@keyframes scPulo{40%{transform:scale(1.35)}}
+.sc-ic.com:hover{color:var(--scA)}.sc-ic.moe:hover{color:var(--scY)}
+.sc-corpo{padding:0 14px 14px;font-size:14px}
+.sc-curt{font-weight:900;margin:2px 0 4px}
+.sc-leg{white-space:pre-wrap;word-wrap:break-word}.sc-leg b{cursor:pointer;margin-right:5px}
+.sc-hash{color:var(--scA);font-weight:700}.sc-cifra{color:var(--scY);font-weight:800;cursor:pointer}
+.sc-vercom{color:var(--sub);cursor:pointer;margin:5px 0 3px;display:inline-block;font-size:13px}
+.sc-ultimo{font-size:13.5px;margin:2px 0}.sc-ultimo b{margin-right:5px}
+.sc-hora{color:var(--fraco);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.sc-comentar{display:flex;gap:8px;border-top:1px solid var(--borda);padding:10px 14px;align-items:center}
+.sc-comentar input{flex:1;background:transparent!important;border:0!important;box-shadow:none!important;padding:6px 0!important;outline:none}
+.sc-comentar button{border:0;background:none;color:var(--scA);font-weight:900;cursor:pointer;opacity:.5}.sc-comentar input:not(:placeholder-shown)+button{opacity:1}
+.sc-vazio{text-align:center;padding:44px 18px;border:1px dashed var(--borda);border-radius:20px;color:var(--sub)}
+.sc-vazio .grande{font-size:52px;margin-bottom:6px}
+.sc-sino{position:relative}.sc-sino em{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;border-radius:99px;background:var(--scV);color:#fff;font:900 11px/19px sans-serif;font-style:normal;padding:0 5px;display:none;box-shadow:0 0 12px rgba(255,61,90,.7)}
+.sc-sino em.on{display:block}
+.sc-notif{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--grade);font-size:13.5px;cursor:pointer}.sc-notif.nova{background:linear-gradient(90deg,rgba(34,211,255,.08),transparent)}
+.sc-notif .t{flex:1;min-width:0}.sc-notif .t small{display:block;color:var(--fraco);font-size:11px}.sc-notif .mini{width:42px;height:42px;border-radius:8px;background:var(--card2) center/cover;flex:none}
+.sc-notif .ico{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:15px;background:var(--card2)}
+.sc-desafio{border-radius:20px;padding:14px 16px;margin-bottom:14px;background:linear-gradient(135deg,rgba(255,210,63,.16),rgba(255,61,90,.12) 60%,rgba(34,211,255,.10));border:1px solid rgba(255,210,63,.4);box-shadow:0 0 30px rgba(255,210,63,.12)}
+.sc-desafio .eti{font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--scY)}.sc-desafio h3{margin:4px 0 2px;font-size:18px}.sc-desafio p{margin:2px 0 8px;color:var(--sub);font-size:13px}
+.sc-desafio .info{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;font-weight:800;margin-bottom:10px}.sc-desafio .info b{color:var(--scG)}
+.sc-top3{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}.sc-top3 span{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--borda);border-radius:999px;padding:3px 10px 3px 3px;font-size:12px;font-weight:800;cursor:pointer}
+.sc-conq{display:flex;gap:12px;align-items:center;border-radius:18px;padding:12px 14px;margin-bottom:14px;background:linear-gradient(135deg,rgba(61,255,143,.14),rgba(34,211,255,.08));border:1px solid rgba(61,255,143,.4)}
+.sc-conq .g{font-size:34px}.sc-conq .t{flex:1;font-size:13px}.sc-conq .t b{display:block;font-size:15px}.sc-conq button{white-space:nowrap}
+.sc-gorj{font-size:12.5px;color:var(--scY);font-weight:800;margin:2px 0 4px}
+.sc-anuncio{display:flex;align-items:center;gap:10px;margin:8px 14px 0;padding:10px 12px;border-radius:14px;background:rgba(61,255,143,.08);border:1px solid rgba(61,255,143,.35)}
+.sc-anuncio .t{flex:1;min-width:0;font-size:13px}.sc-anuncio .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sc-anuncio .t span{color:var(--scG);font-weight:900}
+.sc-valores{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.sc-valores button{border:1px solid var(--borda);background:var(--card2);color:var(--txt);border-radius:12px;padding:10px 0;font-weight:900;cursor:pointer}
+.sc-valores button.sel{border-color:var(--scY);color:var(--scY);box-shadow:0 0 12px rgba(255,210,63,.35)}
+.sc-link{font-size:12px;color:var(--scA);font-weight:800;cursor:pointer;border:0;background:none;padding:0}
+.sc-ic.gor:hover,.sc-ic.gor.on{color:var(--scY)}
+.sc-views{font-size:12.5px;color:var(--sub);font-weight:700}
+.sc-selo{display:inline-block;margin-left:8px;font-size:11px;font-weight:900;padding:3px 9px;border-radius:999px;color:#06131a;background:linear-gradient(90deg,#ffd23f,#3dff8f);vertical-align:middle}
+.sc-monet{margin-top:12px;border:1px solid rgba(255,210,63,.35);background:linear-gradient(135deg,rgba(255,210,63,.09),rgba(61,255,143,.06));border-radius:16px;padding:12px 14px;font-size:13px}
+.sc-monet.ok{border-color:rgba(61,255,143,.5);box-shadow:0 0 22px rgba(61,255,143,.15)}.sc-monet p{margin:6px 0 10px;color:var(--sub)}.sc-monet p b{color:var(--txt)}
+.sc-meta{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12px;color:var(--sub)}.sc-meta span{width:150px;flex:none}
+.sc-meta i{flex:1;height:7px;border-radius:9px;background:var(--grade);overflow:hidden}.sc-meta u{display:block;height:100%;background:linear-gradient(90deg,#22d3ff,#3dff8f);text-decoration:none}
+.sc-meta-n{display:flex;justify-content:space-between;margin-top:8px;font-size:12.5px;color:var(--sub)}.sc-meta-n b{color:var(--scG)}
+.sc-rodape{font-size:11.5px;color:var(--fraco);text-align:center;margin:16px 0 4px}
+.sc-sug{display:flex;align-items:center;gap:10px;padding:6px 0}.sc-sug .sc-quem b{font-size:13px}
+.sc-sug button{margin-left:auto;border:0;background:none;color:var(--scA);font-weight:900;cursor:pointer}
+/* modais */
+.sc-modal{background:var(--card);border:1px solid var(--borda);border-radius:22px;width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 0 0 1px rgba(34,211,255,.15),0 30px 80px rgba(0,0,0,.6);animation:sobe .3s cubic-bezier(.2,.9,.25,1.15)}
+.sc-modal-cab{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--borda);position:sticky;top:0;background:var(--card);z-index:2}
+.sc-modal-cab h3{margin:0;font-size:16px}.sc-modal-cab .x{margin-left:auto;border:0;background:var(--card2);color:var(--txt);width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:16px}
+.sc-modal-corpo{padding:16px}
+.sc-escolher{border:2px dashed rgba(34,211,255,.45);border-radius:18px;min-height:220px;display:grid;place-items:center;text-align:center;cursor:pointer;color:var(--sub);background:rgba(34,211,255,.04);overflow:hidden;position:relative}
+.sc-escolher:hover{background:rgba(34,211,255,.08)}.sc-escolher img{width:100%;max-height:420px;object-fit:contain;display:block}
+.sc-escolher .grande{font-size:44px}
+.sc-moedas{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:thin}
+.sc-moedas button{flex:none;border:1px solid var(--borda);background:var(--card2);color:var(--txt);border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer;font-size:12.5px}
+.sc-moedas button.sel{border-color:var(--scY);color:var(--scY);box-shadow:0 0 12px rgba(255,210,63,.35)}
+.sc-perfil-topo{display:flex;gap:18px;align-items:center;margin-bottom:12px}
+.sc-nums{display:flex;gap:18px;text-align:center}.sc-nums b{display:block;font-size:18px}.sc-nums span{font-size:12px;color:var(--sub)}
+.sc-bio{white-space:pre-wrap;margin:6px 0 12px;font-size:14px}
+.sc-vid video{display:block;width:100%;max-height:80vh;background:#000;object-fit:contain}
+.sc-play{position:absolute;top:6px;right:8px;color:#fff;font-size:15px;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+.sc-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:14px;border-radius:12px;overflow:hidden}
+.sc-grade div{aspect-ratio:1;background:var(--card2) center/cover;cursor:pointer;position:relative;display:grid;place-items:center;font-size:12px;padding:8px;text-align:center;color:var(--sub);overflow:hidden}
+.sc-grade div:hover::after{content:attr(data-n);position:absolute;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:center;color:#fff;font-weight:900}
+.sc-lista-com{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.sc-com{display:flex;gap:10px;align-items:flex-start;font-size:13.5px}.sc-com .t{flex:1;min-width:0;word-wrap:break-word}.sc-com .t b{margin-right:5px;cursor:pointer}
+.sc-com .t small{display:block;color:var(--fraco);font-size:11px;margin-top:2px}.sc-com button{border:0;background:none;color:var(--fraco);cursor:pointer;font-size:12px}
+.sc-moedas-perfil{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.sc-moedas-perfil a{text-decoration:none;font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(255,210,63,.1);color:var(--scY);border:1px solid rgba(255,210,63,.3)}
+@media (max-width:900px){.sc-grid{grid-template-columns:1fr}.sc-lado{display:none}}
+@media (max-width:520px){.sc-post{border-radius:0;border-left:0;border-right:0;margin-left:-16px;margin-right:-16px}.sc-logo{font-size:23px}.sc-btn{padding:9px 12px}}
+@media (max-width:760px){.nav-baixo{grid-template-columns:repeat(5,1fr)!important}}
+</style></head>
+<body>
+<canvas id="confete"></canvas>
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="#">
+    <svg width="38" height="38" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0f5132"/><path d="M12 44 L26 30 L34 38 L52 18" stroke="#f0be50" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="18" r="5" fill="#f0be50"/></svg>
+    <div><h1>Corretora <b>Portgiga</b></h1><p>crie sua moeda · negocie em PTG</p></div>
+  </a>
+  <nav class="nav"><a href="#" data-v="mercado">Mercado</a><a href="#criar" data-v="criar">Criar moeda</a><a href="#feira" data-v="feira">🛍️ Feira</a><a href="#social" data-v="social">📸 Social</a><a href="#conta" data-v="conta">Minha conta</a></nav>
+  <div class="dir-topo">
+    <span class="sub esconde" id="status-dados" style="font-size:11px"></span>
+    <button class="olho" id="olho" title="esconder / mostrar saldos" aria-label="esconder saldos">👁️</button>
+    <button class="tema" id="tema" title="tema claro / escuro" aria-label="trocar tema">🌙</button>
+    <a class="btn sec peq esconde" href="/">← Rede</a>
+    <span class="pilula" id="t-conta" onclick="location.hash='#conta'"><span class="ponto"></span><span>sem carteira</span></span>
+  </div>
+</div></header>
+<div class="fita"><div class="fita-in" id="fita"></div></div>
+<div class="aviso"><div><span class="ptg-ic"></span> Tudo aqui é negociado <b>só em PTG</b>. Nada de reais, pix ou outras criptos. <b>Não é investimento</b>: as moedas não têm valor em dinheiro.</div></div>
+
+<main>
+<section class="vista" id="v-mercado">
+  <div class="hero2">
+    <div class="card hero-txt"><canvas id="fundo-hero"></canvas><div class="orbita"></div>
+      <div><span class="aovivo">AO VIVO</span></div>
+      <h2>Lance a <b>sua moeda</b><br>em menos de 1 minuto</h2>
+      <p>Escolha nome, símbolo e ícone. O preço é automático: sobe quando compram e cai quando vendem. Quem cria ganha em cada negócio.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn brilho" href="#criar">🚀 Criar minha moeda</a><a class="btn sec" href="#conta">Depositar PTG</a></div>
+    </div>
+    <div class="card rei" id="rei"><div class="esqueleto" style="height:100%"></div></div>
+  </div>
+  <div class="faixa-kpi">
+    <div><span class="ic" style="background:var(--verde2)">🪙</span><div><span>Moedas</span><b class="num" data-conta="moedas">0</b><small id="k-novas"></small></div></div>
+    <div><span class="ic" style="background:var(--ouro2)">📈</span><div><span>Volume 24 h</span><b class="num" data-conta="volume">0</b><small>PTG</small></div></div>
+    <div><span class="ic" style="background:color-mix(in srgb,#3cb6ff 18%,transparent)">⚡</span><div><span>Negócios 24 h</span><b class="num" data-conta="negocios">0</b><small id="k-ult"></small></div></div>
+    <div><span class="ic" style="background:color-mix(in srgb,#a855f7 18%,transparent)">👥</span><div><span>Posições</span><b class="num" data-conta="donos">0</b><small>abertas</small></div></div>
+  </div>
+  <div class="destaques" id="destaques"></div>
+  <div class="card" style="margin-bottom:16px"><h2>🗺️ Mapa do mercado <span class="dir">tamanho = valor de mercado · cor = variação 24 h</span></h2><div class="mapa" id="mapa"></div></div>
+  <div class="layout">
+    <div class="coluna">
+      <div class="card">
+        <h2>📊 Mercado <span class="dir"><span class="filtros" id="filtros"><button class="ativo" data-o="valor">Maiores</button><button data-o="alta">Em alta</button><button data-o="forca">Mais fortes</button><button data-o="novas">Novas</button></span><input class="busca esconde" id="busca" placeholder="🔍 buscar moeda"></span></h2>
+        <div style="overflow:auto"><table><thead><tr><th>#</th><th>Moeda</th><th class="r">Preço (PTG)</th><th class="r">24 h</th><th class="esconde">Últimos negócios</th><th class="esconde">Força</th><th class="r esconde">Volume 24 h</th><th class="r esconde">Valor de mercado</th><th class="esconde">Curva</th></tr></thead>
+        <tbody id="lista"><tr><td colspan="9"><div class="esqueleto"></div></td></tr></tbody></table></div>
+      </div>
+    </div>
+    <div class="coluna">
+      <div class="card"><h2>⚡ Ao vivo <span class="dir"><span class="aovivo">AO VIVO</span></span></h2><div class="feed" id="feed"></div></div>
+      <div class="card" id="apoio" hidden style="border-color:color-mix(in srgb,#f7931a 40%,var(--borda));background:radial-gradient(400px 160px at 100% 0,rgba(247,147,26,.14),transparent 70%),var(--card)">
+        <h2>💛 Apoie o projeto</h2><p class="sub" style="margin:0 0 10px;font-size:13px">Gosta da Portgiga? Ajude a manter o servidor e o desenvolvimento com uma doação em bitcoin.</p>
+        <button class="btn" id="apoio-btn" style="background:linear-gradient(180deg,#ffb04a,#f7931a);color:#2a1600">₿ Doar bitcoin</button></div>
+      <div class="card"><h2>🏆 Maiores negociadores <span class="dir">7 dias</span></h2><div class="top" id="top"></div></div>
+      <div class="card"><h2>🛡️ Regras da corretora</h2><div class="regras-grade" id="regras"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="vista" id="v-moeda">
+  <div class="layout">
+    <div class="coluna">
+      <div class="card" data-o style="--o:1"><div class="moeda-topo" id="m-topo"></div><div class="progresso" id="m-prog"></div><div class="faixa-num" id="m-faixa"></div></div>
+      <div class="card" data-o style="--o:3">
+        <h2><span class="seg" id="tfs"><button data-tf="60">1m</button><button data-tf="300" class="ativo">5m</button><button data-tf="900">15m</button><button data-tf="3600">1h</button><button data-tf="14400">4h</button><button data-tf="86400">1D</button></span>
+          <span class="seg" id="tipos"><button data-t="velas" class="ativo">🕯️ Velas</button><button data-t="linha">📈 Linha</button></span>
+          <span class="dir" id="m-max"></span></h2>
+        <div id="grafico"><div class="legenda" id="legenda"></div></div>
+      </div>
+      <div class="card" data-o style="--o:5"><h2>📐 Curva de preço <span class="dir" id="curva-info"></span></h2><canvas id="curva"></canvas>
+        <p class="sub" style="font-size:12px;margin:8px 0 0">Cada moeda segue esta curva: quanto mais unidades saem da corretora, mais caro fica. O ponto mostra onde a moeda está agora.</p></div>
+      <div class="card" data-o style="--o:5"><h2>🧾 Negócios <span class="dir" id="m-nneg"></span></h2>
+        <div class="tabela-neg"><table><thead><tr><th>Tipo</th><th class="r">PTG</th><th class="r">Moedas</th><th class="r esconde">Preço</th><th class="esconde">Carteira</th><th class="r">Quando</th></tr></thead><tbody id="m-negocios"></tbody></table></div></div>
+    </div>
+    <div class="coluna">
+      <div class="card" data-o style="--o:2">
+        <div class="abas2 compra" id="lados"><span class="bolha"></span><button class="ativo" data-lado="compra">Comprar</button><button data-lado="venda">Vender</button></div>
+        <label class="campo"><span id="o-rotulo">Quanto PTG gastar</span><div class="campo-valor"><input type="text" id="o-valor" inputmode="decimal" placeholder="0" autocomplete="off"><em id="o-un">PTG</em></div></label>
+        <div class="porcentos" id="o-pct"><button data-p="25">25%</button><button data-p="50">50%</button><button data-p="75">75%</button><button data-p="100">Máx</button></div>
+        <div class="sub" style="font-size:12px;margin-top:6px" id="o-disp"></div>
+        <div class="ajustes"><span title="Se o preço mudar mais que isso antes da sua ordem entrar, ela é cancelada e nada é cobrado">Variação máxima aceita ⓘ</span><span class="tol" id="tol"><button data-t="0.5">0,5%</button><button data-t="1">1%</button><button data-t="2" class="ativo">2%</button><button data-t="5">5%</button></span></div>
+        <div class="cot" id="o-cot"><div><span class="sub">Digite um valor para ver a cotação</span></div></div>
+        <button class="btn cheio" id="o-enviar">Comprar</button>
+        <div class="msg" id="o-msg"></div>
+      </div>
+      <div class="card" data-o style="--o:4"><h2>💪 Força da moeda <span class="dir">nota de 0 a 100</span></h2>
+        <div class="medidor"><svg viewBox="0 0 240 140">
+          <defs><linearGradient id="gm" x1="0" x2="1"><stop offset="0" stop-color="#ff5a4e"/><stop offset=".5" stop-color="#f7c843"/><stop offset="1" stop-color="#2ee07f"/></linearGradient></defs>
+          <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="var(--grade)" stroke-width="18" stroke-linecap="round"/>
+          <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="url(#gm)" stroke-width="18" stroke-linecap="round" id="arco" stroke-dasharray="315" stroke-dashoffset="315" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/>
+          <g class="agulha" id="agulha" style="transform:rotate(-90deg)"><line x1="120" y1="120" x2="120" y2="44" stroke="var(--txt)" stroke-width="4" stroke-linecap="round"/><circle cx="120" cy="120" r="8" fill="var(--txt)"/><circle cx="120" cy="120" r="3" fill="var(--card)"/></g>
+        </svg><div class="nota"><b class="num" id="f-nota">—</b><span id="f-rot">—</span></div></div>
+        <div class="partes" id="f-partes"></div>
+        <div style="margin-top:14px;font-size:12px"><div style="display:flex;justify-content:space-between"><span class="sobe">Compras 24 h <b id="f-c">0</b></span><span class="desce">Vendas 24 h <b id="f-v">0</b></span></div>
+          <div class="pressao"><i id="f-pc" style="background:var(--verde);width:50%"></i><i id="f-pv" style="background:var(--vermelho);width:50%"></i></div></div>
+      </div>
+      <div class="card" id="m-seg" data-o style="--o:6"></div>
+      <div class="card" data-o style="--o:7"><h2>🐋 Distribuição</h2><div class="donut" id="m-donut"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="vista" id="v-criar">
+  <div class="criar-grade">
+    <div class="card">
+      <h2>🚀 Criar minha moeda</h2>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+        <label class="campo"><span>Símbolo</span><input type="text" id="n-simbolo" maxlength="8" placeholder="GIGA" style="text-transform:uppercase;font-weight:800;letter-spacing:.08em"></label>
+        <label class="campo"><span>Nome</span><input type="text" id="n-nome" maxlength="30" placeholder="Giga Coin"></label>
+      </div>
+      <label class="campo"><span>Descrição <span class="fraco">(opcional · até 200 letras)</span></span><textarea id="n-desc" rows="2" maxlength="200" placeholder="Conte do que se trata a sua moeda"></textarea></label>
+      <label class="campo"><span>Ícone</span><div class="escolhas" id="n-emojis"></div></label>
+      <label class="campo"><span>Cor</span><div class="escolhas" id="n-cores"></div></label>
+      <label class="campo"><span>Compra inicial <span class="fraco">(opcional · fica <b id="n-trava">7</b> dias travada para provar que não é golpe)</span></span><div class="campo-valor"><input type="text" id="n-inicial" placeholder="0" inputmode="decimal"><em>PTG</em></div></label>
+      <div class="cot" id="n-custo"></div>
+      <button class="btn cheio" id="n-criar">🚀 Lançar moeda</button>
+      <div class="msg" id="n-msg"></div>
+    </div>
+    <div class="previa">
+      <div class="cartao-moeda" id="previa"></div>
+      <div class="card" style="margin-top:16px"><h2>Como funciona</h2><div class="passos">
+        <div class="passo"><b class="n">1</b><span>Você paga a taxa de criação em PTG e a moeda nasce com <b id="p-oferta">1 bi</b> de unidades, todas na curva de preço.</span></div>
+        <div class="passo"><b class="n">2</b><span>Quem compra paga em PTG e o preço sobe. Quem vende recebe PTG e o preço cai.</span></div>
+        <div class="passo"><b class="n">3</b><span>Você ganha <b id="p-criador">0,25%</b> de cada negócio da sua moeda, para sempre.</span></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section class="vista" id="v-conta"><div id="conta-corpo"></div></section>
+
+<section class="vista" id="v-feira">
+  <div class="feira-topo"><div><h2>🛍️ Feira Portgiga</h2><div class="sub">Compre e venda qualquer coisa. Tudo pago em PTG, com pagamento protegido.</div></div>
+    <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap"><input class="busca" id="fx-busca" placeholder="🔍 buscar na feira" style="width:200px"><button class="btn brilho" id="fx-anunciar-btn">+ Anunciar</button></span></div>
+  <div class="passos-feira">
+    <div>🛒<b>1. Você compra</b>O PTG sai do seu saldo e fica <b style="display:inline;font-size:inherit">guardado</b> pela corretora.</div>
+    <div>📦<b>2. O vendedor entrega</b>Combine a entrega pela conversa do pedido.</div>
+    <div>✅<b>3. Você confirma</b>Só aí o PTG vai para o vendedor. Problema? Abra uma disputa.</div>
+  </div>
+  <div class="cats" id="fx-cats"></div>
+  <div class="layout">
+    <div class="coluna"><div class="vitrine" id="fx-vitrine"><div class="esqueleto" style="height:200px"></div></div></div>
+    <div class="coluna">
+      <div class="card"><h2>📋 Meus pedidos <span class="dir"><span class="seg" id="fx-papel"><button data-p="comprador" class="ativo">Compras</button><button data-p="vendedor">Vendas</button></span></span></h2><div id="fx-pedidos"></div></div>
+      <div class="card"><h2>🏷️ Meus anúncios</h2><div id="fx-meus-anuncios"></div></div>
+    </div>
+  </div>
+</section>
+<section class="vista" id="v-social">
+  <div class="sc">
+    <div class="sc-topo">
+      <h2 class="sc-logo">PTG Social<small>BETA</small></h2>
+      <div class="sc-acoes"><button class="sc-btn sec sc-sino" id="sc-sino" title="Notificações">🔔<em id="sc-nbadge"></em></button><button class="sc-btn sec" id="sc-meu" title="Meu perfil">👤 <span class="esconde">Meu perfil</span></button><button class="sc-btn" id="sc-novo">＋ Postar</button></div>
+    </div>
+    <div class="sc-grid">
+      <div class="sc-col">
+        <div id="sc-desafio"></div>
+        <div class="sc-stories" id="sc-stories"></div>
+        <div id="sc-conquista"></div>
+        <div class="sc-chips" id="sc-chips"></div>
+        <div id="sc-feed"></div>
+        <div style="text-align:center"><button class="sc-btn sec" id="sc-mais" style="display:none">Carregar mais</button></div>
+        <p class="sc-rodape">Posts são opinião de quem postou. A PTG e as moedas da corretora não são investimento: nada de reais, pix ou promessas de lucro por aqui.</p>
+      </div>
+      <aside class="sc-lado">
+        <div class="sc-box" id="sc-eu-box"></div>
+        <div class="sc-box"><h4>Perfis para seguir</h4><div id="sc-sugest"></div></div>
+        <div class="sc-box" style="font-size:12.5px;color:var(--sub)"><h4>Como funciona</h4>Tudo é assinado pela sua carteira Portgiga, direto no seu aparelho: ninguém posta no seu nome. Marque a <b style="color:var(--scG)">PTG</b> ou a <b style="color:var(--scY)">sua moeda</b> e mostre o que você está criando.</div>
+      </aside>
+    </div>
+  </div>
+</section>
+<div class="fundo-modal" id="sc-fundo" role="dialog" aria-modal="true"><div class="sc-modal" id="sc-janela"></div></div>
+<div class="fundo-modal" id="fx-modal" role="dialog" aria-modal="true"><div class="modal" id="fx-modal-corpo" style="width:min(480px,100%)"></div></div>
+</main>
+<nav class="nav-baixo" aria-label="menu"><a href="#" data-v="mercado"><span>📊</span>Mercado</a><a href="#criar" data-v="criar"><span>🚀</span>Criar</a><a href="#feira" data-v="feira"><span>🛍️</span>Feira</a><a href="#social" data-v="social"><span>📸</span>Social</a><a href="#conta" data-v="conta"><span><i class="ico-carteira"></i></span>Conta</a></nav>
+<div class="toast" id="toast"></div>
+<div class="fundo-modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="md-titulo"><div class="modal">
+  <h3 id="md-titulo">Confirmar compra</h3><div class="sub" id="md-sub" style="font-size:13px"></div>
+  <div class="grande num" id="md-grande"></div>
+  <div class="cot" id="md-det"></div><div id="md-alerta"></div>
+  <div class="etapas" id="md-etapas" hidden><div class="etapa" data-e="1"><span class="b"></span>Assinando com a sua carteira</div><div class="etapa" data-e="2"><span class="b"></span>Enviando para a corretora</div><div class="etapa" data-e="3"><span class="b"></span>Confirmado</div></div>
+  <div style="display:flex;gap:8px;margin-top:6px"><button class="btn sec" id="md-cancelar" style="flex:1">Cancelar</button><button class="btn segurar" id="md-ok" style="flex:2"><i></i><span>Confirmar</span></button></div>
+</div></div>
+
+<script>
+const ic=e=>e==='🌳'?'<span class="ptg-ic" role="img" aria-label="pau-brasil"></span>':e;
+const $=id=>document.getElementById(id);
+const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const curto=e=>e?e.slice(0,8)+'…'+e.slice(-4):'';
+async function api(c,corpo){const r=await fetch(c,corpo?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(corpo)}:{});return r.json()}
+function unidadesDe(txt){const m=String(txt).trim().replace(',','.').match(/^(\d+)(?:\.(\d{0,8}))?$/);return m?Number(m[1])*1e8+Number((m[2]||'').padEnd(8,'0')):null}
+const n=(v,c=2)=>Number(v).toLocaleString('pt-BR',{minimumFractionDigits:c,maximumFractionDigits:c});
+function casas(v){v=Math.abs(Number(v));if(!v||v>=1)return 4;return Math.min(12,Math.max(2,-Math.floor(Math.log10(v))+3))}
+const SUB='₀₁₂₃₄₅₆₇₈₉';
+function pr(v){v=Number(v);if(!v)return '0';if(v>=1)return n(v,4);if(v>=0.001)return v.toFixed(casas(v)).replace('.',',');
+  const z=-Math.floor(Math.log10(v))-1,dig=Math.round(v*Math.pow(10,z+4));return '0,0'+String(z).split('').map(d=>SUB[d]).join('')+dig}
+function compacto(v){v=Number(v);const a=Math.abs(v);if(a>=1e9)return n(v/1e9,2)+' bi';if(a>=1e6)return n(v/1e6,2)+' mi';if(a>=1e3)return n(v/1e3,1)+' mil';return n(v,2)}
+function ha(t){const s=Date.now()/1000-t;if(s<60)return 'agora';if(s<3600)return Math.floor(s/60)+' min';if(s<86400)return Math.floor(s/3600)+' h';return Math.floor(s/86400)+' d'}
+const varTag=v=>`<span class="var ${v>0?'s':v<0?'d':'z'}">${v>0?'▲ ':v<0?'▼ ':''}${n(Math.abs(v),2)}%</span>`;
+const corForca=x=>x>=60?'var(--verde)':x>=40?'var(--ouro)':'var(--vermelho)';
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+// ---------- assinatura com a carteira deste navegador (a mesma da página da Rede)
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const deHex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
+const sha=async t=>hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)));
+const b64u=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(s+'==='.slice((s.length+3)%4)),c=>c.charCodeAt(0))};
+async function parDe(chave){
+  const pk8=new Uint8Array([0x30,0x2e,0x02,0x01,0x00,0x30,0x05,0x06,0x03,0x2b,0x65,0x70,0x04,0x22,0x04,0x20,...deHex(await sha('ptg-ed25519:'+chave))]);
+  const priv=await crypto.subtle.importKey('pkcs8',pk8,{name:'Ed25519'},true,['sign']);
+  return {priv,pub:hex(b64u((await crypto.subtle.exportKey('jwk',priv)).x))};
+}
+async function assinar(msg){const p=await parDe(get('chave'));return {pub:p.pub,assinatura:hex(await crypto.subtle.sign('Ed25519',p.priv,new TextEncoder().encode(msg)))}}
+async function pedido(prefixo,campos){const carteira=get('endereco'),quando=Math.floor(Date.now()/1000);
+  return {carteira,quando,...await assinar(prefixo+JSON.stringify([carteira,...campos,quando]))}}
+const SEM_ASSINAR='Este navegador não consegue assinar. Abra pelo atalho do PC ou pelo link https da rede, num navegador atualizado.';
+const minha=()=>get('chave')&&get('endereco')?get('endereco'):null;
+let msgConta=null;
+function mostra(id,txt,ok){const e=$(id);if(!e)return;e.textContent=txt;e.className='msg '+(ok?'ok':'erro');if(id==='c-msg')msgConta={txt,ok,ate:Date.now()+20000}}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),3200)}
+
+// ---------- animações
+function contar(el,alvo,fmt){if(!el)return;const de=Number(el.dataset.v||0),t0=performance.now(),dur=900;el.dataset.v=alvo;
+  const passo=t=>{const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);el.textContent=fmt(de+(alvo-de)*e);if(k<1)requestAnimationFrame(passo)};requestAnimationFrame(passo)}
+function confete(){const cv=$('confete'),g=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+  const cores=['#2ee07f','#f7c843','#3cb6ff','#ff5a4e','#a855f7'],ps=Array.from({length:140},()=>({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*16,vy:Math.random()*-14-4,r:Math.random()*6+3,c:cores[Math.random()*5|0],a:Math.random()*6}));
+  let f=0;(function loop(){g.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.vy+=.45;p.x+=p.vx;p.y+=p.vy;p.a+=.2;g.save();g.translate(p.x,p.y);g.rotate(p.a);g.fillStyle=p.c;g.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);g.restore()});
+    if(++f<110)requestAnimationFrame(loop);else g.clearRect(0,0,cv.width,cv.height)})()}
+function sparkline(cv,dados,cor){
+  if(!cv)return;const dpr=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w)return;cv.width=w*dpr;cv.height=h*dpr;const g=cv.getContext('2d');g.scale(dpr,dpr);
+  if(!dados||dados.length<2){g.strokeStyle=css('--grade');g.beginPath();g.moveTo(0,h/2);g.lineTo(w,h/2);g.stroke();return}
+  const mn=Math.min(...dados),mx=Math.max(...dados),Y=v=>mx===mn?h/2:h-3-(v-mn)/(mx-mn)*(h-6),X=i=>i*w/(dados.length-1);
+  const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,cor+'55');gr.addColorStop(1,cor+'00');
+  g.beginPath();dados.forEach((v,i)=>i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v)));g.lineTo(w,h);g.lineTo(0,h);g.closePath();g.fillStyle=gr;g.fill();
+  g.beginPath();dados.forEach((v,i)=>i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v)));g.strokeStyle=cor;g.lineWidth=1.8;g.lineJoin='round';g.stroke();
+}
+const corSerie=d=>d&&d.length>1&&d[d.length-1]<d[0]?css('--vermelho'):css('--verde');
+
+// ---------- tema claro / escuro
+function aplicarTema(t){if(t)document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;
+  const escuro=t?t==='dark':matchMedia('(prefers-color-scheme:dark)').matches;$('tema').textContent=escuro?'☀️':'🌙'}
+aplicarTema(get('cx_tema'));
+$('tema').onclick=()=>{const escuro=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  const t=escuro?'light':'dark';try{localStorage.setItem('cx_tema',t)}catch(e){}aplicarTema(t);
+  if(M){destaques();desenharLista();mapa()}if(atual&&$('v-moeda').classList.contains('ativo')){criarGrafico();carregarVelas(true);curva(atual)}};
+// ---------- fundo animado do topo: uma linha de preço que se desenha sem parar
+(function(){const cv=$('fundo-hero'),g=cv.getContext('2d');let t=0,pts=[];
+  function novo(){pts=[];let y=.7;for(let i=0;i<=60;i++){y+=(Math.random()-.42)*.08;y=Math.max(.15,Math.min(.9,y));pts.push(y)}}
+  novo();(function loop(){const w=cv.clientWidth,h=cv.clientHeight,dpr=devicePixelRatio||1;if(cv.width!==w*dpr){cv.width=w*dpr;cv.height=h*dpr}
+    g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);const k=Math.min(pts.length-1,t/2),cor=css('--verde');
+    g.beginPath();for(let i=0;i<=k;i++){const x=i*w/(pts.length-1),y=pts[i]*h;i?g.lineTo(x,y):g.moveTo(x,y)}g.strokeStyle=cor;g.globalAlpha=.5;g.lineWidth=2;g.stroke();
+    g.lineTo(k*w/(pts.length-1),h);g.lineTo(0,h);g.closePath();const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,cor+'40');gr.addColorStop(1,cor+'00');g.fillStyle=gr;g.globalAlpha=1;g.fill();
+    if(++t>pts.length*2+120){t=0;novo()}requestAnimationFrame(loop)})()})();
+
+// ---------- esconder saldos
+function aplicarOlho(o){document.body.classList.toggle('oculto',o);$('olho').textContent=o?'🙈':'👁️'}
+aplicarOlho(get('cx_oculto')==='1');
+$('olho').onclick=()=>{const o=!document.body.classList.contains('oculto');try{localStorage.setItem('cx_oculto',o?'1':'0')}catch(e){}aplicarOlho(o)};
+// ---------- status dos dados (quando atualizou pela última vez)
+let ultimaAtualizacao=0,falhou=false;
+setInterval(()=>{const s=Math.round((Date.now()-ultimaAtualizacao)/1000);$('status-dados').innerHTML=falhou?'<span class="desce">⚠ sem conexão, tentando de novo…</span>':ultimaAtualizacao?`atualizado há ${s}s`:''},1000);
+// ---------- tolerância de variação
+let tolerancia=Number(get('cx_tol')||2);
+function marcarTol(){$('tol').querySelectorAll('button').forEach(b=>b.classList.toggle('ativo',Number(b.dataset.t)===tolerancia))}
+$('tol').onclick=e=>{const b=e.target.closest('button');if(!b)return;tolerancia=Number(b.dataset.t);try{localStorage.setItem('cx_tol',tolerancia)}catch(e){}marcarTol()};
+
+let M=null,C=null,atual=null,lado='compra',emoji=null,cor=null,ordem='valor',precosAntes={},vistos=new Set(),primeiraCarga=true;
+
+// ---------- mercado
+async function atualizarMercado(){
+  try{M=await api('/api/cx/mercado');falhou=false;ultimaAtualizacao=Date.now()}catch(e){falhou=true;return}const R=M.regras,ms=M.moedas;
+  contar(document.querySelector('[data-conta=moedas]'),ms.length,v=>Math.round(v));
+  contar(document.querySelector('[data-conta=volume]'),ms.reduce((s,m)=>s+m.volume_24h,0),v=>compacto(v));
+  contar(document.querySelector('[data-conta=negocios]'),ms.reduce((s,m)=>s+m.negocios_24h,0),v=>Math.round(v));
+  contar(document.querySelector('[data-conta=donos]'),ms.reduce((s,m)=>s+m.donos,0),v=>Math.round(v));
+  const novas=ms.filter(m=>Date.now()/1000-m.criada<86400).length;$('k-novas').textContent=novas?`+${novas} hoje`:'';
+  $('k-ult').textContent=M.ultimos[0]?'último '+ha(M.ultimos[0].quando):'';
+  $('n-trava').textContent=R.trava_criador_dias;$('p-criador').textContent=n(R.taxa_criador_pct,2)+'%';$('p-oferta').textContent=compacto(R.oferta_moedas);
+  $('regras').innerHTML=[['🚀','Criar custa '+n(R.taxa_criacao_ptg,0)+' PTG','e a moeda nasce na hora'],['💸',n(R.taxa_dono_pct+R.taxa_criador_pct,2)+'% por negócio',n(R.taxa_criador_pct,2)+'% vai para o criador'],
+    ['⚙️','Preço automático','sempre dá para comprar e vender'],['🔒','Anti-golpe','compra do criador travada '+R.trava_criador_dias+' dias'],
+    ['🐋','Anti-baleia','máximo de '+n(R.max_carteira_pct,0)+'% por carteira'],['🛟','Ninguém fica preso','moeda suspensa ainda vende'],
+    ...(R.compras_pausadas?[['⛔','Compras pausadas','pelo dono, agora']]:[]),...(R.criacao_pausada?[['⛔','Criação pausada','pelo dono, agora']]:[])]
+    .map(([i,t,d])=>`<div class="regra"><span class="i">${i}</span><b class="t">${t}</b>${d}</div>`).join('');
+  if(!emoji){$('n-emojis').innerHTML=M.emojis.map(e=>`<button data-e="${e}">${ic(e)}</button>`).join('');$('n-cores').innerHTML=M.cores.map(c=>`<button data-c="${c}" style="background:${c}"></button>`).join('');emoji=M.emojis[0];cor=M.cores[0];marcar()}
+  custoCriar();fita();feed();ranking();
+  $('apoio').hidden=!R.apoio_btc;
+  if($('v-mercado').classList.contains('ativo')){destaques();desenharLista();mapa()}
+  ms.forEach(m=>precosAntes[m.simbolo]=m.preco);primeiraCarga=false;
+}
+function fita(){const it=M.moedas.map(m=>`<span onclick="location.hash='#${esc(m.simbolo)}'">${ic(m.emoji)} <b>${esc(m.simbolo)}</b><span class="num">${pr(m.preco)}</span> <span class="${m.variacao_24h>=0?'sobe':'desce'}">${m.variacao_24h>=0?'▲':'▼'}${n(Math.abs(m.variacao_24h),1)}%</span></span>`).join('')||'<span class="sub">A primeira moeda pode ser a sua 🚀</span>';
+  $('fita').innerHTML=it+it+it+it}
+function rei(){
+  const ms=M.moedas,el=$('rei');
+  if(!ms.length){el.innerHTML=`<div class="coroa">👑 Rei da corretora</div><div class="linha1"><div class="icone-rei" style="background:var(--card2)"><span>❓</span></div><div><h3>A coroa está livre</h3><div class="sub2">A primeira moeda criada assume o trono.</div></div></div><a class="btn" href="#criar" style="align-self:flex-start">Criar e virar rei</a>`;return}
+  const m=ms[0];el.onclick=()=>location.hash='#'+m.simbolo;
+  el.innerHTML=`<div class="coroa">👑 Rei da corretora <span class="sub" style="letter-spacing:0;font-weight:600;text-transform:none">· maior valor de mercado</span></div>
+    <div class="linha1"><div class="icone-rei" style="background:${m.cor}33"><span>${ic(m.emoji)}</span></div>
+      <div style="min-width:0"><h3>${esc(m.nome)} <span class="sub" style="font-size:14px">${esc(m.simbolo)}</span></h3><div class="sub2">${esc(m.descricao)||'—'}</div></div>
+      <div style="margin-left:auto;text-align:right"><b class="num" style="font-size:20px">${pr(m.preco)}</b><div>${varTag(m.variacao_24h)}</div></div></div>
+    <canvas id="rei-graf"></canvas>
+    <div class="numeros"><div><span>Valor de mercado</span><b class="num">${compacto(m.valor_mercado)}</b></div><div><span>Força</span><b class="num" style="color:${corForca(m.forca.nota)}">${m.forca.nota} · ${m.forca.rotulo}</b></div><div><span>Donos</span><b class="num">${m.donos}</b></div></div>`;
+  sparkline($('rei-graf'),m.mini,corSerie(m.mini));
+}
+function destaques(){
+  rei();const ms=M.moedas;if(!ms.length){$('destaques').innerHTML='';return}
+  const usados=new Set(),pega=lista=>{const m=lista.find(x=>!usados.has(x.simbolo))||lista[0];usados.add(m.simbolo);return m};
+  const alta=pega([...ms].sort((a,b)=>b.variacao_24h-a.variacao_24h)),forte=pega([...ms].sort((a,b)=>b.forca.nota-a.forca.nota)),nova=pega([...ms].sort((a,b)=>b.criada-a.criada));
+  const cards=[['🔥 Em alta',alta],['💪 Mais forte',forte],['🆕 Mais nova',nova]];
+  $('destaques').innerHTML=cards.map(([t,m],i)=>`<div class="card dest" onclick="location.hash='#${esc(m.simbolo)}'"><div class="eti">${t}</div>
+    <div class="lin1"><div class="ico" style="background:${m.cor}26;color:${m.cor}">${ic(m.emoji)}</div><div><b>${esc(m.simbolo)}</b><div class="sub" style="font-size:12px">${esc(m.nome)}</div></div>
+    <div class="p"><b class="num">${pr(m.preco)}</b><div>${i===1?`<span class="var" style="background:transparent;color:${corForca(m.forca.nota)}">força ${m.forca.nota} · ${m.forca.rotulo}</span>`:i===2?`<span class="sub" style="font-size:12px">há ${ha(m.criada)}</span>`:varTag(m.variacao_24h)}</div></div></div>
+    <canvas data-spark="${i}"></canvas></div>`).join('');
+  cards.forEach(([,m],i)=>sparkline(document.querySelector(`[data-spark="${i}"]`),m.mini,corSerie(m.mini)));
+}
+function desenharLista(){
+  const q=$('busca').value.trim().toLowerCase();
+  let l=M.moedas.filter(m=>!q||m.simbolo.toLowerCase().includes(q)||m.nome.toLowerCase().includes(q));
+  l=[...l].sort({valor:(a,b)=>b.valor_mercado-a.valor_mercado,alta:(a,b)=>b.variacao_24h-a.variacao_24h,forca:(a,b)=>b.forca.nota-a.forca.nota,novas:(a,b)=>b.criada-a.criada}[ordem]);
+  $('lista').innerHTML=l.map((m,i)=>{const antes=precosAntes[m.simbolo],pisca=!primeiraCarga&&antes!==undefined&&antes!==m.preco?(m.preco>antes?'pisca-s':'pisca-d'):'';
+    return `<tr class="lin" data-s="${esc(m.simbolo)}"><td class="fraco num">${i+1}</td>
+    <td><div class="nome"><div class="ico" style="background:${m.cor}26;color:${m.cor}">${ic(m.emoji)}</div><div><b>${esc(m.simbolo)}${m.banida?'<span class="selo">suspensa</span>':''}${Date.now()/1000-m.criada<86400?'<span class="selo ouro">nova</span>':''}</b><small>${esc(m.nome)}</small></div></div></td>
+    <td class="r num ${pisca}" style="border-radius:8px">${pr(m.preco)}</td><td class="r">${varTag(m.variacao_24h)}</td>
+    <td class="esconde"><canvas class="spark" data-sp="${esc(m.simbolo)}"></canvas></td>
+    <td class="esconde"><div class="forca-mini"><b class="num" style="color:${corForca(m.forca.nota)};width:22px">${m.forca.nota}</b><div class="trilho"><i style="width:${m.forca.nota}%;background:${corForca(m.forca.nota)}"></i></div></div></td>
+    <td class="r num esconde">${compacto(m.volume_24h)}</td><td class="r num esconde">${compacto(m.valor_mercado)}</td>
+    <td class="esconde"><div class="curva" title="${n(m.vendidas_pct,2)}% vendidas pela curva"><i style="width:${Math.min(100,m.vendidas_pct*3)}%"></i></div></td></tr>`}).join('')
+    ||`<tr><td colspan="9" class="vazio">${q?'Nenhuma moeda com esse nome.':'Ainda não há moedas. <a href="#criar">Crie a primeira!</a> 🚀'}</td></tr>`;
+  $('lista').querySelectorAll('tr[data-s]').forEach(t=>t.onclick=()=>location.hash='#'+t.dataset.s);
+  l.forEach(m=>sparkline(document.querySelector(`[data-sp="${CSS.escape(m.simbolo)}"]`),m.mini,corSerie(m.mini)));
+}
+function feed(){
+  const html=M.ultimos.map(u=>{const k=u.simbolo+u.quando+u.ptg,novo=!vistos.has(k);vistos.add(k);const m=M.moedas.find(x=>x.simbolo===u.simbolo)||{};
+    return `<div style="${novo&&!primeiraCarga?'':'animation:none'}" onclick="location.hash='#${esc(u.simbolo)}'"><span class="tag ${u.lado==='compra'?'c':'v'}">${u.lado==='compra'?'COMPRA':'VENDA'}</span><span>${ic(m.emoji||'')} <b>${esc(u.simbolo)}</b></span><span class="num" style="margin-left:auto">${n(u.ptg,2)} PTG</span><span class="fraco" style="width:46px;text-align:right">${ha(u.quando)}</span></div>`}).join('');
+  $('feed').innerHTML=html||'<p class="sub" style="margin:0">Nenhum negócio ainda. Seja o primeiro!</p>';
+}
+function mapa(){
+  const ms=[...M.moedas].sort((a,b)=>b.valor_mercado-a.valor_mercado);
+  if(!ms.length){$('mapa').innerHTML='<div class="vazio" style="width:100%">O mapa aparece quando houver moedas.</div>';return}
+  const tot=ms.reduce((s,m)=>s+Math.sqrt(m.valor_mercado),0);
+  $('mapa').innerHTML=ms.map(m=>{const v=m.variacao_24h,a=Math.min(1,Math.abs(v)/40),c=v>=0?`rgba(22,163,90,${.45+a*.5})`:`rgba(220,61,50,${.45+a*.5})`,peso=Math.sqrt(m.valor_mercado)/tot;
+    return `<div class="bloco" style="flex:${(peso*100).toFixed(2)} 1 ${Math.max(110,peso*900)}px;background:${c}" onclick="location.hash='#${esc(m.simbolo)}'"><span class="e">${ic(m.emoji)}</span><b>${esc(m.simbolo)}</b><div><small>${v>=0?'+':''}${n(v,1)}%</small><br><small style="opacity:.75">${compacto(m.valor_mercado)} PTG</small></div></div>`}).join('');
+}
+function ranking(){
+  $('top').innerHTML=(M.top||[]).map((t,i)=>`<div><span class="medalha">${i+1}</span><span class="mono">${curto(t.carteira)}</span>${C&&t.carteira===C.carteira?'<span class="selo ok">você</span>':''}<span class="sub" style="margin-left:auto;font-size:11px">${t.negocios} negócios</span><b class="num">${compacto(t.volume)} PTG</b></div>`).join('')||'<p class="sub" style="margin:0">Ninguém negociou nos últimos 7 dias.</p>';
+}
+$('busca').oninput=desenharLista;
+$('filtros').onclick=e=>{const b=e.target.closest('button');if(!b)return;ordem=b.dataset.o;$('filtros').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x===b));desenharLista()};
+
+// ---------- criar
+function marcar(){$('n-emojis').querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b.dataset.e===emoji));$('n-cores').querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b.dataset.c===cor));previa()}
+$('n-emojis').onclick=e=>{const b=e.target.closest('button');if(b){emoji=b.dataset.e;marcar()}};
+$('n-cores').onclick=e=>{const b=e.target.closest('button');if(b){cor=b.dataset.c;marcar()}};
+function previa(){const s=$('n-simbolo').value.trim().toUpperCase()||'SÍMBOLO',nm=$('n-nome').value.trim()||'Nome da moeda',d=$('n-desc').value.trim()||'A descrição da sua moeda aparece aqui.';
+  $('previa').style.background=`linear-gradient(135deg,${cor||'#22c55e'},#0b1510 140%)`;
+  $('previa').innerHTML=`<div class="grande">${emoji||'🚀'}</div><div class="s">${esc(s)}</div><h3>${esc(nm)}</h3><p>${esc(d)}</p>
+    <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12px;opacity:.92"><span>preço inicial<br><b style="font-size:15px">${M?pr(M.regras.reserva_virtual_ptg/M.regras.oferta_moedas):'—'} PTG</b></span><span style="text-align:right">unidades<br><b style="font-size:15px">${M?compacto(M.regras.oferta_moedas):'—'}</b></span></div>`}
+['n-simbolo','n-nome','n-desc'].forEach(i=>$(i).addEventListener('input',previa));
+function custoCriar(){if(!M)return;const ini=unidadesDe($('n-inicial').value||'0')||0;
+  $('n-custo').innerHTML=`<div><span class="sub">Taxa de criação</span><b class="num">${n(M.regras.taxa_criacao_ptg,2)} PTG</b></div><div><span class="sub">Compra inicial</span><b class="num">${n(ini/1e8,2)} PTG</b></div><div style="border-top:1px solid var(--borda);margin-top:4px;padding-top:6px"><span>Total</span><b class="num">${n(M.regras.taxa_criacao_ptg+ini/1e8,2)} PTG</b></div>`}
+$('n-inicial').oninput=custoCriar;
+$('n-criar').onclick=async()=>{
+  if(!minha())return mostra('n-msg','Entre na sua carteira primeiro (página da Rede Portgiga, neste navegador).');
+  const simbolo=$('n-simbolo').value.trim().toUpperCase(),nome=$('n-nome').value.trim(),descricao=$('n-desc').value.trim(),inicial=unidadesDe($('n-inicial').value||'0');
+  if(inicial===null)return mostra('n-msg','compra inicial inválida');
+  $('n-criar').disabled=true;
+  try{const r=await api('/api/cx/criar',{simbolo,nome,descricao,emoji,cor,compra_inicial:inicial,...await pedido('portgiga-cx-criar:',[simbolo,nome,descricao,emoji,cor,inicial])});
+    mostra('n-msg',r.ok?`Moeda ${simbolo} lançada! 🎉`:'Erro: '+r.erro,r.ok);
+    if(r.ok){confete();toast(`🚀 ${simbolo} está no ar!`);['n-simbolo','n-nome','n-desc','n-inicial'].forEach(i=>$(i).value='');previa();await atualizarConta();await atualizarMercado();setTimeout(()=>location.hash='#'+simbolo,1200)}
+  }catch(e){mostra('n-msg',SEM_ASSINAR)}
+  $('n-criar').disabled=false};
+
+// ---------- QR de depósito (mesmo formato do app Carteira Portgiga: portgiga:ENDEREÇO?valor=X)
+function cartaoQr(endereco){return `<div class="card" id="c-qr"><h2>📲 Depositar pelo QR code <span class="dir">app Carteira Portgiga</span></h2>
+  <div class="qr-dep"><div class="qr"><img id="qr-img" alt="QR code do endereço de depósito"></div>
+  <div style="flex:1;min-width:220px"><ol><li>Abra o app <b>Carteira Portgiga</b> no celular</li><li>Toque em <b>Enviar → Escanear QR</b> e aponte para este código</li><li>Escolha quanto PTG e confirme</li></ol>
+  <div class="end" id="qr-end">${esc(endereco)}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sec peq" id="qr-copiar">📋 Copiar endereço</button><span class="sub" style="font-size:12px;align-self:center">O PTG entra em até 1 minuto na conta da <b>carteira que enviou</b>.</span></div></div></div></div>`}
+function desenharQr(endereco,unidades){const img=$('qr-img');if(!img||!window.QRCode)return;
+  const txt='portgiga:'+endereco+(unidades?'?valor='+(unidades/1e8):'');
+  QRCode.toDataURL(txt,{errorCorrectionLevel:'H',margin:1,width:420,color:{dark:'#062b18',light:'#ffffff'}},(e,url)=>{if(!e)img.src=url});
+  const b=$('qr-copiar');if(b)b.onclick=async()=>{try{await navigator.clipboard.writeText(endereco);toast('📋 Endereço copiado')}catch(e){toast(endereco)}}}
+
+// ---------- apoio (doação voluntária em bitcoin: não dá PTG nem nada em troca)
+$('apoio-btn').onclick=()=>{const end=M&&M.regras.apoio_btc;if(!end)return;
+  abrirFx(`<h3>💛 Apoie o projeto Portgiga</h3><div class="sub" style="font-size:13px;margin-bottom:12px">Envie qualquer valor em bitcoin para o endereço abaixo.</div>
+    <div style="display:grid;place-items:center;margin:8px 0"><div style="background:#fff;padding:10px;border-radius:16px;width:220px;height:220px"><img id="apoio-qr" style="width:100%;height:100%" alt="QR code do endereço bitcoin"></div></div>
+    <div class="qr-dep"><div class="end" style="width:100%;text-align:center">${esc(end)}</div></div>
+    <div class="alerta" style="background:var(--ouro2);color:var(--ouro)">É uma <b>doação voluntária, sem retorno financeiro</b>: quem doa não recebe PTG, moedas nem nenhuma vantagem na corretora. Envie só pela rede Bitcoin.</div>
+    <div style="display:flex;gap:8px"><button class="btn sec" style="flex:1" onclick="fecharFx()">Fechar</button><button class="btn" style="flex:1" id="apoio-copiar">📋 Copiar endereço</button></div>`);
+  window.QRCode&&QRCode.toDataURL('bitcoin:'+end,{errorCorrectionLevel:'M',margin:1,width:440},(e,u)=>{if(!e)$('apoio-qr').src=u});
+  $('apoio-copiar').onclick=async()=>{try{await navigator.clipboard.writeText(end);toast('📋 Endereço copiado. Obrigado! 💛')}catch(e){toast(end)}}};
+
+// ---------- conta
+async function atualizarConta(){
+  const eu=minha(),pil=$('t-conta');
+  if(!eu){pil.innerHTML='<span class="ponto" style="background:var(--fraco);animation:none"></span><span>sem carteira</span>';
+    $('conta-corpo').innerHTML=`<div class="card" style="max-width:560px;margin:30px auto;text-align:center;padding:34px"><div style="font-size:46px"><i class="ico-carteira"></i></div><h2 style="justify-content:center;font-size:20px">Conecte a sua carteira</h2><p class="sub">Entre na sua conta da Rede Portgiga <b>neste mesmo navegador</b> e volte aqui. A sua chave nunca sai do seu aparelho.</p><a class="btn" href="/?entrar">Entrar na minha carteira</a></div>${M?`<div style="max-width:720px;margin:0 auto">${cartaoQr(M.deposito)}<p class="sub" style="font-size:12px;text-align:center">Já pode depositar pelo app agora. Depois, entre com a <b>mesma carteira</b> aqui para negociar.</p></div>`:''}`;if(M)desenharQr(M.deposito);return}
+  C=await api('/api/cx/conta?carteira='+eu);const rede=await api('/api/carteira?endereco='+eu);
+  pil.innerHTML=`<span class="ponto"></span><span class="mono">${curto(eu)}</span><b class="num sens">${n(C.ptg,2)} PTG</b>`;
+  if(atual)disponivel();
+  if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#conta-corpo'))return;
+  const total=C.posicoes.reduce((s,p)=>s+Number(p.valor_ptg),0);
+  const hist=[...C.negocios.map(x=>({q:x.quando,h:`<td><span class="var ${x.lado==='compra'?'s':'d'}">${x.lado}</span> <b>${esc(x.simbolo)}</b></td><td class="r num">${compacto(x.qtd)}</td><td class="r num">${n(x.ptg,4)} PTG</td>`})),
+              ...C.movimentos.map(x=>({q:x.quando,h:`<td>${esc(x.tipo)} <span class="fraco">${esc(x.ref)}</span></td><td></td><td class="r num ${x.valor>=0?'sobe':'desce'}">${x.valor>=0?'+':''}${n(x.valor,4)} PTG</td>`}))].sort((a,b)=>b.q-a.q).slice(0,60);
+  $('conta-corpo').innerHTML=`<div class="conta-grade"><div class="coluna">
+    <div class="card"><h2><i class="ico-carteira"></i> Minha conta ${C.eh_dono?'<span class="selo ouro">DONO</span>':''}<span class="dir mono">${curto(eu)}</span></h2>
+      <span class="sub" style="font-size:12px;text-transform:uppercase;letter-spacing:.07em">Saldo na corretora</span>
+      <div class="saldo-grande num sens">${n(C.ptg,4)} <span style="font-size:18px" class="sub">PTG</span></div>
+      <div class="sub" style="font-size:12px">+ moedas valendo <b class="sens">${n(total,2)} PTG</b> · na carteira da rede: <b class="sens">${n(rede.saldo_livre??0,2)} PTG</b></div>
+      <div class="abas2 neutra" style="margin-top:16px" id="c-op"><span class="bolha"></span><button class="ativo" data-op="dep">Depositar</button><button data-op="saq">Sacar</button></div>
+      <div class="campo-valor"><input type="text" id="c-valor" placeholder="0" inputmode="decimal"><em>PTG</em></div>
+      <button class="btn cheio" id="c-ir" style="margin-top:10px">Depositar</button>
+      <div class="msg" id="c-msg"></div>
+      <p class="sub" style="font-size:12px;margin:6px 0 0" id="c-ajuda">O depósito é uma transferência da sua carteira da rede para a corretora. Entra no próximo bloco (até 1 minuto).</p>
+      ${C.ganhos_criador>0?`<div class="cot" style="margin-top:12px"><div><span>🏆 Ganhos como criador</span><b class="sobe">${n(C.ganhos_criador,4)} PTG</b></div></div>`:''}
+    </div>${cartaoQr(C.deposito)}</div>
+    <div class="coluna">
+      <div class="card"><h2>💼 Minhas moedas <span class="dir">${C.posicoes.length} moedas</span></h2>${C.posicoes.length?`<table><thead><tr><th>Moeda</th><th class="r">Quantidade</th><th class="r esconde">Preço</th><th class="r">Vale</th></tr></thead><tbody>${C.posicoes.map(p=>{const m=(M&&M.moedas.find(x=>x.simbolo===p.simbolo))||{};return `<tr class="lin" data-s="${esc(p.simbolo)}"><td><div class="nome"><div class="ico" style="background:${m.cor||'#888888'}26">${ic(m.emoji||'🪙')}</div><div><b>${esc(p.simbolo)}${Number(p.travadas)>0?'<span class="selo ouro">travadas</span>':''}</b></div></div></td><td class="r num">${compacto(p.qtd)}</td><td class="r num esconde">${pr(p.preco)}</td><td class="r num"><b class="sens">${n(p.valor_ptg,2)} PTG</b></td></tr>`}).join('')}</tbody></table>`:'<div class="vazio">Você ainda não tem moedas. <a href="#">Ver o mercado</a></div>'}</div>
+      <div class="card"><h2>🕘 Histórico</h2><div style="max-height:340px;overflow:auto"><table><tbody>${hist.map(x=>`<tr>${x.h}<td class="r fraco">${ha(x.q)}</td></tr>`).join('')||'<tr><td class="vazio">Nada ainda.</td></tr>'}</tbody></table></div></div>
+    </div></div>`;
+  desenharQr(C.deposito);
+  $('c-valor').addEventListener('input',()=>{if(op==='dep')desenharQr(C.deposito,unidadesDe($('c-valor').value)||0)});
+  let op='dep';const ab=$('c-op');
+  ab.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{op=b.dataset.op;ab.querySelectorAll('[data-op]').forEach(x=>x.classList.toggle('ativo',x===b));ab.querySelector('.bolha').style.transform=op==='saq'?'translateX(100%)':'';
+    $('c-ir').textContent=op==='dep'?'Depositar':'Sacar';$('c-ajuda').textContent=op==='dep'?'O depósito é uma transferência da sua carteira da rede para a corretora. Entra no próximo bloco (até 1 minuto).':'O saque volta para a sua carteira da rede no próximo bloco (até 1 minuto).'});
+  $('conta-corpo').querySelectorAll('tr[data-s]').forEach(t=>t.onclick=()=>location.hash='#'+t.dataset.s);
+  if(msgConta&&Date.now()<msgConta.ate){$('c-msg').textContent=msgConta.txt;$('c-msg').className='msg '+(msgConta.ok?'ok':'erro')}
+  $('c-ir').onclick=async()=>{const u=unidadesDe($('c-valor').value);if(!u)return mostra('c-msg','valor inválido');$('c-ir').disabled=true;
+    try{let r;
+      if(op==='dep'){const nonce=(await api('/api/carteira?endereco='+eu)).proximo_nonce,para=C.deposito;
+        r=await api('/api/enviar',{de:eu,para,unidades:u,nonce,...await assinar('portgiga-tx:'+JSON.stringify([eu,para,u,nonce]))});
+        mostra('c-msg',r.ok?'Depósito enviado! Aparece aqui em até 1 minuto.':'Erro: '+r.erro,r.ok);
+        if(r.ok){toast('⏳ Depósito a caminho');const antes=C.ptg;let k=0;const t=setInterval(async()=>{await atualizarConta();if(C.ptg!==antes){clearInterval(t);toast('✅ Depósito confirmado')}else if(++k>20)clearInterval(t)},6000)}}
+      else{r=await api('/api/cx/sacar',{unidades:u,...await pedido('portgiga-cx-sacar:',[u])});mostra('c-msg',r.ok?r.aviso:'Erro: '+r.erro,r.ok);if(r.ok){toast('✅ Saque enviado');setTimeout(atualizarConta,800)}}
+    }catch(e){mostra('c-msg',SEM_ASSINAR)}if($('c-ir'))$('c-ir').disabled=false};
+}
+
+// ---------- gráfico profissional (velas + volume)
+let grafico=null,serieV=null,serieL=null,serieVol=null,tf=300,tipo='velas';
+function criarGrafico(){
+  const el=$('grafico');if(grafico){grafico.remove();grafico=null;serieV=serieL=serieVol=null}
+  if(!window.LightweightCharts){el.insertAdjacentHTML('beforeend','<div class="vazio">Não carregou o gráfico.</div>');return}
+  grafico=LightweightCharts.createChart(el,{autoSize:true,layout:{background:{type:'solid',color:'transparent'},textColor:css('--sub'),fontFamily:'system-ui'},
+    grid:{vertLines:{color:css('--grade')},horzLines:{color:css('--grade')}},rightPriceScale:{borderColor:css('--borda')},
+    timeScale:{borderColor:css('--borda'),timeVisible:true,secondsVisible:false},crosshair:{mode:0},localization:{locale:'pt-BR',priceFormatter:p=>pr(p)}});
+  serieVol=grafico.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:'vol',lastValueVisible:false,priceLineVisible:false});
+  grafico.priceScale('vol').applyOptions({scaleMargins:{top:.8,bottom:0}});
+  grafico.subscribeCrosshairMove(p=>{const s=tipo==='velas'?serieV:serieL;legenda(p&&p.seriesData&&s?p.seriesData.get(s):null)});
+}
+function legenda(d){const l=$('legenda');if(!atual){l.innerHTML='';return}
+  if(!d){l.innerHTML=`<span><b>${esc(atual.simbolo)}</b>/PTG · ${({60:'1 min',300:'5 min',900:'15 min',3600:'1 hora',14400:'4 horas',86400:'1 dia'})[tf]}</span>`;return}
+  l.innerHTML=d.open!==undefined?`<span>A <b>${pr(d.open)}</b></span><span>M <b>${pr(d.high)}</b></span><span>m <b>${pr(d.low)}</b></span><span>F <b class="${d.close>=d.open?'sobe':'desce'}">${pr(d.close)}</b></span>`:`<span>Preço <b>${pr(d.value)}</b></span>`}
+async function carregarVelas(ajustar){
+  if(!atual||!grafico)return;
+  const r=await api(`/api/cx/velas?s=${encodeURIComponent(atual.simbolo)}&tf=${tf}`);if(r.erro)return;
+  const vs=r.velas,verde=css('--verde'),verm=css('--vermelho'),c=casas(atual.preco),fmt={type:'price',precision:c,minMove:Math.pow(10,-c)};
+  if(serieV){grafico.removeSeries(serieV);serieV=null}if(serieL){grafico.removeSeries(serieL);serieL=null}
+  if(tipo==='velas'){serieV=grafico.addCandlestickSeries({upColor:verde,downColor:verm,wickUpColor:verde,wickDownColor:verm,borderVisible:false,priceFormat:fmt});
+    serieV.setData(vs.map(v=>({time:v.t,open:v.o,high:v.h,low:v.l,close:v.c})))}
+  else{serieL=grafico.addAreaSeries({lineColor:verde,topColor:verde+'55',bottomColor:verde+'00',lineWidth:2,priceFormat:fmt});serieL.setData(vs.map(v=>({time:v.t,value:v.c})))}
+  serieVol.setData(vs.map(v=>({time:v.t,value:v.v,color:(v.c>=v.o?verde:verm)+'66'})));
+  if(ajustar){if(vs.length<50)grafico.timeScale().setVisibleLogicalRange({from:vs.length-50,to:vs.length+2});else grafico.timeScale().fitContent()}legenda(null);
+}
+$('tfs').onclick=e=>{const b=e.target.closest('button');if(!b)return;tf=Number(b.dataset.tf);$('tfs').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x===b));carregarVelas(true)};
+$('tipos').onclick=e=>{const b=e.target.closest('button');if(!b)return;tipo=b.dataset.t;$('tipos').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x===b));carregarVelas(true)};
+
+// ---------- página da moeda
+const NOMES_FORCA={pressao:['🛒 Pressão de compra','quanto do volume de 24 h foi compra'],momento:['🚀 Momento','variação do preço em 24 h'],comunidade:['👥 Comunidade','quantas carteiras têm a moeda'],liquidez:['💧 Liquidez','PTG guardado na curva'],distribuicao:['⚖️ Distribuição','sem baleias = melhor']};
+async function abrirMoeda(s,novo){
+  const d=await api('/api/cx/moeda?s='+encodeURIComponent(s));if(d.erro){location.hash='';return}
+  const antes=atual&&atual.simbolo===s?atual:null;atual=d;
+  const pisca=antes&&antes.preco!==d.preco?(d.preco>antes.preco?'pisca-s':'pisca-d'):'';
+  $('m-topo').innerHTML=`<div class="ico" style="background:${d.cor}26;color:${d.cor}">${ic(d.emoji)}</div>
+    <div><h2>${esc(d.nome)} <span class="sub" style="font-size:15px;font-weight:700">${esc(d.simbolo)}/PTG</span>${d.banida?'<span class="selo">suspensa</span>':''}</h2>
+    <div class="sub">${esc(d.descricao)||'Sem descrição.'}</div><div class="fraco" style="font-size:12px">criada por <span class="mono">${curto(d.criador)}</span> há ${ha(d.criada)}</div></div>
+    <div class="preco"><b class="num ${pisca}">${pr(d.preco)} <span style="font-size:15px" class="sub">PTG</span></b>${varTag(d.variacao_24h)} <span class="sub" style="font-size:12px">24 h</span>
+      <div class="faixa24"><div class="t"><span>mín. 24 h</span><span>máx. 24 h</span></div><div class="barra"><i style="left:${d.maxima_24h>d.minima_24h?Math.round((d.preco-d.minima_24h)/(d.maxima_24h-d.minima_24h)*100):50}%"></i></div><div class="t num"><span>${pr(d.minima_24h)}</span><span>${pr(d.maxima_24h)}</span></div></div></div>`;
+  const desde=d.preco_inicial?(d.preco/d.preco_inicial-1)*100:0;
+  $('m-prog').innerHTML=`<div class="t"><span><b>Progresso da curva</b> <span class="sub">· quanto da moeda já saiu da corretora</span></span><b class="num">${n(d.vendidas_pct,2)}%</b></div><div class="barra"><i style="width:${Math.max(1,Math.min(100,d.vendidas_pct))}%"></i></div>`;
+  $('m-faixa').innerHTML=[['Valor de mercado',compacto(d.valor_mercado)+' PTG'],['Volume 24 h',compacto(d.volume_24h)+' PTG'],['Reserva na curva',n(d.reserva_ptg,2)+' PTG'],['Donos',d.donos],['Máxima',pr(d.maxima)],['Desde o lançamento',`<span class="${desde>=0?'sobe':'desce'}">${desde>=0?'+':''}${n(desde,1)}%</span>`]]
+    .map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join('');
+  $('m-max').textContent=`${d.negocios.length} negócios`;$('m-nneg').textContent=`últimos ${d.negocios.length}`;
+  const conhecidos=new Set((antes?antes.negocios:[]).map(t=>t.quando+t.carteira));
+  $('m-negocios').innerHTML=d.negocios.map(t=>`<tr class="${antes&&!conhecidos.has(t.quando+t.carteira)?'novo':''}"><td><span class="var ${t.lado==='compra'?'s':'d'}">${t.lado}</span></td><td class="r num">${n(t.ptg,4)}</td><td class="r num">${compacto(t.qtd)}</td><td class="r num esconde">${pr(t.preco)}</td><td class="mono esconde">${curto(t.carteira)}${t.carteira===d.criador?' <span class="selo ok">criador</span>':''}</td><td class="r sub">${ha(t.quando)}</td></tr>`).join('')||'<tr><td colspan="6" class="vazio">Nenhum negócio ainda. Faça o primeiro!</td></tr>';
+  // força
+  const f=d.forca;
+  if(novo){$('agulha').style.transform='rotate(-90deg)';$('arco').style.strokeDashoffset=315;$('f-nota').dataset.v=0;
+    $('f-partes').innerHTML=Object.keys(NOMES_FORCA).map(k=>`<div class="parte" title="${NOMES_FORCA[k][1]}"><span>${NOMES_FORCA[k][0]}</span><div class="trilho"><i data-p="${k}"></i></div><b class="num r" data-pn="${k}">0</b></div>`).join('')}
+  setTimeout(()=>{$('agulha').style.transform=`rotate(${-90+f.nota*1.8}deg)`;$('arco').style.strokeDashoffset=315-315*f.nota/100;
+    Object.keys(NOMES_FORCA).forEach(k=>{const v=f.partes[k],i=document.querySelector(`[data-p="${k}"]`);i.style.width=v+'%';i.style.background=corForca(v);contar(document.querySelector(`[data-pn="${k}"]`),v,x=>Math.round(x))})},novo?120:0);
+  contar($('f-nota'),f.nota,v=>Math.round(v));$('f-rot').textContent=f.rotulo;$('f-rot').style.color=corForca(f.nota);
+  $('f-c').textContent=n(f.compras_24h,2);$('f-v').textContent=n(f.vendas_24h,2);const tot=f.compras_24h+f.vendas_24h;
+  $('f-pc').style.width=(tot?f.compras_24h/tot*100:50)+'%';$('f-pv').style.width=(tot?f.vendas_24h/tot*100:50)+'%';
+  // segurança
+  const trav=Number(d.travadas_criador)>0;
+  $('m-seg').innerHTML=`<h2>🛡️ Segurança</h2><div class="cot" style="margin:0">
+    <div><span>Compra inicial do criador</span><b>${trav?'🔒 travada até '+new Date(d.trava_ate*1000).toLocaleDateString('pt-BR'):'livre'}</b></div>
+    <div><span>Moedas travadas</span><b class="num">${compacto(d.travadas_criador)}</b></div>
+    <div><span>Vendidas pela curva</span><b class="num">${n(d.vendidas_pct,2)}%</b></div>
+    <div><span>Limite por carteira</span><b class="num">${M?n(M.regras.max_carteira_pct,0):'10'}%</b></div></div>
+    ${d.banida?`<p class="desce" style="margin:10px 0 0">Suspensa pelo dono${d.motivo?': '+esc(d.motivo):''}. Só é possível vender.</p>`:'<p class="sub" style="font-size:12px;margin:10px 0 0">A reserva em PTG fica presa na curva: sempre há PTG para pagar quem vende.</p>'}`;
+  // distribuição
+  const cores=['#2ee07f','#3cb6ff','#f7c843','#a855f7','#ff7a45','#ec4899','#14b8a6','#eab308','#6366f1','#ff5a4e'];
+  let acum=0;const arcos=d.maiores.map((h,i)=>{const pct=Math.max(0,h.pct),el=`<circle r="15.9155" cx="20" cy="20" fill="none" stroke="${cores[i]}" stroke-width="6" stroke-dasharray="${pct} ${100-pct}" stroke-dashoffset="${25-acum}"/>`;acum+=pct;return el}).join('');
+  $('m-donut').innerHTML=`<svg viewBox="0 0 40 40"><circle r="15.9155" cx="20" cy="20" fill="none" stroke="var(--grade)" stroke-width="6"/>${arcos}<text x="20" y="20" text-anchor="middle" font-size="5.5" font-weight="800" fill="var(--txt)">${n(d.vendidas_pct,1)}%</text><text x="20" y="25.5" text-anchor="middle" font-size="3" fill="var(--sub)">nas carteiras</text></svg>
+    <div class="lista-donos">${d.maiores.map((h,i)=>`<div><i style="background:${cores[i]}"></i><span class="mono">${curto(h.carteira)}</span>${h.carteira===d.criador?'<span class="selo ok">criador</span>':''}<b class="num">${n(h.pct,2)}%</b></div>`).join('')||'<span class="sub">Ninguém tem esta moeda ainda.</span>'}</div>`;
+  curva(d);
+  if(novo){criarGrafico();await carregarVelas(true)}else carregarVelas(false);
+  disponivel();
+}
+// ---------- curva de preço (preço = X·R / y², y = unidades ainda na corretora)
+function curva(d){
+  const cv=$('curva'),dpr=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w)return;cv.width=w*dpr;cv.height=h*dpr;const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const {x,reserva,oferta}=d.curva,K=x*reserva,fAgora=(oferta-reserva)/oferta,fMax=Math.min(.95,Math.max(.5,fAgora*1.6+.15));
+  const P=f=>K/Math.pow(oferta*(1-f),2),pMax=P(fMax),pMin=P(0);
+  const X=f=>40+f/fMax*(w-56),Y=p=>h-24-(p-pMin)/(pMax-pMin)*(h-40);
+  g.strokeStyle=css('--grade');g.fillStyle=css('--sub');g.font='11px system-ui';g.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=16+i*(h-40)/4;g.beginPath();g.moveTo(40,yy);g.lineTo(w-16,yy);g.stroke()}
+  g.textAlign='center';for(let i=0;i<=4;i++){const f=fMax*i/4;g.fillText(Math.round(f*100)+'%',X(f),h-6)}
+  const verde=css('--verde'),ouro=css('--ouro');
+  // parte já percorrida (preenchida) e o resto (tracejado)
+  g.beginPath();g.moveTo(X(0),Y(P(0)));for(let i=1;i<=80;i++){const f=fAgora*i/80;g.lineTo(X(f),Y(P(f)))}g.lineTo(X(fAgora),h-24);g.lineTo(X(0),h-24);g.closePath();
+  const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,verde+'66');gr.addColorStop(1,verde+'08');g.fillStyle=gr;g.fill();
+  g.beginPath();for(let i=0;i<=120;i++){const f=fMax*i/120;i?g.lineTo(X(f),Y(P(f))):g.moveTo(X(f),Y(P(f)))}g.strokeStyle=verde;g.lineWidth=2.2;g.setLineDash([]);g.stroke();
+  g.setLineDash([4,4]);g.strokeStyle=ouro;g.beginPath();g.moveTo(X(fAgora),16);g.lineTo(X(fAgora),h-24);g.stroke();g.setLineDash([]);
+  g.beginPath();g.arc(X(fAgora),Y(P(fAgora)),6,0,7);g.fillStyle=ouro;g.fill();g.beginPath();g.arc(X(fAgora),Y(P(fAgora)),11,0,7);g.strokeStyle=ouro+'66';g.lineWidth=3;g.stroke();
+  g.save();g.translate(12,h/2);g.rotate(-Math.PI/2);g.textAlign='center';g.fillStyle=css('--sub');g.fillText('preço',0,0);g.restore();
+  const dobra=Math.sqrt(2)*reserva,fDobra=(oferta-reserva/Math.SQRT2)/oferta;
+  $('curva-info').innerHTML=`${n(fAgora*100,2)}% vendidas · o preço <b>dobra</b> quando chegar a ${n(fDobra*100,1)}%`;
+}
+// ---------- comprar / vender
+function ajustarLado(){$('lados').className='abas2 '+lado;$('lados').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x.dataset.lado===lado));
+  const s=atual?atual.simbolo:'';$('o-rotulo').textContent=lado==='compra'?'Quanto PTG gastar':'Quantas moedas vender';$('o-un').textContent=lado==='compra'?'PTG':s;
+  $('o-enviar').textContent=(lado==='compra'?'Comprar ':'Vender ')+s;$('o-enviar').className='btn cheio'+(lado==='venda'?' verm':'');disponivel()}
+$('lados').onclick=e=>{const b=e.target.closest('button');if(!b)return;lado=b.dataset.lado;$('o-valor').value='';ajustarLado();cotar()};
+function livreVenda(){const p=C&&atual?C.posicoes.find(x=>x.simbolo===atual.simbolo):null;return p?Math.max(0,p.unidades/1e8-Number(p.travadas)):0}
+function disponivel(){if(!C){$('o-disp').textContent=minha()?'':'Conecte a carteira para negociar.';return}
+  $('o-disp').innerHTML=lado==='compra'?`Disponível: <b class="num sens">${n(C.ptg,4)} PTG</b>`:`Disponível para vender: <b class="num">${compacto(livreVenda())} ${esc(atual?atual.simbolo:'')}</b>`}
+$('o-pct').onclick=e=>{const b=e.target.closest('button');if(!b||!C)return;const p=Number(b.dataset.p)/100,base=lado==='compra'?C.ptg:livreVenda();
+  $('o-valor').value=String(Math.floor(base*p*1e8)/1e8).replace('.',',');cotar()};
+let cotacao=null,tCot=null;
+$('o-valor').oninput=()=>{clearTimeout(tCot);tCot=setTimeout(cotar,220)};
+async function cotar(){
+  cotacao=null;const u=unidadesDe($('o-valor').value);
+  if(!u||!atual){$('o-cot').innerHTML='<div><span class="sub">Digite um valor para ver a cotação</span></div>';return}
+  const r=await api(`/api/cx/cotar?s=${encodeURIComponent(atual.simbolo)}&lado=${lado}&valor=${u}`);
+  if(r.erro){$('o-cot').innerHTML=`<div class="desce">${esc(r.erro)}</div>`;return}
+  cotacao={u,r};const imp=r.impacto_pct;
+  $('o-cot').innerHTML=(lado==='compra'?`<div><span class="sub">Você recebe</span><b class="num">${compacto(r.moedas)} ${esc(atual.simbolo)}</b></div>`:`<div><span class="sub">Você recebe</span><b class="num">${n(r.ptg,4)} PTG</b></div>`)+
+    `<div><span class="sub">Taxas</span><span class="num">${n(r.taxas,4)} PTG</span></div><div><span class="sub">Preço depois</span><span class="num">${pr(r.preco_depois)}</span></div>
+     <div><span class="sub">Impacto no preço</span><span class="num ${Math.abs(imp)>10?'desce':''}">${imp>0?'+':''}${n(imp,2)}%${Math.abs(imp)>10?' ⚠️':''}</span></div>`;
+}
+// confirmação: resumo claro antes de assinar; impacto alto pede para SEGURAR o botão (evita clique por engano)
+let segurando=null;
+function etapa(k,estado){const e=document.querySelector(`#md-etapas [data-e="${k}"]`);e.className='etapa '+estado;e.querySelector('.b').textContent=estado==='ok'?'✓':estado==='erro'?'!':''}
+function fecharModal(){$('modal').classList.remove('on');$('o-enviar').disabled=false;$('o-enviar').focus()}
+$('md-cancelar').onclick=fecharModal;
+$('modal').onclick=e=>{if(e.target===$('modal')&&!$('md-ok').disabled)fecharModal()};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').classList.contains('on')&&!$('md-ok').disabled)fecharModal()});
+$('o-enviar').onclick=()=>{
+  if(!minha())return mostra('o-msg','Conecte a sua carteira primeiro (página da Rede Portgiga, neste navegador).');
+  if(!cotacao)return mostra('o-msg','Digite um valor válido.');
+  const s=atual.simbolo,{u,r}=cotacao,imp=Math.abs(r.impacto_pct),alto=imp>10,compra=lado==='compra';
+  $('md-titulo').textContent=compra?`Confirmar compra de ${s}`:`Confirmar venda de ${s}`;
+  $('md-sub').textContent=compra?`Você paga ${n(u/1e8,4)} PTG e recebe aproximadamente:`:`Você vende ${compacto(u/1e8)} ${s} e recebe aproximadamente:`;
+  $('md-grande').innerHTML=compra?`${compacto(r.moedas)} <span class="sub" style="font-size:16px">${esc(s)}</span>`:`${n(r.ptg,4)} <span class="sub" style="font-size:16px">PTG</span>`;
+  const minimoTxt=compra?compacto(r.moedas*(1-tolerancia/100))+' '+s:n(r.ptg*(1-tolerancia/100),4)+' PTG';
+  $('md-det').innerHTML=`<div><span class="sub">Preço agora</span><span class="num">${pr(r.preco_antes)}</span></div><div><span class="sub">Preço depois</span><span class="num">${pr(r.preco_depois)}</span></div>
+    <div><span class="sub">Impacto no preço</span><span class="num ${alto?'desce':''}">${r.impacto_pct>0?'+':''}${n(r.impacto_pct,2)}%</span></div><div><span class="sub">Taxas (corretora + criador)</span><span class="num">${n(r.taxas,4)} PTG</span></div>
+    <div><span class="sub">Recebe no mínimo (variação ${String(tolerancia).replace('.',',')}%)</span><span class="num">${minimoTxt}</span></div>`;
+  $('md-alerta').innerHTML=alto?`<div class="alerta">⚠️ Esta ordem mexe ${n(imp,1)}% no preço. Confira o valor. Para confirmar, <b>segure o botão</b>.</div>`:'';
+  $('md-etapas').hidden=true;[1,2,3].forEach(k=>etapa(k,''));
+  const ok=$('md-ok');ok.disabled=false;ok.className='btn segurar'+(compra?'':' verm');ok.querySelector('span').textContent=alto?'Segure para confirmar':'Confirmar';ok.querySelector('i').style.width='0';
+  ok.dataset.alto=alto?'1':'';$('o-enviar').disabled=true;$('modal').classList.add('on');setTimeout(()=>ok.focus(),50);
+};
+async function executar(){
+  const ok=$('md-ok'),s=atual.simbolo,{u,r}=cotacao,compra=lado==='compra',minimo=Math.floor(r.unidades*(1-tolerancia/100));
+  ok.disabled=true;$('md-cancelar').disabled=true;$('md-etapas').hidden=false;etapa(1,'on');
+  let res;
+  try{const ped=compra?await pedido('portgiga-cx-comprar:',[s,u,minimo]):await pedido('portgiga-cx-vender:',[s,u,minimo]);etapa(1,'ok');etapa(2,'on');
+    res=compra?await api('/api/cx/comprar',{simbolo:s,ptg:u,minimo,...ped}):await api('/api/cx/vender',{simbolo:s,qtd:u,minimo,...ped});
+  }catch(e){etapa(1,'erro');res={ok:false,erro:SEM_ASSINAR}}
+  if(res.ok){etapa(2,'ok');etapa(3,'ok');mostra('o-msg',compra?`Comprou ${compacto(res.moedas)} ${s} ✔`:`Vendeu e recebeu ${n(res.ptg,4)} PTG ✔`,true);
+    if(compra)confete();toast(compra?`✅ +${compacto(res.moedas)} ${s}`:`✅ +${n(res.ptg,2)} PTG`);
+    setTimeout(()=>{$('md-cancelar').disabled=false;fecharModal()},900);$('o-valor').value='';cotacao=null;await atualizarConta();await abrirMoeda(s);atualizarMercado();cotar()}
+  else{etapa(2,'erro');$('md-alerta').innerHTML=`<div class="alerta">${esc(res.erro)}</div>`;mostra('o-msg','Erro: '+res.erro);ok.disabled=false;$('md-cancelar').disabled=false;ok.querySelector('span').textContent='Tentar de novo'}
+}
+const okb=$('md-ok');
+okb.addEventListener('click',()=>{if(!okb.dataset.alto&&!okb.disabled)executar()});
+function comecaSegurar(e){if(!okb.dataset.alto||okb.disabled)return;e.preventDefault();const i=okb.querySelector('i');i.style.transition='width 1.2s linear';i.style.width='100%';
+  segurando=setTimeout(()=>{i.style.transition='none';okb.dataset.alto='';executar()},1200)}
+function paraSegurar(){if(!segurando)return;clearTimeout(segurando);segurando=null;const i=okb.querySelector('i');i.style.transition='width .2s';i.style.width='0'}
+['pointerdown'].forEach(ev=>okb.addEventListener(ev,comecaSegurar));['pointerup','pointerleave','pointercancel'].forEach(ev=>okb.addEventListener(ev,paraSegurar));
+okb.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&okb.dataset.alto&&!e.repeat)comecaSegurar(e)});okb.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')paraSegurar()});
+
+// ---------- FEIRA
+let FX=null,fxCat='',fxPapel='comprador',fxPedidos=null;
+const fxCor=c=>({servicos:'#3cb6ff',eletronicos:'#a855f7',roupas:'#ec4899',jogos:'#6366f1',comida:'#f97316',arte:'#eab308',aulas:'#14b8a6',casa:'#22c55e',outros:'#94a3b8'})[c]||'#94a3b8';
+const fxEmoji=c=>(FX&&FX.categorias[c]||'📦 ').split(' ')[0];
+async function abrirFeira(){FX=await api('/api/cx/feira/vitrine');
+  $('fx-cats').innerHTML=`<button data-c="" class="${fxCat?'':'ativo'}">✨ Tudo</button>`+Object.entries(FX.categorias).map(([k,v])=>`<button data-c="${k}" class="${fxCat===k?'ativo':''}">${v}</button>`).join('');
+  desenharVitrine();carregarPedidos()}
+$('fx-cats').onclick=e=>{const b=e.target.closest('button');if(!b)return;fxCat=b.dataset.c;$('fx-cats').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x===b));desenharVitrine()};
+$('fx-busca').oninput=()=>desenharVitrine();
+function desenharVitrine(){if(!FX)return;const q=$('fx-busca').value.trim().toLowerCase(),eu=minha();
+  const l=FX.itens.filter(i=>(!fxCat||i.categoria===fxCat)&&(!q||(i.titulo+' '+i.descricao).toLowerCase().includes(q)));
+  $('fx-vitrine').innerHTML=l.map(i=>`<div class="item" data-id="${i.id}"><div class="capa${i.capa?' com-foto':''}" style="${i.capa?`background:url('${i.capa}') center/cover`:`background:linear-gradient(135deg,${fxCor(i.categoria)}55,${fxCor(i.categoria)}11)`}"><span class="est">${i.estoque} disponível${i.estoque>1?'s':''}</span>${i.capa?'':fxEmoji(i.categoria)}</div>
+    <div class="corpo"><b class="t">${esc(i.titulo)}</b><span class="vend"><span class="mono">${curto(i.vendedor)}</span>${i.vendedor===eu?'<span class="selo ok">você</span>':i.reputacao.vendas?`<span class="selo ok">✔ ${i.reputacao.vendas} venda${i.reputacao.vendas>1?'s':''}</span>`:'<span class="selo ouro">novo</span>'}</span>
+    <div class="preco-item num">${n(i.preco,2)} PTG</div></div></div>`).join('')||`<div class="card vazio" style="grid-column:1/-1">${q||fxCat?'Nada encontrado aqui.':'A feira está vazia. Seja o primeiro a anunciar! 🛍️'}<br><br><button class="btn" onclick="formAnuncio()">+ Anunciar algo</button></div>`;
+  $('fx-vitrine').querySelectorAll('.item').forEach(c=>c.onclick=()=>verItem(Number(c.dataset.id)));
+  const meus=FX.itens.filter(i=>i.vendedor===eu);
+  $('fx-meus-anuncios').innerHTML=eu?(meus.map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--grade)"><span>${fxEmoji(i.categoria)}</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(i.titulo)}</span><b class="num">${n(i.preco,2)}</b><button class="btn sec peq" data-enc="${i.id}">encerrar</button></div>`).join('')||'<p class="sub" style="margin:0">Você não tem anúncios abertos.</p>'):'<p class="sub" style="margin:0">Conecte a carteira para anunciar.</p>';
+  $('fx-meus-anuncios').querySelectorAll('[data-enc]').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.enc);try{const r=await api('/api/cx/feira/encerrar',{id,...await pedido('portgiga-fx-encerrar:',[id])});toast(r.ok?'Anúncio encerrado':'Erro: '+r.erro)}catch(e){toast(SEM_ASSINAR)}abrirFeira()});
+}
+document.body.appendChild($('fx-modal'));   // fica acima do topo (fora do <main>)
+function abrirFx(html){$('fx-modal-corpo').innerHTML=html;$('fx-modal').classList.add('on')}
+
+// ---------- fotos dos anúncios: qualquer formato; o aparelho converte para JPEG (até 1600 px) antes de mandar
+const FX_ACEITA='image/*,.heic,.heif,.avif,.jxl,.tif,.tiff,.bmp,.gif,.svg,.ico,.jfif,.webp,.png,.jpg,.jpeg';
+async function fotoParaEnvio(file){
+  try{
+    let src=null,w=0,h=0;
+    try{src=await createImageBitmap(file,{imageOrientation:'from-image'});w=src.width;h=src.height}catch(e){
+      const bl=/\.svgz?$/i.test(file.name)&&!file.type?new Blob([file],{type:'image/svg+xml'}):file;
+      src=await new Promise((ok,no)=>{const u=URL.createObjectURL(bl),im=new Image();im.onload=()=>ok(im);im.onerror=()=>{URL.revokeObjectURL(u);no(e)};im.src=u});
+      w=src.naturalWidth||1200;h=src.naturalHeight||1200}
+    const k=Math.min(1,1600/Math.max(w,h)),cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(w*k));cv.height=Math.max(1,Math.round(h*k));
+    const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);g.drawImage(src,0,0,cv.width,cv.height);
+    const b=await new Promise(ok=>cv.toBlob(ok,'image/jpeg',.86));if(!b||b.size<200)throw 0;
+    return {u8:new Uint8Array(await b.arrayBuffer()),url:URL.createObjectURL(b)};
+  }catch(e){ // o navegador não abre esse formato: manda o arquivo como está e o servidor converte
+    if(file.size>25e6)throw new Error('a foto "'+file.name+'" passa de 25 MB');
+    return {u8:new Uint8Array(await file.arrayBuffer()),url:null,nome:(file.name.split('.').pop()||'foto').toUpperCase()}}
+}
+const SC_VID_ACEITA='video/*,.mp4,.mov,.m4v,.webm,.3gp,.mkv';
+const ehVideo=f=>/^video\//.test(f.type)||/\.(mp4|mov|m4v|webm|3gp|3g2|mkv)$/i.test(f.name);
+async function videoParaEnvio(file){
+  if(file.size>95e6)throw new Error('o vídeo tem '+Math.round(file.size/1e6)+' MB: o máximo é 95 MB (grave em qualidade menor ou corte o vídeo)');
+  if(file.size<10000)throw new Error('esse arquivo não parece um vídeo');
+  const url=URL.createObjectURL(file);
+  const dur=await new Promise(ok=>{const v=document.createElement('video');v.preload='metadata';v.muted=true;v.onloadedmetadata=()=>ok(v.duration);v.onerror=()=>ok(NaN);v.src=url;setTimeout(()=>ok(NaN),8000)});
+  return {video:true,file,url,dur};
+}
+// vídeo vai cru (sem base64): os campos assinados seguem no cabeçalho X-Pedido
+function scEnviarVideo(file,ped,progresso){return new Promise((ok,falha)=>{const x=new XMLHttpRequest();
+  x.open('POST','/api/cx/social/postar_video');x.setRequestHeader('Content-Type','application/octet-stream');
+  x.setRequestHeader('X-Pedido',paraB64(new TextEncoder().encode(JSON.stringify(ped))));
+  x.upload.onprogress=e=>{if(e.lengthComputable)progresso(Math.floor(e.loaded*100/e.total))};
+  x.onload=()=>{try{ok(JSON.parse(x.responseText))}catch(e){ok({ok:false,erro:x.status===413?'vídeo grande demais para enviar (máximo 95 MB)':'o servidor não respondeu direito (código '+x.status+'): tente de novo'})}};
+  x.onerror=()=>falha(new Error('a internet caiu durante o envio do vídeo: tente de novo'));x.ontimeout=x.onerror;x.send(file)})}
+const paraB64=u8=>{let t='';for(let i=0;i<u8.length;i+=0x8000)t+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(t)};
+async function enviarFoto(id,pos,u8){const tem=u8&&u8.length,resumo=tem?hex(await crypto.subtle.digest('SHA-256',u8)):'';
+  return api('/api/cx/feira/foto',{id,pos,imagem:tem?paraB64(u8):'',...await pedido('portgiga-fx-foto:',[id,pos,resumo])})}
+function escolherFotos(cb){const inp=document.createElement('input');inp.type='file';inp.accept=FX_ACEITA;inp.multiple=true;
+  inp.onchange=()=>cb([...inp.files]);inp.click()}
+function tileFoto(url,j,nome){return `<div class="ft" style="${url?`background-image:url('${url}')`:''}">${url?'':'📷<br>'+esc(nome||'foto')}${j===0?'<b>capa</b>':''}<button data-x="${j}" title="tirar foto">×</button></div>`}
+function gerenciarFotos(id){const i=FX.itens.find(x=>x.id===id);if(!i)return;const max=FX.max_fotos||5;i.fotos=i.fotos||[];
+  const desenhar=()=>{$('gf-grade').innerHTML=i.fotos.map((u,j)=>tileFoto(u,j)).join('')+(i.fotos.length<max?`<div class="ft mais" id="gf-mais">＋<small>adicionar</small></div>`:'');
+    if($('gf-mais'))$('gf-mais').onclick=()=>escolherFotos(async fs=>{for(const f of fs.slice(0,max-i.fotos.length)){mostra('gf-msg','Enviando foto…',true);
+      try{const p=await fotoParaEnvio(f),r=await enviarFoto(id,i.fotos.length,p.u8);if(!r.ok){mostra('gf-msg','Erro: '+r.erro);break}i.fotos=r.fotos;i.capa=r.fotos[0]||null;desenhar();mostra('gf-msg','Foto salva ✅',true)}
+      catch(e){mostra('gf-msg',e&&e.message?e.message:SEM_ASSINAR);break}}desenharVitrine()});
+    $('gf-grade').querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{mostra('gf-msg','Tirando foto…',true);
+      try{const r=await enviarFoto(id,+b.dataset.x,null);if(!r.ok)return mostra('gf-msg','Erro: '+r.erro);i.fotos=r.fotos;i.capa=r.fotos[0]||null;desenhar();mostra('gf-msg','Foto tirada',true);desenharVitrine()}catch(e){mostra('gf-msg',SEM_ASSINAR)}})};
+  abrirFx(`<h3>📷 Fotos do anúncio</h3><div class="sub" style="font-size:12px;margin-bottom:12px">${esc(i.titulo)} · até ${max} fotos, qualquer formato (JPG, PNG, HEIC, WEBP, GIF…). A primeira é a capa.</div>
+    <div class="fa-fotos" id="gf-grade"></div><div class="msg" id="gf-msg"></div>
+    <div style="display:flex;gap:8px"><button class="btn sec" style="flex:1" onclick="fecharFx()">Fechar</button><button class="btn" style="flex:1" onclick="verItem(${id})">Ver anúncio</button></div>`);desenhar()}
+function fecharFx(){$('fx-modal').classList.remove('on')}
+$('fx-modal').onclick=e=>{if(e.target===$('fx-modal'))fecharFx()};
+addEventListener('keydown',e=>{if(e.key==='Escape')fecharFx()});
+function verItem(id){const i=FX.itens.find(x=>x.id===id);if(!i)return;const eu=minha(),meu=i.vendedor===eu;
+  abrirFx(`${i.capa?`<img id="fx-foto" src="${i.capa}" alt="Foto do produto" style="width:100%;max-height:340px;object-fit:contain;background:var(--card2);border-radius:14px;margin-bottom:12px;display:block">${(i.fotos||[]).length>1?`<div class="galeria" id="fx-gal">${i.fotos.map((u,j)=>`<img src="${u}" alt="foto ${j+1}" class="${j?'':'ativo'}">`).join('')}</div>`:''}`:`<div class="capa" style="height:130px;border-radius:14px;display:grid;place-items:center;font-size:60px;background:linear-gradient(135deg,${fxCor(i.categoria)}55,${fxCor(i.categoria)}11);margin-bottom:12px">${fxEmoji(i.categoria)}</div>`}
+    <h3>${esc(i.titulo)}</h3><div class="sub" style="font-size:12px">${esc(FX.categorias[i.categoria])} · vendido por <span class="mono">${curto(i.vendedor)}</span> · ${i.reputacao.vendas} vendas concluídas${i.reputacao.problemas?` · <span class="desce">${i.reputacao.problemas} com problema</span>`:''}</div>
+    <p style="white-space:pre-line;font-size:14px">${esc(i.descricao)||'<span class="sub">Sem descrição.</span>'}</p>
+    <div class="grande num sobe">${n(i.preco,2)} PTG</div>
+    <div class="cot"><div><span>🔒 Pagamento protegido</span><b>sim</b></div><div><span>Seu saldo na corretora</span><b class="num sens">${C?n(C.ptg,2):'—'} PTG</b></div><div><span>Libera sozinho depois de enviado</span><b>${FX.liberar_dias} dias sem reclamação</b></div></div>
+    <div class="msg" id="fx-msg"></div>
+    <div style="display:flex;gap:8px"><button class="btn sec" style="flex:1" onclick="fecharFx()">Fechar</button>${meu?`<button class="btn" style="flex:2" onclick="gerenciarFotos(${id})">📷 Fotos do anúncio</button>`:`<button class="btn brilho" style="flex:2" id="fx-comprar">Comprar por ${n(i.preco,2)} PTG</button>`}</div>`);
+  if($('fx-gal'))$('fx-gal').onclick=e=>{const im=e.target.closest('img');if(!im)return;$('fx-foto').src=im.src;$('fx-gal').querySelectorAll('img').forEach(x=>x.classList.toggle('ativo',x===im))};
+  if(!meu)$('fx-comprar').onclick=async()=>{if(!eu)return mostra('fx-msg','Conecte a sua carteira primeiro (página da Rede Portgiga).');
+    $('fx-comprar').disabled=true;try{const r=await api('/api/cx/feira/comprar',{id,preco:i.preco_unidades,...await pedido('portgiga-fx-comprar:',[id,i.preco_unidades])});
+      mostra('fx-msg',r.ok?r.aviso:'Erro: '+r.erro,r.ok);if(r.ok){confete();toast('🛍️ Compra feita! Combine a entrega no pedido');fxPapel='comprador';setTimeout(()=>{fecharFx();abrirFeira();atualizarConta()},1400)}}
+    catch(e){mostra('fx-msg',SEM_ASSINAR)}if($('fx-comprar'))$('fx-comprar').disabled=false}}
+function formAnuncio(){if(!minha()){toast('Conecte a carteira para anunciar');return}
+  abrirFx(`<h3>🏷️ Novo anúncio</h3><div class="sub" style="font-size:12px;margin-bottom:12px">Só PTG. Nada de reais, pix ou outras moedas. Taxa de ${n(FX.taxa_pct,1)}% quando vender.</div>
+    <label class="campo"><span>O que você está vendendo</span><input type="text" id="fa-tit" maxlength="70" placeholder="Ex.: Bolo de cenoura, aula de violão, fone usado…"></label>
+    <label class="campo"><span>Descrição</span><textarea id="fa-desc" rows="3" maxlength="600" placeholder="Estado, tamanho, como entrega…"></textarea></label>
+    <label class="campo"><span>Fotos do produto · até ${FX.max_fotos||5}, qualquer formato (a 1ª é a capa)</span></label><div class="fa-fotos" id="fa-fotos"></div>
+    <label class="campo"><span>Categoria</span><div class="cats" id="fa-cats" style="flex-wrap:wrap;margin:0">${Object.entries(FX.categorias).map(([k,v],j)=>`<button data-c="${k}" class="${j===0?'ativo':''}">${v}</button>`).join('')}</div></label>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><label class="campo"><span>Preço</span><div class="campo-valor"><input type="text" id="fa-preco" inputmode="decimal" placeholder="0"><em>PTG</em></div></label>
+    <label class="campo"><span>Quantidade</span><input type="text" id="fa-est" inputmode="numeric" value="1"></label></div>
+    <div class="msg" id="fa-msg"></div>
+    <div style="display:flex;gap:8px"><button class="btn sec" style="flex:1" onclick="fecharFx()">Cancelar</button><button class="btn" style="flex:2" id="fa-ok">Publicar anúncio</button></div>`);
+  let cat=Object.keys(FX.categorias)[0];const novas=[],maxF=FX.max_fotos||5;
+  const desFotos=()=>{$('fa-fotos').innerHTML=novas.map((f,j)=>tileFoto(f.url,j,f.nome)).join('')+(novas.length<maxF?`<div class="ft mais" id="fa-mais">＋<small>foto</small></div>`:'');
+    if($('fa-mais'))$('fa-mais').onclick=()=>escolherFotos(async fs=>{for(const f of fs.slice(0,maxF-novas.length)){try{novas.push(await fotoParaEnvio(f))}catch(e){mostra('fa-msg',e.message||'não consegui ler essa foto')}}desFotos()});
+    $('fa-fotos').querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{novas.splice(+b.dataset.x,1);desFotos()})};desFotos();
+  $('fa-cats').onclick=e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();cat=b.dataset.c;$('fa-cats').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x===b))};
+  $('fa-ok').onclick=async()=>{const titulo=$('fa-tit').value.trim(),descricao=$('fa-desc').value.trim(),preco=unidadesDe($('fa-preco').value),estoque=parseInt($('fa-est').value,10);
+    if(!preco)return mostra('fa-msg','preço inválido');if(!(estoque>=1))return mostra('fa-msg','quantidade inválida');
+    $('fa-ok').disabled=true;try{const r=await api('/api/cx/feira/anunciar',{titulo,descricao,categoria:cat,preco,estoque,...await pedido('portgiga-fx-anunciar:',[titulo,descricao,cat,preco,estoque])});
+      if(!r.ok){mostra('fa-msg','Erro: '+r.erro);$('fa-ok').disabled=false;return}
+      let falhou=0;for(let j=0;j<novas.length;j++){mostra('fa-msg',`Anúncio criado! Enviando foto ${j+1} de ${novas.length}…`,true);
+        try{const rf=await enviarFoto(r.id,j-falhou,novas[j].u8);if(!rf.ok){falhou++;toast('Foto '+(j+1)+': '+rf.erro)}}catch(e){falhou++}}
+      mostra('fa-msg',falhou?`Anúncio publicado, mas ${falhou} foto(s) não foram. Abra o anúncio e toque em 📷 Fotos.`:'Anúncio publicado! 🎉',!falhou);toast('🏷️ Anúncio no ar');setTimeout(()=>{fecharFx();abrirFeira()},falhou?2600:900)}catch(e){mostra('fa-msg',SEM_ASSINAR)}
+    if($('fa-ok'))$('fa-ok').disabled=false};
+  setTimeout(()=>$('fa-tit').focus(),50)}
+$('fx-anunciar-btn').onclick=()=>FX&&formAnuncio();
+$('fx-papel').onclick=e=>{const b=e.target.closest('button');if(!b)return;fxPapel=b.dataset.p;$('fx-papel').querySelectorAll('button').forEach(x=>x.classList.toggle('ativo',x===b));desenharPedidos()};
+async function carregarPedidos(){if(!minha()){$('fx-pedidos').innerHTML='<p class="sub" style="margin:0">Conecte a carteira para ver seus pedidos.</p>';return}
+  try{const r=await api('/api/cx/feira/meus',await pedido('portgiga-fx-ler:',[]));fxPedidos=r.ok?r.pedidos:[]}catch(e){fxPedidos=[]}desenharPedidos()}
+const NOME_EST={pago:'pago · aguardando envio',enviado:'enviado',concluido:'concluído',cancelado:'cancelado',disputa:'em disputa',reembolsado:'reembolsado'};
+function desenharPedidos(){if(!fxPedidos)return;const eu=minha(),l=fxPedidos.filter(p=>p.papel===fxPapel);
+  if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#fx-pedidos'))return;
+  $('fx-pedidos').innerHTML=l.map(p=>{const comp=p.papel==='comprador',ab=['pago','enviado'].includes(p.estado);
+    const ac=[];if(comp&&ab)ac.push(['recebido','✅ Recebi','btn peq'],['disputa','⚠️ Abrir disputa','btn sec peq']);if(!comp&&p.estado==='pago')ac.push(['enviado','📦 Marquei como enviado','btn peq']);if(!comp&&ab)ac.push(['cancelar','Cancelar e devolver','btn sec peq']);
+    return `<div class="pedido" data-p="${p.id}"><div class="cab"><b>${esc(p.titulo)}</b><span class="est-pedido est-${p.estado}">${NOME_EST[p.estado]||p.estado}</span><b class="num" style="margin-left:auto">${n(p.preco,2)} PTG</b></div>
+      <div class="sub" style="font-size:11.5px">${comp?'vendedor':'comprador'} <span class="mono">${curto(comp?p.vendedor:p.comprador)}</span> · pedido #${p.id} · ${ha(p.criado)}${p.motivo?` · motivo: ${esc(p.motivo)}`:''}</div>
+      ${p.estado==='enviado'&&comp?`<div class="sub" style="font-size:11.5px">Se você não reclamar, o PTG vai para o vendedor ${FX?FX.liberar_dias:7} dias depois do envio.</div>`:''}
+      <div class="chat">${p.mensagens.map(m=>`<div class="${m.autor===eu?'eu':''}">${esc(m.texto)}<small>${m.autor===eu?'você':curto(m.autor)} · ${ha(m.quando)}</small></div>`).join('')||'<span class="sub" style="font-size:12px">Nenhuma mensagem. Combine a entrega por aqui.</span>'}</div>
+      ${['concluido','cancelado','reembolsado'].includes(p.estado)?'':`<div style="display:flex;gap:6px"><input type="text" data-msg="${p.id}" placeholder="escreva uma mensagem" style="padding:8px 11px"><button class="btn sec peq" data-env="${p.id}">enviar</button></div>`}
+      <div class="linha-acoes">${ac.map(([a,t,c])=>`<button class="${c}" data-ac="${a}" data-id="${p.id}">${t}</button>`).join('')}</div></div>`}).join('')||`<p class="sub" style="margin:0">${fxPapel==='comprador'?'Você ainda não comprou nada.':'Você ainda não vendeu nada.'}</p>`;
+  $('fx-pedidos').querySelectorAll('[data-env]').forEach(b=>b.onclick=async()=>{const pid=Number(b.dataset.env),inp=document.querySelector(`[data-msg="${pid}"]`),texto=inp.value.trim();if(!texto)return;
+    b.disabled=true;try{const r=await api('/api/cx/feira/mensagem',{pedido:pid,texto,...await pedido('portgiga-fx-msg:',[pid,texto])});if(!r.ok)toast('Erro: '+r.erro);else inp.value=''}catch(e){toast(SEM_ASSINAR)}inp.blur();carregarPedidos()});
+  $('fx-pedidos').querySelectorAll('[data-msg]').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')document.querySelector(`[data-env="${i.dataset.msg}"]`).click()});
+  $('fx-pedidos').querySelectorAll('[data-ac]').forEach(b=>b.onclick=async()=>{const acao=b.dataset.ac,pid=Number(b.dataset.id);let motivo='';
+    if(acao==='disputa'){motivo=prompt('Conte o que aconteceu (o dono da corretora vai decidir):','')||'';if(!motivo)return}
+    if(acao==='recebido'&&!confirm('Confirma que recebeu? O PTG vai para o vendedor e isso não pode ser desfeito.'))return;
+    if(acao==='cancelar'&&!confirm('Cancelar o pedido e devolver o PTG para o comprador?'))return;
+    b.disabled=true;try{const r=await api('/api/cx/feira/pedido',{pedido:pid,acao,motivo,...await pedido('portgiga-fx-pedido:',[pid,acao,motivo])});toast(r.ok?'✅ Pedido atualizado':'Erro: '+r.erro);if(r.ok&&acao==='recebido')confete()}catch(e){toast(SEM_ASSINAR)}
+    carregarPedidos();atualizarConta();abrirFeira()});
+}
+setInterval(()=>{if($('v-feira').classList.contains('ativo')&&!$('fx-modal').classList.contains('on'))carregarPedidos()},15000);
+
+// ---------- PTG SOCIAL
+const SC={modo:'todos',moeda:'',tag:'',itens:[],fim:false,carregando:false,alta:null,eu:null};
+const IC_COR='<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+const IC_COM='<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>';
+const IC_MOE='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.6-1.4-2.8-1.4-1.6 0-2.8.8-2.8 2s1.1 1.7 2.8 2.1 2.8.9 2.8 2.1-1.2 2.1-2.8 2.1c-1.3 0-2.4-.6-2.9-1.5M12 6v1.8M12 16.2V18"/></svg>';
+const IC_COMP='<svg viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>';
+function scAvatar(p,cl=''){const ini=esc((p.nome||'?').replace(/^ptg1/,'').slice(0,1).toUpperCase());
+  return p.avatar?`<div class="sc-av ${cl}" data-perfil="${esc(p.carteira)}" style="background-image:url('${esc(p.avatar)}')"></div>`:`<div class="sc-av ${cl}" data-perfil="${esc(p.carteira)}">${ini}</div>`}
+function scTexto(t){return esc(t).replace(/(^|\s)#([\wÀ-ú]{2,30})/g,(m,a,b)=>`${a}<span class="sc-hash" data-tagf="${b.toLowerCase()}" style="cursor:pointer">#${b}</span>`).replace(/(^|\s)\$([A-Z][A-Z0-9]{1,7})\b/g,'$1<span class="sc-cifra" data-moeda="$2">$$$2</span>')}
+function scMoedaTag(p){if(!p.moeda)return '';if(p.moeda==='PTG')return `<span class="sc-tagm ptg" data-moeda="PTG"><span class="ptg-ic"></span>PTG</span>`;
+  const i=p.moeda_info||{};return `<span class="sc-tagm" data-moeda="${esc(p.moeda)}">${ic(i.emoji||'🪙')} ${esc(p.moeda)}</span>`}
+function scCard(p){const nome=esc(p.autor.nome),us=p.autor.usuario?'@'+esc(p.autor.usuario):'';
+  const midia=p.video?`<div class="sc-foto sc-vid" data-dbl="${p.id}"><video src="${esc(p.video)}" poster="${esc(p.foto||'')}" preload="none" playsinline muted loop controls></video><div class="sc-coracao">❤️</div></div>`
+    :p.foto?`<div class="sc-foto" data-dbl="${p.id}"><img src="${esc(p.foto)}" alt="" loading="lazy"><div class="sc-coracao">❤️</div></div>`
+    :`<div class="sc-foto" data-dbl="${p.id}"><div class="sc-texto-grande">${scTexto(p.legenda)}</div><div class="sc-coracao">❤️</div></div>`;
+  return `<article class="sc-post" id="scp-${p.id}">
+    <div class="sc-cab">${scAvatar(p.autor)}<div class="sc-quem" data-perfil="${esc(p.autor.carteira)}"><b>${nome}</b><small>${us?us+' · ':''}${ha(p.criado)}</small></div>${scMoedaTag(p)}</div>
+    ${midia}${p.anuncio?scAnuncio(p.anuncio):''}
+    <div class="sc-barra"><button class="sc-ic ${p.curti?'curtido':''}" data-curtir="${p.id}" title="Curtir">${IC_COR}</button><button class="sc-ic com" data-abrir="${p.id}" title="Comentar">${IC_COM}</button>
+      <button class="sc-ic gor" data-gorj="${p.id}" title="Mandar PTG de gorjeta">💛</button>${p.moeda?`<button class="sc-ic moe" data-moeda="${esc(p.moeda)}" title="Ver a moeda">${IC_MOE}</button>`:''}<button class="sc-ic" data-compart="${p.id}" title="Compartilhar" style="margin-left:auto">${IC_COMP}</button></div>
+    <div class="sc-corpo"><div style="display:flex;gap:10px;align-items:baseline"><div class="sc-curt" id="scc-${p.id}">${p.curtidas} ${p.curtidas===1?'curtida':'curtidas'}</div><span class="sc-views">👁 ${scNum(p.views)} ${p.views===1?'visualização':'visualizações'}</span></div>
+      <div class="sc-gorj" id="scg-${p.id}">${Number(p.gorjetas)>0?'💛 '+n(p.gorjetas,2).replace(/,00$/,'')+' PTG em gorjetas':''}</div>
+      ${p.foto&&p.legenda?`<div class="sc-leg"><b data-perfil="${esc(p.autor.carteira)}">${nome}</b>${scTexto(p.legenda)}</div>`:''}
+      ${p.comentarios>2?`<span class="sc-vercom" data-abrir="${p.id}">Ver todos os ${p.comentarios} comentários</span>`:''}
+      ${(p.ultimos||[]).map(c=>`<div class="sc-ultimo"><b data-perfil="${esc(c.carteira)}">${esc(c.autor)}</b>${scTexto(c.texto)}</div>`).join('')}
+      <div class="sc-hora">${ha(p.criado)==='agora'?'agora mesmo':'há '+ha(p.criado)}</div></div>
+    <div class="sc-comentar"><input type="text" placeholder="Adicione um comentário…" data-cin="${p.id}" maxlength="300"><button data-cenv="${p.id}">Publicar</button></div>
+  </article>`}
+function scPrecisaCarteira(){if(minha())return false;scEntrar();return true}
+// ---------- conta em 1 passo, dentro da Social (mesmo esquema da página da Rede: a chave nasce e é trancada NO aparelho;
+// o servidor guarda só a chave cifrada, que ele não consegue abrir, e uma derivação da senha para o login)
+const scPut=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+async function scPbkdf2(senha,sal){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(senha),'PBKDF2',false,['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:typeof sal==='string'?new TextEncoder().encode(sal):sal,iterations:210000},k,256))}
+const scSenhaLogin=async(u,senha)=>hex(await scPbkdf2(senha,'portgiga-login:'+u.toLowerCase()));
+async function scTrancar(chave,senha){const sal=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+  const k=await crypto.subtle.importKey('raw',await scPbkdf2(senha,sal),'AES-GCM',false,['encrypt']);
+  return JSON.stringify({v:1,sal:hex(sal),iv:hex(iv),dados:hex(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(chave)))})}
+async function scDestrancar(cifrada,senha){const c=JSON.parse(cifrada);const k=await crypto.subtle.importKey('raw',await scPbkdf2(senha,deHex(c.sal)),'AES-GCM',false,['decrypt']);
+  return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:deHex(c.iv)},k,deHex(c.dados)))}
+function scEntrar(aba){aba=aba||'criar';
+  scJanela('Entrar na PTG Social',`<div class="sc-chips" style="margin-bottom:12px"><button class="${aba==='criar'?'ativo':''}" id="sce-a1">Criar conta</button><button class="${aba==='entrar'?'ativo':''}" id="sce-a2">Já tenho conta</button></div>
+    ${aba==='criar'?`<p style="margin:0 0 12px;font-size:13px;color:var(--sub)">Uma conta só, para a Social, a carteira, a Feira e a corretora. Grátis, sem e-mail e sem telefone.</p>
+      <label class="campo"><span>Usuário</span><input type="text" id="sce-u" maxlength="20" autocapitalize="none" autocomplete="username" placeholder="ex.: bia.minera"></label>
+      <label class="campo"><span>Senha (mínimo 8)</span><input type="password" id="sce-s" autocomplete="new-password"></label>
+      <label class="campo"><span>Repita a senha</span><input type="password" id="sce-s2" autocomplete="new-password"></label>
+      <label style="display:flex;gap:8px;font-size:12.5px;color:var(--sub);margin-bottom:10px"><input type="checkbox" id="sce-ok"> Entendi: ninguém (nem a Portgiga) consegue recuperar a minha senha. Vou guardar a chave secreta que aparece a seguir.</label>`
+    :`<label class="campo"><span>Usuário</span><input type="text" id="sce-u" maxlength="20" autocapitalize="none" autocomplete="username"></label>
+      <label class="campo"><span>Senha</span><input type="password" id="sce-s" autocomplete="current-password"></label>
+      <p style="font-size:12px;color:var(--fraco);margin:0 0 10px">Tem só a chave secreta, sem conta? <a href="/?entrar" style="color:var(--scA)">Entre por aqui</a>.</p>`}
+    <div class="msg" id="sce-msg"></div><button class="sc-btn" id="sce-go" style="width:100%">${aba==='criar'?'Criar minha conta':'Entrar'}</button>`);
+  $('sce-a1').onclick=()=>scEntrar('criar');$('sce-a2').onclick=()=>scEntrar('entrar');
+  $('sce-go').onclick=async()=>{const usuario=$('sce-u').value.trim(),senha=$('sce-s').value,b=$('sce-go');
+    if(!/^[A-Za-z0-9_.-]{3,20}$/.test(usuario))return mostra('sce-msg','Usuário: 3 a 20 letras, números, ponto, traço ou _');
+    if(!crypto.subtle)return mostra('sce-msg','Abra pelo link https da rede, num navegador atualizado, para proteger a carteira.');
+    b.disabled=true;
+    try{if(aba==='criar'){if(senha.length<8){b.disabled=false;return mostra('sce-msg','A senha precisa de pelo menos 8 caracteres')}
+        if(senha!==$('sce-s2').value){b.disabled=false;return mostra('sce-msg','As senhas não são iguais')}
+        if(!$('sce-ok').checked){b.disabled=false;return mostra('sce-msg','Marque que entendeu sobre a chave secreta')}
+        mostra('sce-msg','Criando a sua carteira neste aparelho…',true);
+        const ch=hex(crypto.getRandomValues(new Uint8Array(32))),p=await parDe(ch),carteira='ptg1'+(await sha('ptg-pub:'+p.pub)).slice(0,38),quando=Math.floor(Date.now()/1000);
+        const assinatura=hex(await crypto.subtle.sign('Ed25519',p.priv,new TextEncoder().encode('portgiga-cadastro:'+JSON.stringify([usuario,carteira,quando]))));
+        const r=await api('/api/cadastro',{usuario,senha:await scSenhaLogin(usuario,senha),carteira,quando,pub:p.pub,assinatura,chave_cifrada:await scTrancar(ch,senha)});
+        if(!r.ok){b.disabled=false;return mostra('sce-msg',r.erro)}
+        scPut('chave',ch);scPut('endereco',carteira);
+        const nome=usuario,us=usuario.toLowerCase().replace(/-/g,'_');   // já cria o perfil da Social
+        try{await api('/api/cx/social/perfil_salvar',{nome,usuario:us,bio:'',imagem:'',...await pedido('portgiga-sc-perfil:',[nome,us,'',''])})}catch(e){}
+        scGuardarChave(ch,usuario)}
+      else{mostra('sce-msg','Entrando…',true);const r=await api('/api/entrar',{usuario,senha:await scSenhaLogin(usuario,senha)});
+        if(!r.ok){b.disabled=false;return mostra('sce-msg',r.erro)}
+        let ch;try{ch=await scDestrancar(r.chave_cifrada,senha)}catch(e){b.disabled=false;return mostra('sce-msg','Não consegui abrir a carteira com esta senha')}
+        scPut('chave',ch);scPut('endereco',r.carteira);scFechar();toast('👋 Bem-vindo, '+r.usuario);atualizarConta();abrirSocial()}
+    }catch(e){b.disabled=false;mostra('sce-msg','Não consegui falar com o servidor. Tente de novo.')}}}
+function scGuardarChave(ch,usuario){
+  scJanela('🔑 Guarde a sua chave secreta',`<p style="margin:0 0 10px;font-size:13.5px">A conta <b>${esc(usuario)}</b> foi criada. Esta é a <b>chave secreta</b> da sua carteira: com ela você recupera tudo se esquecer a senha.</p>
+    <div style="font:700 13px ui-monospace,monospace;word-break:break-all;background:var(--bg);border:1px dashed var(--scY);border-radius:12px;padding:12px;color:var(--scY)">${esc(ch)}</div>
+    <div style="display:flex;gap:8px;margin:10px 0"><button class="sc-btn sec" id="scg-cp" style="flex:1">Copiar</button><button class="sc-btn sec" id="scg-dl" style="flex:1">Baixar arquivo</button></div>
+    <p style="font-size:12px;color:var(--scV);margin:0 0 10px">⚠️ Nunca mande essa chave para ninguém, nem para quem diz ser da Portgiga. Quem tem a chave tem a carteira.</p>
+    <label style="display:flex;gap:8px;font-size:12.5px;color:var(--sub);margin-bottom:10px"><input type="checkbox" id="scg-ok"> Guardei a chave num lugar seguro</label>
+    <button class="sc-btn" id="scg-fim" style="width:100%">Começar a usar a PTG Social</button>`);
+  $('sc-fundo').onclick=null;
+  $('scg-cp').onclick=async()=>{try{await navigator.clipboard.writeText(ch);toast('Copiada. Cole num lugar seguro (não em conversa)')}catch(e){prompt('Copie a chave:',ch)}};
+  $('scg-dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([`Portgiga - chave secreta da carteira\nUsuário: ${usuario}\nChave: ${ch}\n\nNunca mande esta chave para ninguém.\n`],{type:'text/plain'}));a.download='portgiga-chave-'+usuario+'.txt';a.click()};
+  $('scg-fim').onclick=()=>{if(!$('scg-ok').checked)return toast('Marque que guardou a chave 🔑');$('sc-fundo').onclick=e=>{if(e.target.id==='sc-fundo')scFechar()};scFechar();toast('🎉 Bem-vindo à PTG Social!');confete();atualizarConta();abrirSocial()}}
+async function scFeed(reset){if(SC.carregando)return;SC.carregando=true;
+  if(reset){SC.itens=[];SC.fim=false;$('sc-feed').innerHTML='<div class="sc-post" style="padding:16px"><div class="esqueleto" style="width:40%"></div><div class="esqueleto" style="height:260px;margin-top:12px"></div></div>'}
+  try{const ant=SC.itens.length?SC.itens[SC.itens.length-1].id:0,q=new URLSearchParams({modo:SC.modo,moeda:SC.moeda,tag:SC.tag,antes:ant,eu:minha()||''});
+    const r=await api('/api/cx/social/feed?'+q);SC.itens=SC.itens.concat(r.itens);SC.fim=r.fim;
+    if(reset)$('sc-feed').innerHTML='';
+    if(!SC.itens.length)$('sc-feed').innerHTML=`<div class="sc-vazio"><div class="grande">${SC.modo==='seguindo'?'👀':'📸'}</div><b>${SC.modo==='seguindo'?'Você ainda não segue ninguém (ou eles não postaram).':SC.moeda?'Ninguém postou sobre '+esc(SC.moeda)+' ainda.':'Seja a primeira pessoa a postar!'}</b><p>Mostre sua plaquinha minerando, sua moeda, o que você vende na Feira…</p><button class="sc-btn" onclick="scNovo()">＋ Criar post</button></div>`;
+    else $('sc-feed').insertAdjacentHTML('beforeend',r.itens.map(scCard).join(''));
+    scObservar();
+    $('sc-mais').style.display=SC.fim||!SC.itens.length?'none':'inline-block';
+  }catch(e){if(reset)$('sc-feed').innerHTML='<div class="sc-vazio">Não consegui carregar. Tente de novo.</div>'}
+  SC.carregando=false}
+function scChips(){const ch=[['todos','✨ Para você',''],['seguindo','👥 Seguindo','c-seg'],['ptg','PTG','c-ptg']];
+  $('sc-chips').innerHTML=ch.map(([m,t,c])=>`<button class="${c} ${(m==='ptg'?SC.moeda==='PTG':SC.modo===m&&!SC.moeda)?'ativo':''}" data-chip="${m}">${m==='ptg'?'<span class="ptg-ic"></span>':''}${t}</button>`).join('')
+    +(SC.moeda&&SC.moeda!=='PTG'?`<button class="c-moeda ativo" data-chip="todos">${esc(SC.moeda)} ✕</button>`:'')
+    +(SC.tag?`<button class="c-moeda ativo" data-chip="todos">#${esc(SC.tag)} ✕</button>`:'');
+  $('sc-chips').querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{const m=b.dataset.chip;
+    if(m==='seguindo'&&scPrecisaCarteira())return;SC.modo=m==='ptg'?'todos':m;SC.moeda=m==='ptg'?'PTG':'';SC.tag='';scChips();scStories();scFeed(true)})}
+function scStories(){if(!SC.alta)return;$('sc-stories').innerHTML=SC.alta.moedas.map(m=>`<button class="sc-story ${SC.moeda===m.simbolo?'sel':''}" data-story="${esc(m.simbolo)}"><div class="sc-anel"><i>${m.simbolo==='PTG'?'<span class="ptg-ic" style="width:34px;height:34px"></span>':ic(m.emoji||'🪙')}</i></div><span>${esc(m.simbolo)}</span></button>`).join('');
+  $('sc-stories').querySelectorAll('[data-story]').forEach(b=>b.onclick=()=>{const s=b.dataset.story;SC.moeda=SC.moeda===s?'':s;SC.modo='todos';scChips();scStories();scFeed(true)})}
+async function scLado(){const eu=minha();
+  if(eu){try{SC.eu=await api('/api/cx/social/perfil?c='+eu+'&eu='+eu)}catch(e){}}
+  $('sc-eu-box').innerHTML=eu&&SC.eu?`<div class="sc-sug">${scAvatar(SC.eu)}<div class="sc-quem" data-perfil="${esc(eu)}"><b>${esc(SC.eu.nome)}</b><small>${SC.eu.usuario?'@'+esc(SC.eu.usuario):'complete o seu perfil'}</small></div><button onclick="scEditar()">Editar</button></div><div class="sc-nums" style="justify-content:space-around;margin-top:10px"><div><b>${SC.eu.n_posts}</b><span>posts</span></div><div><b>${SC.eu.seguidores}</b><span>seguidores</span></div><div><b>${SC.eu.seguindo}</b><span>seguindo</span></div></div>`
+    :`<h4>Entre na PTG Social</h4><p style="margin:0 0 10px;font-size:13px;color:var(--sub)">Crie a sua conta em 1 passo: grátis, sem e-mail e sem telefone.</p><button class="sc-btn" onclick="scEntrar()">Criar conta</button> <button class="sc-btn sec" onclick="scEntrar('entrar')">Entrar</button>`;
+  if(SC.alta)$('sc-sugest').innerHTML=SC.alta.perfis.filter(p=>p.carteira!==eu).slice(0,6).map(p=>`<div class="sc-sug">${scAvatar(p,'p')}<div class="sc-quem" data-perfil="${esc(p.carteira)}"><b>${esc(p.nome)}</b><small>${p.usuario?'@'+esc(p.usuario):''}</small></div><button data-perfil="${esc(p.carteira)}">Ver</button></div>`).join('')||'<p style="margin:0;font-size:12.5px;color:var(--sub)">Ainda não há perfis. Crie o seu!</p>'}
+const scNum=v=>Number(v||0).toLocaleString('pt-BR');
+function scMonetBox(m){const ps=Math.min(100,m.seguidores/Math.max(1,m.min_seguidores)*100),pc=Math.min(100,m.curtidas/Math.max(1,m.min_curtidas)*100);
+  return `<div class="sc-monet ${m.elegivel?'ok':''}"><b>${m.elegivel?'💰 Você é criador monetizado!':'💰 Monetização da PTG Social'}</b>
+    <p>Criadores com <b>${scNum(m.min_seguidores)} seguidores</b> e <b>${scNum(m.min_curtidas)} curtidas</b> ganham <b>${String(m.ptg_por_mil).replace('.',',')} PTG a cada 1.000 visualizações</b>. Cai no seu saldo da corretora.</p>
+    ${m.elegivel?'':`<div class="sc-meta"><span>Seguidores ${scNum(m.seguidores)}/${scNum(m.min_seguidores)}</span><i><u style="width:${ps}%"></u></i></div><div class="sc-meta"><span>Curtidas ${scNum(m.curtidas)}/${scNum(m.min_curtidas)}</span><i><u style="width:${pc}%"></u></i></div>`}
+    <div class="sc-meta-n"><span>👁 ${scNum(m.views)} visualizações qualificadas</span><span>Ganhou: <b>${esc(m.ganho)} PTG</b></span></div>
+    <p style="margin:8px 0 0;font-size:11.5px;color:var(--fraco)">Contra robôs, só contam seguidores, curtidas e visualizações de carteiras ativas (que já mineraram ou depositaram PTG). Visitante sem carteira conta 1 vez por dia.</p></div>`}
+const scVistos=new Set(),scFila=new Set();
+const scObs=new IntersectionObserver(es=>es.forEach(e=>{const id=Number(e.target.dataset.vid);if(!id||scVistos.has(id))return;
+  if(e.isIntersecting){e.target._t=setTimeout(()=>{scVistos.add(id);scFila.add(id)},1000)}else clearTimeout(e.target._t)}),{threshold:.3});
+// vídeos do feed: tocam sem som quando aparecem na tela e pausam quando saem (o som liga nos controles)
+const scObsVid=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting&&e.intersectionRatio>=.6){v.preload='auto';v.play().catch(()=>{})}else if(!v.paused)v.pause()}),{threshold:[0,.6]});
+function scObservar(){document.querySelectorAll('#sc-feed .sc-post:not([data-obs])').forEach(el=>{el.dataset.obs=1;el.dataset.vid=el.id.slice(4);scObs.observe(el);
+  const v=el.querySelector('.sc-vid video');if(v)scObsVid.observe(v)})}
+setInterval(async()=>{if(!scFila.size)return;const ids=[...scFila];scFila.clear();let corpo={ids};
+  if(minha()){try{corpo={ids,...await pedido('portgiga-sc-ver:',[ids])}}catch(e){}}api('/api/cx/social/ver',corpo).catch(()=>{})},3000);
+async function abrirSocial(abrirUsuario){document.body.classList.add('modo-social');
+  try{SC.alta=await api('/api/cx/social/alta')}catch(e){}
+  scChips();scStories();scLado();scFeed(true);scDesafio();scConquista();scNotifs();
+  if(abrirUsuario){try{const r=await api('/api/cx/social/usuario?u='+encodeURIComponent(abrirUsuario));if(r.carteira)scAbrirPerfil(r.carteira);else toast('Perfil @'+abrirUsuario+' não encontrado')}catch(e){}}}
+function scFalta(t){const s=t-Date.now()/1000;if(s<=0)return 'encerrando…';const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?d+'d '+h+'h':h?h+'h '+m+'min':m+' min'}
+async function scDesafio(){let r;try{r=await api('/api/cx/social/desafio')}catch(e){return}const d=r.desafio;if(!d){$('sc-desafio').innerHTML='';return}
+  $('sc-desafio').innerHTML=`<div class="sc-desafio"><div class="eti">🏆 ${d.encerrado?'DESAFIO ENCERRADO':'DESAFIO DA SEMANA'}</div><h3>${esc(d.titulo)}</h3>${d.descricao?`<p>${esc(d.descricao)}</p>`:''}
+    <div class="info"><span>Prêmio <b>${n(d.premio,2).replace(/,00$/,'')} PTG</b> (1º ${d.divisao[0]}% · 2º ${d.divisao[1]}% · 3º ${d.divisao[2]}%)</span><span>Use <span class="sc-hash">#${esc(d.hashtag)}</span></span><span>${d.encerrado?'Vencedores premiados ✅':'⏳ '+scFalta(d.fim)}</span><span>${d.participantes} participantes</span></div>
+    ${d.top.length?`<div class="sc-top3">${d.top.map((t,i)=>`<span data-abrir="${t.post}">${['🥇','🥈','🥉'][i]} ${scAvatar(t.autor,'p')} ${esc(t.autor.nome)} · ❤ ${t.curtidas}</span>`).join('')}</div>`:''}
+    <div style="display:flex;gap:8px">${d.encerrado?'':`<button class="sc-btn" onclick="scNovo({legenda:' #${esc(d.hashtag)}'})">Participar</button>`}<button class="sc-btn sec" data-tagf="${esc(d.hashtag)}">Ver posts</button></div></div>`}
+async function scConquista(){const eu=minha();$('sc-conquista').innerHTML='';if(!eu)return;let r;try{r=await api('/api/cx/social/mineracao?c='+eu)}catch(e){return}
+  const ja=Number(get('sc_min_post')||0);if(!r.minerado_unidades||r.minerado_unidades<ja+1e8)return;
+  const v=n(r.minerado,2).replace(/,00$/,'');
+  $('sc-conquista').innerHTML=`<div class="sc-conq"><div class="g">⛏️</div><div class="t"><b>Suas máquinas já mineraram ${v} PTG!</b>Mostre a sua conquista para a rede.</div><button class="sc-btn" id="sc-cq-ok">Postar</button><button class="sc-btn sec" id="sc-cq-nao" title="agora não">✕</button></div>`;
+  const marca=()=>{try{localStorage.setItem('sc_min_post',r.minerado_unidades)}catch(e){}$('sc-conquista').innerHTML=''};
+  $('sc-cq-nao').onclick=marca;
+  $('sc-cq-ok').onclick=async()=>{const foto=await scArteMineracao(v,r.bloco,r.maquinas);marca();
+    scNovo({foto,legenda:`⛏️ Minhas máquinas já mineraram ${v} PTG na rede Portgiga!${r.maquinas?' '+r.maquinas+(r.maquinas>1?' máquinas ligadas agora.':' máquina ligada agora.'):''} Bloco #${r.bloco}. #mineracao #portgiga`})}}
+async function scArteMineracao(v,bloco,maq){const cv=document.createElement('canvas');cv.width=cv.height=1080;const g=cv.getContext('2d');
+  g.fillStyle='#14161b';g.fillRect(0,0,1080,1080);
+  [['#22d3ff',200,180],['#ff3d5a',900,260],['#3dff8f',540,980],['#ffd23f',950,900]].forEach(([c,x,y])=>{const rg=g.createRadialGradient(x,y,0,x,y,520);rg.addColorStop(0,c+'40');rg.addColorStop(1,c+'00');g.fillStyle=rg;g.fillRect(0,0,1080,1080)});
+  g.strokeStyle='rgba(255,255,255,.06)';for(let i=0;i<1080;i+=54){g.beginPath();g.moveTo(i,0);g.lineTo(i,1080);g.moveTo(0,i);g.lineTo(1080,i);g.stroke()}
+  g.textAlign='center';g.fillStyle='#9aa3b2';g.font='800 44px Inter,system-ui,sans-serif';g.fillText('MINHAS MÁQUINAS JÁ MINERARAM',540,330);
+  const gr=g.createLinearGradient(140,0,940,0);gr.addColorStop(0,'#22d3ff');gr.addColorStop(.4,'#3dff8f');gr.addColorStop(.7,'#ffd23f');gr.addColorStop(1,'#ff3d5a');
+  g.fillStyle=gr;g.font='900 '+(v.length>7?150:200)+'px Inter,system-ui,sans-serif';g.fillText(v,540,560);
+  g.fillStyle='#eef2f7';g.font='900 90px Inter,system-ui,sans-serif';g.fillText('PTG',540,690);
+  g.fillStyle='#9aa3b2';g.font='700 38px Inter,system-ui,sans-serif';g.fillText('⛏️ bloco #'+bloco+(maq?'  ·  '+maq+(maq>1?' máquinas ligadas':' máquina ligada'):''),540,800);
+  g.fillStyle='#22d3ff';g.font='900 46px Inter,system-ui,sans-serif';g.fillText('PTG Social · Portgiga',540,960);
+  const b=await new Promise(ok=>cv.toBlob(ok,'image/jpeg',.9));return {u8:new Uint8Array(await b.arrayBuffer()),url:URL.createObjectURL(b)}}
+// notificações
+const SC_TXT={video_erro:'🎬 Seu vídeo não foi publicado:',curtida:'curtiu o seu post',comentario:'comentou:',seguiu:'começou a seguir você',gorjeta:'mandou uma gorjeta de',monetizacao:'Você ganhou',desafio:'🏆 Você ganhou no desafio'};
+async function scNotifs(abrir){const eu=minha();if(!eu)return;let r;try{r=await api('/api/cx/social/notif?c='+eu)}catch(e){return}SC.notifs=r.itens;
+  const visto=Number(get('sc_notif_visto')||0),novas=r.itens.filter(x=>x.id>visto).length,b=$('sc-nbadge');b.textContent=novas>9?'9+':novas;b.classList.toggle('on',novas>0);
+  if(!abrir)return;
+  scJanela('Notificações',r.itens.map(x=>{const quem=x.de?`<b data-perfil="${esc(x.de.carteira)}">${esc(x.de.nome)}</b> `:'';
+    const ico={video_erro:'🎬',curtida:'❤️',comentario:'💬',seguiu:'👥',gorjeta:'💛',monetizacao:'💰',desafio:'🏆'}[x.tipo]||'🔔';
+    const txt=x.tipo==='comentario'?`${SC_TXT.comentario} ${esc(x.texto)}`:x.tipo==='gorjeta'?`${SC_TXT.gorjeta} <b style="color:var(--scY)">${n(x.valor,2)} PTG</b>`:
+      x.tipo==='monetizacao'?`${SC_TXT.monetizacao} <b style="color:var(--scG)">${n(x.valor,2)} PTG</b> por ${esc(x.texto)}`:x.tipo==='desafio'?`${SC_TXT.desafio} ${esc(x.texto)}: <b style="color:var(--scG)">${n(x.valor,2)} PTG</b>`:x.tipo==='video_erro'?`${SC_TXT.video_erro} ${esc(x.texto)}`:SC_TXT[x.tipo]||'';
+    return `<div class="sc-notif ${x.id>visto?'nova':''}" ${x.post?`data-abrir="${x.post}"`:x.de?`data-perfil="${esc(x.de.carteira)}"`:''}><div class="ico">${ico}</div>${x.de?scAvatar(x.de,'p'):''}<div class="t">${quem}${txt}<small>${ha(x.quando)}</small></div>${x.foto?`<div class="mini" style="background-image:url('${esc(x.foto)}')"></div>`:''}</div>`}).join('')||'<p style="color:var(--sub);text-align:center">Nada por aqui ainda. Poste e interaja para receber notificações!</p>');
+  if(r.itens.length){try{localStorage.setItem('sc_notif_visto',r.itens[0].id)}catch(e){}$('sc-nbadge').classList.remove('on')}}
+setInterval(()=>{if($('v-social').classList.contains('ativo'))scNotifs()},30000);
+// gorjeta
+function scGorjeta(id){if(scPrecisaCarteira())return;const p=SC.itens.find(x=>x.id===id)||SC.aberto;if(!p)return;if(p.autor.carteira===minha()){toast('Esse post é seu 🙂');return}let val=1;
+  scJanela('💛 Mandar gorjeta em PTG',`<div class="sc-cab" style="padding:0">${scAvatar(p.autor)}<div class="sc-quem"><b>${esc(p.autor.nome)}</b><small>vai receber direto no saldo da corretora</small></div></div>
+    <div class="sc-valores">${[0.1,0.5,1,5].map(v=>`<button data-v="${v}" class="${v===1?'sel':''}">${String(v).replace('.',',')}</button>`).join('')}</div>
+    <label class="campo"><span>Outro valor (PTG)</span><input type="text" id="sc-gv" inputmode="decimal" value="1"></label>
+    <p style="font-size:12.5px;color:var(--sub);margin:0 0 10px">Sai do seu saldo de PTG na corretora${C&&C.ptg!=null?` (você tem <b>${n(C.ptg,2)} PTG</b>)`:''}. Não dá para desfazer.</p>
+    <div class="msg" id="sc-gmsg"></div><button class="sc-btn" id="sc-genv" style="width:100%;background:linear-gradient(135deg,#ffd23f,#3dff8f)">Mandar 💛</button>`);
+  $('sc-janela').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{$('sc-gv').value=String(b.dataset.v).replace('.',',');$('sc-janela').querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('sel',x===b))});
+  $('sc-genv').onclick=async()=>{const u=unidadesDe($('sc-gv').value);if(!u){mostra('sc-gmsg','Valor inválido');return}const b=$('sc-genv');b.disabled=true;
+    try{const r=await api('/api/cx/social/gorjeta',{id,unidades:u,...await pedido('portgiga-sc-gorjeta:',[id,u])});
+      if(r.ok){scFechar();toast('💛 Gorjeta enviada!');confete();p.gorjetas=r.gorjetas;const g=$('scg-'+id);if(g)g.textContent='💛 '+n(r.gorjetas,2).replace(/,00$/,'')+' PTG em gorjetas';atualizarConta()}else mostra('sc-gmsg','Erro: '+r.erro)}catch(e){mostra('sc-gmsg',SEM_ASSINAR)}b.disabled=false}}
+// anúncio da Feira dentro do post
+function scAnuncio(a){return `<div class="sc-anuncio"><div style="font-size:24px">🛍️</div><div class="t"><b>${esc(a.titulo)}</b><span>${n(a.preco,2).replace(/,00$/,'')} PTG</span> · na Feira, com pagamento protegido</div><button class="sc-btn" data-comprar="${a.id}" style="padding:8px 12px">Comprar</button></div>`}
+async function scComprar(id){location.hash='feira';for(let i=0;i<40;i++){await new Promise(ok=>setTimeout(ok,150));if(typeof FX!=='undefined'&&FX&&FX.itens&&$('v-feira').classList.contains('ativo')){if(FX.itens.find(x=>x.id===id))verItem(id);else toast('Esse anúncio já foi vendido ou encerrado');return}}}
+// curtir (botão ou dois toques na foto)
+async function scCurtir(id,forcar){if(scPrecisaCarteira())return;const p=SC.itens.find(x=>x.id===id)||SC.aberto;if(!p)return;
+  const quero=forcar?true:!p.curti;if(forcar&&p.curti)return;p.curti=quero;p.curtidas+=quero?1:-1;scPintarCurtida(p);
+  try{const r=await api('/api/cx/social/curtir',{id,curtir:quero,...await pedido('portgiga-sc-curtir:',[id,quero])});
+    if(r.ok){p.curtidas=r.curtidas;p.curti=r.curti}else{p.curti=!quero;p.curtidas+=quero?-1:1;toast('Erro: '+r.erro)}}catch(e){p.curti=!quero;p.curtidas+=quero?-1:1;toast(SEM_ASSINAR)}
+  scPintarCurtida(p)}
+function scPintarCurtida(p){document.querySelectorAll(`[data-curtir="${p.id}"]`).forEach(b=>{b.classList.toggle('curtido',p.curti);b.classList.remove('pulo');void b.offsetWidth;if(p.curti)b.classList.add('pulo')});
+  document.querySelectorAll(`#scc-${p.id},#sccm-${p.id}`).forEach(e=>e.textContent=p.curtidas+(p.curtidas===1?' curtida':' curtidas'))}
+async function scComentar(id,inp){const texto=inp.value.trim();if(!texto)return;if(scPrecisaCarteira())return;inp.disabled=true;
+  try{const r=await api('/api/cx/social/comentar',{id,texto,...await pedido('portgiga-sc-comentar:',[id,texto])});
+    if(!r.ok)toast('Erro: '+r.erro);else{inp.value='';toast('💬 Comentário publicado');const p=SC.itens.find(x=>x.id===id);if(p){p.comentarios++;
+      const eu=SC.eu||{nome:'você'};p.ultimos=(p.ultimos||[]).concat([{autor:eu.nome,carteira:minha(),texto}]).slice(-2);const el=$('scp-'+id);if(el)el.outerHTML=scCard(p)}
+      if(SC.aberto&&SC.aberto.id===id)scAbrirPost(id)}}catch(e){toast(SEM_ASSINAR)}inp.disabled=false}
+// janela
+function scJanela(titulo,html){$('sc-janela').innerHTML=`<div class="sc-modal-cab"><h3>${titulo}</h3><button class="x" onclick="scFechar()">✕</button></div><div class="sc-modal-corpo">${html}</div>`;$('sc-fundo').classList.add('on')}
+function scFechar(){if($('scg-fim')&&!$('scg-ok').checked){toast('Marque que guardou a chave 🔑');return}$('sc-fundo').classList.remove('on');SC.aberto=null}
+$('sc-fundo').onclick=e=>{if(e.target.id==='sc-fundo')scFechar()};
+async function scAbrirPost(id){const eu=minha();let p;try{p=await api('/api/cx/social/post?id='+id+'&eu='+(eu||''))}catch(e){return}if(p.erro){toast(p.erro);return}SC.aberto=p;
+  const meu=p.autor.carteira===eu;
+  scJanela('Post',`<div class="sc-cab" style="padding:0 0 12px">${scAvatar(p.autor)}<div class="sc-quem" data-perfil="${esc(p.autor.carteira)}"><b>${esc(p.autor.nome)}</b><small>${p.autor.usuario?'@'+esc(p.autor.usuario)+' · ':''}${ha(p.criado)}</small></div>${scMoedaTag(p)}</div>
+    ${p.video?`<div class="sc-foto sc-vid" data-dbl="${p.id}" style="border-radius:14px;overflow:hidden"><video src="${esc(p.video)}" poster="${esc(p.foto||'')}" preload="metadata" playsinline controls autoplay loop></video><div class="sc-coracao">❤️</div></div>`:p.foto?`<div class="sc-foto" data-dbl="${p.id}" style="border-radius:14px;overflow:hidden"><img src="${esc(p.foto)}" alt=""><div class="sc-coracao">❤️</div></div>`:`<div class="sc-foto" data-dbl="${p.id}" style="border-radius:14px;overflow:hidden"><div class="sc-texto-grande">${scTexto(p.legenda)}</div><div class="sc-coracao">❤️</div></div>`}
+    <div class="sc-barra" style="padding-left:0"><button class="sc-ic ${p.curti?'curtido':''}" data-curtir="${p.id}">${IC_COR}</button>${p.moeda?`<button class="sc-ic moe" data-moeda="${esc(p.moeda)}">${IC_MOE}</button>`:''}<button class="sc-ic" data-compart="${p.id}" style="margin-left:auto">${IC_COMP}</button></div>
+    <div class="sc-curt" id="sccm-${p.id}">${p.curtidas} ${p.curtidas===1?'curtida':'curtidas'}</div>
+    ${p.foto&&p.legenda?`<div class="sc-leg"><b data-perfil="${esc(p.autor.carteira)}">${esc(p.autor.nome)}</b>${scTexto(p.legenda)}</div>`:''}
+    <div class="sc-lista-com">${p.lista.map(c=>`<div class="sc-com">${scAvatar(c.autor,'p')}<div class="t"><b data-perfil="${esc(c.autor.carteira)}">${esc(c.autor.nome)}</b>${scTexto(c.texto)}<small>${ha(c.quando)}</small></div>${eu&&(c.autor.carteira===eu||meu)?`<button data-apcom="${c.id}" title="apagar">🗑</button>`:''}</div>`).join('')||'<p style="color:var(--sub);margin:0">Nenhum comentário ainda. Seja o primeiro!</p>'}</div>
+    <div class="sc-comentar" style="padding:12px 0 0;margin-top:12px"><input type="text" placeholder="Adicione um comentário…" data-cin="${p.id}" maxlength="300"><button data-cenv="${p.id}">Publicar</button></div>
+    ${meu?`<div style="margin-top:14px;text-align:right"><button class="sc-btn verm" data-appost="${p.id}">Apagar post</button></div>`:`<div style="margin-top:14px;text-align:right"><button class="sc-link" style="color:var(--fraco)" data-denun="${p.id}">⚠️ Denunciar post</button></div>`}`)}
+async function scAbrirPerfil(c){const eu=minha();let p;try{p=await api('/api/cx/social/perfil?c='+encodeURIComponent(c)+'&eu='+(eu||''))}catch(e){return}if(p.erro){toast(p.erro);return}
+  const meu=c===eu;
+  scJanela(p.usuario?'@'+esc(p.usuario):'Perfil',`<div class="sc-perfil-topo">${scAvatar(p,'g')}<div style="flex:1;min-width:0"><div class="sc-nums"><div><b>${p.n_posts}</b><span>posts</span></div><div><b id="sc-nseg">${p.seguidores}</b><span>seguidores</span></div><div><b>${p.seguindo}</b><span>seguindo</span></div></div></div></div>
+    <b style="font-size:16px">${esc(p.nome)}</b>${p.monet&&p.monet.ativa&&p.monet.elegivel?'<span class="sc-selo">💰 Criador monetizado</span>':''}${(p.selos||[]).map(x=>`<span class="sc-selo" title="Minerou no bloco ${n(x.bloco,0)}">${x.emoji} ${esc(x.nome)}</span>`).join('')}<div class="sc-bio">${p.bio?scTexto(p.bio):`<span style="color:var(--fraco)">${meu?'Conte quem é você e o que está criando.':'Sem bio ainda.'}</span>`}</div>
+    ${p.moedas.length?`<div style="font-size:12px;color:var(--sub);font-weight:800">MOEDAS QUE CRIOU</div><div class="sc-moedas-perfil">${p.moedas.map(m=>`<a href="#${esc(m.simbolo)}" onclick="scFechar()">${ic(m.emoji)} ${esc(m.simbolo)}</a>`).join('')}</div>`:''}
+    ${meu&&p.monet&&p.monet.ativa?scMonetBox(p.monet):''}
+    <div style="display:flex;gap:8px;margin-top:12px">${meu?`<button class="sc-btn sec" style="flex:1" onclick="scEditar()">Editar perfil</button><button class="sc-btn" onclick="scNovo()">＋ Postar</button>`:`<button class="sc-btn ${p.sigo?'sec':''}" style="flex:1" id="sc-seguir" data-alvo="${esc(c)}" data-sigo="${p.sigo?1:0}">${p.sigo?'Seguindo ✓':'Seguir'}</button>`}</div>
+    <div class="sc-grade">${p.posts.map(x=>`<div data-abrir="${x.id}" data-n="❤ ${x.curtidas}   💬 ${x.comentarios}" style="${x.foto?`background-image:url('${esc(x.foto)}')`:''}">${x.video?'<span class="sc-play">▶</span>':''}${x.foto?'':esc(x.legenda)}</div>`).join('')}</div>
+    ${p.posts.length?'':'<p style="text-align:center;color:var(--sub)">Nenhum post ainda.</p>'}
+    ${p.link?`<p style="margin:12px 0 0"><button class="sc-link" data-copiar="${esc(p.link)}">🔗 Copiar link do perfil (${esc(location.host+p.link)})</button></p>`:''}
+    <p style="font-size:11px;color:var(--fraco);word-break:break-all;margin-top:12px">Carteira: ${esc(c)}</p>`);
+  const b=$('sc-seguir');if(b)b.onclick=async()=>{if(scPrecisaCarteira())return;const quero=b.dataset.sigo!=='1';b.disabled=true;
+    try{const r=await api('/api/cx/social/seguir',{alvo:c,seguir:quero,...await pedido('portgiga-sc-seguir:',[c,quero])});
+      if(r.ok){b.dataset.sigo=quero?'1':'0';b.textContent=quero?'Seguindo ✓':'Seguir';b.classList.toggle('sec',quero);$('sc-nseg').textContent=r.seguidores;if(quero)toast('👥 Agora você segue '+p.nome);scLado()}else toast('Erro: '+r.erro)}catch(e){toast(SEM_ASSINAR)}b.disabled=false}}
+// novo post
+let scFoto=null,scMoedaSel='PTG';
+function scNovo(pre){if(scPrecisaCarteira())return;scFoto=null;scMoedaSel='PTG';pre=pre&&!(pre instanceof Event)?pre:{};
+  const ms=[['PTG','<span class="ptg-ic"></span>PTG'],['','Sem moeda']].concat((M&&M.moedas||[]).filter(m=>!m.banida).map(m=>[m.simbolo,ic(m.emoji)+' '+esc(m.simbolo)]));
+  scJanela('Novo post',`<div class="sc-escolher" id="sc-esc"><div><div class="grande">📸</div><b>Escolher foto ou vídeo</b><br><small>vídeo de até 60 s e 95 MB · ou poste só texto</small></div></div>
+    <label class="campo" style="margin-top:12px"><span>Legenda</span><textarea id="sc-leg" rows="3" maxlength="600" placeholder="Conte a história… use #hashtags e $MOEDA"></textarea></label>
+    <div style="font-size:12px;color:var(--sub);font-weight:700;margin-bottom:4px">Sobre qual moeda?</div><div class="sc-moedas" id="sc-msel">${ms.map(([s,t])=>`<button data-ms="${esc(s)}" class="${s===scMoedaSel?'sel':''}">${t}</button>`).join('')}</div>
+    <div id="sc-anun-box"></div>
+    <div class="msg" id="sc-msg"></div><button class="sc-btn" id="sc-pub" style="width:100%;margin-top:6px">Publicar</button>
+    <p style="font-size:11px;color:var(--fraco);margin:10px 0 0">Nada de reais, pix, lucro ou investimento. Posts com isso são recusados.</p>`);
+  if(pre.legenda)$('sc-leg').value=pre.legenda;
+  if(pre.foto){scFoto=pre.foto;$('sc-esc').innerHTML=`<img src="${pre.foto.url}" alt="">`}
+  api('/api/cx/social/meus_anuncios?c='+minha()).then(r=>{if(r.itens&&r.itens.length)$('sc-anun-box').innerHTML=`<label class="campo"><span>🛍️ Ligar a um anúncio seu da Feira (opcional)</span><select id="sc-anun" style="width:100%;background:var(--bg2);border:1px solid var(--borda);border-radius:11px;padding:10px;color:var(--txt)"><option value="0">Nenhum</option>${r.itens.map(i=>`<option value="${i.id}">${esc(i.titulo)} · ${n(i.preco,2)} PTG</option>`).join('')}</select></label>`}).catch(()=>{});
+  $('sc-esc').onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept=FX_ACEITA+','+SC_VID_ACEITA;inp.onchange=async()=>{const f=inp.files[0];if(!f)return;
+    try{if(ehVideo(f)){mostra('sc-msg','Abrindo o vídeo…',true);scFoto=await videoParaEnvio(f);mostra('sc-msg','',true);
+        $('sc-esc').innerHTML=`<video src="${scFoto.url}" muted playsinline autoplay loop style="width:100%;max-height:360px;border-radius:12px;background:#000"></video><small style="display:block;margin-top:6px">🎬 vídeo${isNaN(scFoto.dur)?'':' de '+Math.round(scFoto.dur)+' s'}${scFoto.dur>60.5?' · o post fica com os primeiros 60 s':''} · toque para trocar</small>`}
+      else{scFoto=await fotoParaEnvio(f);$('sc-esc').innerHTML=scFoto.url?`<img src="${scFoto.url}" alt="">`:`<div><div class="grande">🖼️</div><b>${esc(scFoto.nome)}</b> pronta</div>`}}catch(e){mostra('sc-msg',e.message||'não consegui abrir esse arquivo')}};inp.click()};
+  $('sc-msel').querySelectorAll('[data-ms]').forEach(b=>b.onclick=()=>{scMoedaSel=b.dataset.ms;$('sc-msel').querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b))});
+  $('sc-pub').onclick=async()=>{const legenda=$('sc-leg').value,b=$('sc-pub');if(!scFoto&&legenda.trim().length<3){mostra('sc-msg','Escolha uma foto ou escreva alguma coisa.');return}
+    b.disabled=true;mostra('sc-msg',scFoto&&scFoto.video?'Enviando o vídeo… (pode levar um pouco)':'Publicando…',true);
+    try{const vid=!!(scFoto&&scFoto.video),anuncio=Number(($('sc-anun')||{}).value||0);let r;
+      if(vid){let resumo,ped;
+        try{resumo=hex(await crypto.subtle.digest('SHA-256',await scFoto.file.arrayBuffer()))}catch(e){throw new Error('o celular não conseguiu ler o vídeo (pouca memória?): tente um vídeo menor')}
+        try{ped={legenda,moeda:scMoedaSel,anuncio,...await pedido('portgiga-sc-postar:',[legenda,scMoedaSel,resumo,anuncio])}}catch(e){throw new Error(SEM_ASSINAR)}
+        r=await scEnviarVideo(scFoto.file,ped,pc=>mostra('sc-msg','Enviando o vídeo… '+pc+'%',true))}
+      else{const u8=scFoto?scFoto.u8:null,resumo=u8?hex(await crypto.subtle.digest('SHA-256',u8)):'';let ped;
+        try{ped=await pedido('portgiga-sc-postar:',[legenda,scMoedaSel,resumo,anuncio])}catch(e){throw new Error(SEM_ASSINAR)}
+        r=await api('/api/cx/social/postar',{legenda,moeda:scMoedaSel,anuncio,imagem:u8?paraB64(u8):'',video:'',...ped})}
+      if(r.ok&&r.processando){scFechar();toast('🎬 Vídeo enviado! Estamos preparando, ele aparece no feed em instantes.');scAcompanhar(r.id)}
+      else if(r.ok){scFechar();toast('✅ Post publicado!');confete();SC.modo='todos';SC.moeda='';SC.tag='';scChips();scStories();scFeed(true);scLado();scDesafio()}else mostra('sc-msg','Erro: '+r.erro)}catch(e){mostra('sc-msg',e&&e.message?e.message:'não deu certo: tente de novo')}
+    b.disabled=false}}
+// vídeo sendo preparado no servidor: confere a cada 4 s (até 10 min)
+function scAcompanhar(id,n=0){setTimeout(async()=>{let r={};try{r=await api('/api/cx/social/estado?id='+id)}catch(e){}
+  if(r.estado==='pronto'){toast('✅ Seu vídeo foi publicado!');confete();SC.modo='todos';SC.moeda='';SC.tag='';scChips();scStories();scFeed(true);scLado();scDesafio()}
+  else if(r.estado==='falhou'){toast('⚠️ O vídeo não foi publicado: veja o motivo nas notificações 🔔');scNotifs(false)}
+  else if(n<150)scAcompanhar(id,n+1)},4000)}
+// editar perfil
+let scAv=null;
+function scEditar(){if(scPrecisaCarteira())return;scAv=null;const p=SC.eu||{nome:'',usuario:'',bio:''};
+  scJanela('Editar perfil',`<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><div id="sc-avp">${scAvatar(Object.assign({carteira:minha()},p),'g')}</div><button class="sc-btn sec" id="sc-avb">Trocar foto</button></div>
+    <label class="campo"><span>Nome</span><input type="text" id="sc-pn" maxlength="40" value="${esc(p.tem_perfil?p.nome:'')}" placeholder="Seu nome"></label>
+    <label class="campo"><span>Usuário</span><input type="text" id="sc-pu" maxlength="20" value="${esc(p.usuario)}" placeholder="seu.usuario" autocapitalize="none"></label>
+    <label class="campo"><span>Bio</span><textarea id="sc-pb" rows="3" maxlength="160" placeholder="Minero PTG com 3 plaquinhas 🌳">${esc(p.bio)}</textarea></label>
+    <div class="msg" id="sc-pmsg"></div><button class="sc-btn" id="sc-psalvar" style="width:100%">Salvar</button>`);
+  $('sc-avb').onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept=FX_ACEITA;inp.onchange=async()=>{const f=inp.files[0];if(!f)return;
+    try{scAv=await fotoParaEnvio(f);if(scAv.url)$('sc-avp').innerHTML=`<div class="sc-av g" style="background-image:url('${scAv.url}')"></div>`}catch(e){mostra('sc-pmsg',e.message||'não consegui abrir essa foto')}};inp.click()};
+  $('sc-psalvar').onclick=async()=>{const nome=$('sc-pn').value,usuario=$('sc-pu').value.trim().toLowerCase().replace(/^@/,''),bio=$('sc-pb').value,b=$('sc-psalvar');
+    b.disabled=true;mostra('sc-pmsg','Salvando…',true);
+    try{const u8=scAv?scAv.u8:null,resumo=u8?hex(await crypto.subtle.digest('SHA-256',u8)):'';
+      const r=await api('/api/cx/social/perfil_salvar',{nome,usuario,bio,imagem:u8?paraB64(u8):'',...await pedido('portgiga-sc-perfil:',[nome,usuario,bio,resumo])});
+      if(r.ok){scFechar();toast('✅ Perfil salvo');await scLado();scFeed(true)}else mostra('sc-pmsg','Erro: '+r.erro)}catch(e){mostra('sc-pmsg',SEM_ASSINAR)}b.disabled=false}}
+// cliques (delegação)
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-perfil],[data-curtir],[data-abrir],[data-moeda],[data-cenv],[data-apcom],[data-appost],[data-compart],[data-gorj],[data-denun],[data-copiar],[data-comprar],[data-tagf]');if(!t||!t.closest('#v-social,#sc-fundo'))return;
+  if(t.dataset.gorj)return scGorjeta(Number(t.dataset.gorj));
+  if(t.dataset.comprar)return scComprar(Number(t.dataset.comprar));
+  if(t.dataset.tagf){scFechar();SC.tag=t.dataset.tagf;SC.moeda='';SC.modo='todos';scChips();scStories();scFeed(true);return}
+  if(t.dataset.copiar){const u=location.origin+t.dataset.copiar;try{await navigator.clipboard.writeText(u);toast('🔗 Link copiado: '+u)}catch(_){prompt('Copie o link:',u)}return}
+  if(t.dataset.denun){if(scPrecisaCarteira())return;const id=Number(t.dataset.denun),motivo=prompt('Por que este post deve ser revisado? (golpe, ofensa, spam, conteúdo impróprio...)','');if(motivo===null)return;
+    try{const r=await api('/api/cx/social/denunciar',{id,motivo,...await pedido('portgiga-sc-denunciar:',[id,motivo])});toast(r.ok?'⚠️ Denúncia enviada ao dono da corretora. Obrigado!':'Erro: '+r.erro);if(r.ok)scFechar()}catch(_){toast(SEM_ASSINAR)}return}
+  if(t.dataset.curtir)return scCurtir(Number(t.dataset.curtir));
+  if(t.dataset.cenv){const id=Number(t.dataset.cenv);return scComentar(id,t.parentElement.querySelector('input'))}
+  if(t.dataset.abrir)return scAbrirPost(Number(t.dataset.abrir));
+  if(t.dataset.perfil)return scAbrirPerfil(t.dataset.perfil);
+  if(t.dataset.moeda){const s=t.dataset.moeda;scFechar();if(s==='PTG'){SC.moeda='PTG';SC.modo='todos';scChips();scStories();scFeed(true);scrollTo({top:0,behavior:'smooth'})}else location.hash=s;return}
+  if(t.dataset.compart){const url=location.origin+'/corretora#social';try{if(navigator.share)await navigator.share({title:'PTG Social',url});else{await navigator.clipboard.writeText(url);toast('🔗 Link copiado')}}catch(_){}return}
+  if(t.dataset.apcom){const cid=Number(t.dataset.apcom);if(!confirm('Apagar este comentário?'))return;
+    try{const r=await api('/api/cx/social/apagar_com',{id:cid,...await pedido('portgiga-sc-apagar-com:',[cid])});toast(r.ok?'🗑 Comentário apagado':'Erro: '+r.erro);if(r.ok&&SC.aberto)scAbrirPost(SC.aberto.id)}catch(_){toast(SEM_ASSINAR)}return}
+  if(t.dataset.appost){const id=Number(t.dataset.appost);if(!confirm('Apagar este post? Não dá para desfazer.'))return;
+    try{const r=await api('/api/cx/social/apagar',{id,...await pedido('portgiga-sc-apagar:',[id])});if(r.ok){scFechar();toast('🗑 Post apagado');scFeed(true);scLado()}else toast('Erro: '+r.erro)}catch(_){toast(SEM_ASSINAR)}}});
+document.addEventListener('dblclick',e=>{const f=e.target.closest('[data-dbl]');if(!f)return;const c=f.querySelector('.sc-coracao');c.classList.remove('on');void c.offsetWidth;c.classList.add('on');scCurtir(Number(f.dataset.dbl),true)});
+let scToque=0;document.addEventListener('touchend',e=>{const f=e.target.closest('[data-dbl]');if(!f)return;const ag=Date.now();if(ag-scToque<300){e.preventDefault();f.dispatchEvent(new MouseEvent('dblclick',{bubbles:true}))}scToque=ag},{passive:false});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.cin)scComentar(Number(e.target.dataset.cin),e.target);if(e.key==='Escape'&&$('sc-fundo').classList.contains('on')&&!$('scg-fim'))scFechar()});
+$('sc-novo').onclick=()=>scNovo();$('sc-sino').onclick=()=>{if(scPrecisaCarteira())return;scNotifs(true)};$('sc-meu').onclick=()=>{const eu=minha();if(!eu)return scPrecisaCarteira();scAbrirPerfil(eu)};$('sc-mais').onclick=()=>scFeed(false);
+
+// ---------- navegação
+async function rota(){
+  const h=decodeURIComponent(location.hash.slice(1)),v=!h?'mercado':h[0]==='@'||['criar','conta','feira','social'].includes(h)?(h[0]==='@'?'social':h):'moeda';
+  document.body.classList.toggle('modo-social',v==='social');
+  document.querySelectorAll('.vista').forEach(x=>x.classList.toggle('ativo',x.id==='v-'+v));
+  document.querySelectorAll('.nav a,.nav-baixo a').forEach(a=>a.classList.toggle('ativo',a.dataset.v===v));
+  if(v==='moeda'){atual=null;lado='compra';$('o-valor').value='';$('o-msg').textContent='';await abrirMoeda(h,true);ajustarLado();cotar()}
+  if(v==='mercado'&&M){destaques();desenharLista();mapa()}
+  if(v==='criar')previa();
+  if(v==='feira')abrirFeira();
+  if(v==='social')abrirSocial(h[0]==='@'?h.slice(1):'');
+  scrollTo({top:0,behavior:'smooth'});
+}
+addEventListener('hashchange',rota);
+addEventListener('resize',()=>{if(atual&&$('v-moeda').classList.contains('ativo'))curva(atual)});
+marcarTol();
+(async()=>{await atualizarMercado();await atualizarConta();rota()})();
+setInterval(async()=>{await atualizarMercado();if($('v-moeda').classList.contains('ativo')&&atual&&document.activeElement!==$('o-valor'))abrirMoeda(atual.simbolo)},10000);
+setInterval(()=>{if(document.activeElement?.closest?.('#conta-corpo'))return;atualizarConta()},30000);
+</script>
+</body></html>

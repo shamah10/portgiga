@@ -1,0 +1,19 @@
+{
+  "name": "Carteira Portgiga",
+  "short_name": "Portgiga",
+  "description": "Envie e receba PTG de pessoa para pessoa. A chave fica só no seu celular.",
+  "id": "/app/",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050f0a",
+  "theme_color": "#062b18",
+  "lang": "pt-BR",
+  "categories": ["finance", "utilities"],
+  "icons": [
+    { "src": "/app/icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/app/icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/app/icones/icone-mascaravel-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

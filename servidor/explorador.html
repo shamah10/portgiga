@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Explorador Portgiga</title>
+<meta name="description" content="Estatísticas ao vivo da rede Portgiga (PTG): placas mineradoras, carteiras, blocos e transferências.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Ccircle cx=%2232%22 cy=%2232%22 r=%2231%22 fill=%22%230f5132%22/%3E%3Crect x=%2229%22 y=%2234%22 width=%226%22 height=%2222%22 fill=%22%23b3261e%22/%3E%3Ccircle cx=%2232%22 cy=%2224%22 r=%2216%22 fill=%22%232e8b57%22/%3E%3Ccircle cx=%2232%22 cy=%2222%22 r=%223%22 fill=%22%23f5c518%22/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f3f5f0;--bg2:#e9eee6;--card:#ffffff;--card2:#f7f9f5;--txt:#14201a;--sub:#5b6b62;--fraco:#8a988f;--borda:#dfe6dc;
+  --verde:#1f8a4c;--verde2:#e3f3e8;--verdeb:#2fb36a;--vermelho:#c0392b;--amarelo:#c99400;--ouro:#e0a800;--azul:#2f6fb3;--rosa:#c2417a;
+  --sombra:0 1px 2px rgba(20,32,26,.06),0 4px 16px rgba(20,32,26,.05);--grade:#e7ece4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a120e;--bg2:#0f1a15;--card:#111d17;--card2:#0d1712;--txt:#e6f0ea;--sub:#93a69b;--fraco:#64776c;--borda:#1d2e25;
+  --verde:#3ccf7d;--verde2:#14301f;--verdeb:#58e094;--vermelho:#ef5b4c;--amarelo:#f5c518;--ouro:#f5c518;--azul:#5b9ee8;--rosa:#e46a9f;--sombra:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25);--grade:#1a2a21}}
+:root[data-theme="dark"]{--bg:#0a120e;--bg2:#0f1a15;--card:#111d17;--card2:#0d1712;--txt:#e6f0ea;--sub:#93a69b;--fraco:#64776c;--borda:#1d2e25;
+  --verde:#3ccf7d;--verde2:#14301f;--verdeb:#58e094;--vermelho:#ef5b4c;--amarelo:#f5c518;--ouro:#f5c518;--azul:#5b9ee8;--rosa:#e46a9f;--sombra:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25);--grade:#1a2a21}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(900px 400px at 10% -10%,color-mix(in srgb,var(--verde) 14%,transparent),transparent 70%),radial-gradient(700px 360px at 100% 0,color-mix(in srgb,var(--ouro) 8%,transparent),transparent 70%)}
+a{color:var(--verde)}button,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.sub{color:var(--sub)}.fraco{color:var(--fraco)}
+
+.topo{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--borda)}
+.topo-in{max-width:1360px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.marca{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.marca h1{margin:0;font-size:19px}.marca h1 small{font-size:12px;color:var(--sub);font-weight:600;margin-left:4px}
+.marca p{margin:0;font-size:12px;color:var(--sub)}
+.links{display:flex;gap:4px;background:var(--bg2);padding:4px;border-radius:12px;margin-left:auto;flex-wrap:wrap}
+.links a{padding:7px 14px;border-radius:9px;color:var(--sub);font-weight:600;text-decoration:none}
+.links a.ativo{background:var(--card);color:var(--txt);box-shadow:var(--sombra)}
+.links a:hover{color:var(--txt)}
+.status{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--verde2);font-size:12px;font-weight:600}
+.status.off{background:color-mix(in srgb,var(--vermelho) 18%,transparent)}
+.ponto{width:8px;height:8px;border-radius:50%;background:var(--verde);flex:none}.off .ponto{background:var(--vermelho)}
+
+main{max-width:1360px;margin:0 auto;padding:22px 20px 40px}
+.painel{background:var(--card);border:1px solid var(--borda);border-radius:16px;box-shadow:var(--sombra);overflow:hidden;margin-bottom:18px}
+.painel>h2{margin:0;padding:14px 20px;font-size:15px;letter-spacing:.8px;text-transform:uppercase;background:var(--card2);border-bottom:1px solid var(--borda);display:flex;align-items:center;gap:10px}
+.painel>h2 .vivo{color:var(--verde)}.painel>h2 .ouro{color:var(--amarelo)}
+.painel>h2 small{margin-left:auto;font-size:12px;letter-spacing:0;text-transform:none;color:var(--sub);font-weight:500}
+.corpo{padding:18px 20px}
+
+.medidores{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;text-align:center}
+.medidor svg{width:92px;height:52px;display:block;margin:0 auto 4px}
+.medidor .arco-f{stroke:var(--grade)}.medidor .arco{stroke:var(--verde);transition:stroke-dashoffset .8s}
+.medidor:nth-child(3) .arco{stroke:var(--ouro)}
+.medidor b{display:block;font-size:26px;line-height:1.15}
+.medidor span{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--sub)}
+
+.graficos3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:26px}
+.graficos2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+.graf h3{margin:0 0 8px;text-align:center;font-size:14px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.graf svg{width:100%;height:auto;display:block;overflow:visible}
+.graf text{fill:var(--fraco);font-size:10px}
+.graf .valor{fill:var(--txt);font-size:11px;font-weight:600}
+.graf .linha-grade{stroke:var(--grade)}
+.legenda{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--sub);flex-wrap:wrap;margin-top:6px}
+.legenda i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.busca{display:flex;gap:8px}
+.busca input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid var(--borda);background:var(--bg2)}
+.busca input:focus{outline:2px solid color-mix(in srgb,var(--verde) 50%,transparent);border-color:transparent}
+.btn{border:0;border-radius:10px;padding:10px 16px;background:var(--verde);color:#fff;font-weight:700;cursor:pointer}
+.ajuda{margin:12px 0 0;color:var(--sub);font-size:13px}
+.listas{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;margin-top:16px}
+.listas h4{margin:0 0 6px;font-size:12px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+.lk{display:block;background:none;border:0;padding:3px 0;cursor:pointer;color:var(--verde);text-align:left;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lk:hover{text-decoration:underline}
+.lk .fraco{margin-left:6px}
+#resultado{margin-top:14px}
+.res{border:1px solid var(--borda);border-radius:12px;padding:14px;background:var(--card2)}
+.res h4{margin:0 0 8px;font-size:15px}
+.res dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0 0 10px}
+.res dt{color:var(--sub)}.res dd{margin:0;overflow-wrap:anywhere}
+.mov{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--borda);font-size:13px}
+.mais{color:var(--verde)}.menos{color:var(--vermelho)}
+.erro{color:var(--vermelho)}
+
+.placas-topo{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-bottom:10px;flex-wrap:wrap}
+.placas-topo i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.grupo{border-top:1px solid var(--borda)}
+.grupo>button{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:9px 2px;cursor:pointer;text-align:left}
+.grupo .qtd{min-width:28px;height:24px;border-radius:7px;background:var(--verde2);color:var(--verde);font-weight:800;display:grid;place-items:center;font-size:12px}
+.grupo .end{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grupo .vel{color:var(--sub);font-size:12px;white-space:nowrap}
+.grupo .seta{transition:transform .2s;color:var(--fraco)}.grupo.aberto .seta{transform:rotate(90deg)}
+.lista-placas{display:none;padding:0 0 10px 38px}.grupo.aberto .lista-placas{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.placa{border:1px solid var(--borda);border-radius:10px;padding:8px 10px;background:var(--card2);font-size:12px}
+.placa b{display:flex;align-items:center;gap:6px;font-size:13px}
+.placa b::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--verde)}
+
+.servicos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+.serv h5{margin:0 0 3px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;display:flex;gap:6px;align-items:center}
+.serv h5 svg{width:15px;height:15px}
+.serv div{font-size:13px;color:var(--sub)}
+.ok{color:var(--verde);font-weight:600}.nao{color:var(--vermelho);font-weight:600}.breve{color:var(--amarelo);font-weight:600}
+.selo{display:inline-block;margin-top:6px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;color:#fff;background:var(--verde)}
+.selo.comunidade{background:#c2410c}.selo.breve{background:var(--ouro);color:#3b2a00}
+.servidores{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.servidores .painel{margin:0}
+.nodo h5{margin:0 0 4px;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
+.nodo div{font-size:13px}
+.nodo .v{color:var(--verde);font-weight:600}
+
+.cart-cab,.cart{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center}
+.cart-cab{font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;padding-bottom:6px}
+.l-cart{max-height:420px;overflow:auto}
+.cart{border-top:1px solid var(--borda);padding:6px 0;font-size:13px}
+.cart .lk{padding:0}.cart small{display:block;color:var(--fraco);font-size:11px}
+.tag{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;background:var(--verde2);color:var(--verde);font-size:11px;font-weight:700}
+footer{text-align:center;color:var(--sub);font-size:13px;padding:10px 20px 40px}
+footer b{color:var(--txt)}
+
+@media (max-width:1000px){.medidores{grid-template-columns:repeat(3,1fr);row-gap:20px}.graficos3,.graficos2,.duas,.servidores{grid-template-columns:1fr}}
+@media (max-width:560px){main{padding:14px 12px 30px}.topo-in{padding:10px 12px}.medidores{grid-template-columns:repeat(2,1fr)}.medidor b{font-size:20px}.listas{grid-template-columns:1fr}.corpo{padding:14px}}
+</style></head>
+<body>
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/">
+    <svg width="42" height="42" viewBox="0 0 64 64" role="img" aria-label="pau-brasil"><circle cx="32" cy="32" r="31" fill="#0f5132"/>
+      <rect x="29" y="34" width="6" height="22" rx="2" fill="#b3261e"/><path d="M32 40 L22 31 M32 44 L42 34" stroke="#b3261e" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="32" cy="22" r="13" fill="#2e8b57"/><circle cx="20" cy="28" r="9" fill="#2e8b57"/><circle cx="44" cy="28" r="9" fill="#2e8b57"/>
+      <g fill="#f5c518"><circle cx="26" cy="18" r="2.6"/><circle cx="37" cy="15" r="2.6"/><circle cx="41" cy="25" r="2.6"/><circle cx="21" cy="27" r="2.6"/><circle cx="31" cy="27" r="2.6"/></g></svg>
+    <div><h1>Portgiga<small>Explorador</small></h1><p>Rede de teste · sem valor em dinheiro</p></div>
+  </a>
+  <nav class="links">
+    <a class="ativo" href="/explorador">Estatísticas e explorador</a>
+    <a href="/">Painel</a>
+    <a href="/minerar">Minerar</a>
+    <a href="/app/">Carteira</a>
+  </nav>
+  <div class="status" id="status"><span class="ponto"></span><span id="status-txt">conectando...</span></div>
+</div></header>
+
+<main>
+<section class="painel">
+  <h2><span class="vivo">Ao vivo</span> estatísticas da rede Portgiga <small id="atualizado"></small></h2>
+  <div class="corpo">
+    <div class="medidores">
+      <div class="medidor" id="m-vel"><svg viewBox="0 0 100 56"><path class="arco-f" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12"/><path class="arco" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12" stroke-dasharray="125.7" stroke-dashoffset="125.7"/></svg><b class="num">--</b><span>Velocidade da rede</span></div>
+      <div class="medidor" id="m-cart"><svg viewBox="0 0 100 56"><path class="arco-f" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12"/><path class="arco" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12" stroke-dasharray="125.7" stroke-dashoffset="125.7"/></svg><b class="num">--</b><span>Carteiras</span></div>
+      <div class="medidor" id="m-emit"><svg viewBox="0 0 100 56"><path class="arco-f" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12"/><path class="arco" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12" stroke-dasharray="125.7" stroke-dashoffset="125.7"/></svg><b class="num">--</b><span>PTG em circulação</span></div>
+      <div class="medidor" id="m-placas"><svg viewBox="0 0 100 56"><path class="arco-f" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12"/><path class="arco" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12" stroke-dasharray="125.7" stroke-dashoffset="125.7"/></svg><b class="num">--</b><span>Placas minerando</span></div>
+      <div class="medidor" id="m-bloco"><svg viewBox="0 0 100 56"><path class="arco-f" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12"/><path class="arco" d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke-width="12" stroke-dasharray="125.7" stroke-dashoffset="125.7"/></svg><b class="num">--</b><span>Blocos</span></div>
+    </div>
+
+    <div class="graficos3">
+      <div class="graf"><h3>PTG minerado por dia</h3><svg id="g-emit" viewBox="0 0 360 200"></svg></div>
+      <div class="graf"><h3>Aparelhos minerando (<span id="n-ap">0</span>)</h3><svg id="g-ap" viewBox="0 0 360 200"></svg></div>
+      <div class="graf"><h3>Distribuição dos saldos</h3><svg id="g-pizza" viewBox="0 0 360 200"></svg></div>
+    </div>
+    <div class="graficos2">
+      <div class="graf"><h3>Carteiras novas por dia</h3><svg id="g-novas" viewBox="0 0 540 220"></svg></div>
+      <div class="graf"><h3>Velocidade e mineradores (24 h)</h3><svg id="g-vel" viewBox="0 0 540 220"></svg>
+        <div class="legenda"><span><i style="background:var(--verde)"></i>Velocidade</span><span><i style="background:var(--ouro)"></i>Mineradores online</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="duas">
+  <div>
+    <section class="painel">
+      <h2>Explorador da cadeia</h2>
+      <div class="corpo">
+        <form class="busca" id="busca"><input id="q" placeholder="ex.: 16200, ptg1374be… ou um hash" autocomplete="off" spellcheck="false"><button class="btn">Procurar</button></form>
+        <p class="ajuda">Digite um número de bloco, um hash de bloco ou uma carteira <span class="mono">ptg1…</span> para ver tudo o que a cadeia guarda sobre ela. Clique em qualquer bloco ou carteira das listas abaixo.</p>
+        <div id="resultado"></div>
+        <div class="listas">
+          <div><h4>Últimas transferências</h4><div id="l-transf"></div></div>
+          <div><h4>Últimos blocos</h4><div id="l-blocos"></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="painel">
+      <h2><span>Placas mineradoras ativas (<span id="n-placas">0</span>)</span></h2>
+      <div class="corpo">
+        <div class="placas-topo"><span><i style="background:var(--verde)"></i>placa minerando agora</span><span><b class="mono">N</b> = quantas placas a carteira tem</span><span>clique para ver as placas</span></div>
+        <div id="l-placas"></div>
+        <p class="ajuda">Por privacidade, o explorador não mostra o nome nem onde fica a placa de ninguém: só o tipo, a velocidade e há quanto tempo está ligada.</p>
+      </div>
+    </section>
+  </div>
+
+  <div>
+    <section class="painel">
+      <h2>Serviços</h2>
+      <div class="corpo servicos" id="servicos"></div>
+    </section>
+    <div class="servidores">
+      <section class="painel">
+        <h2>Servidores do Brasil</h2>
+        <div class="corpo nodo" id="nodo-br"></div>
+      </section>
+      <section class="painel">
+        <h2>Rede nova</h2>
+        <div class="corpo nodo">
+          <h5>Portgiga Core</h5>
+          <div><span class="breve">Em preparação</span></div>
+          <div>Rede independente, com nós nos computadores de quem quiser participar.</div>
+          <span class="selo breve">Em breve</span>
+        </div>
+      </section>
+    </div>
+    <section class="painel" style="margin-top:18px">
+      <h2><span>Carteiras (<span id="n-cart">0</span>)</span></h2>
+      <div class="corpo"><div class="cart-cab"><span>#</span><span>Carteira</span><span>Saldo</span></div><div id="l-cart" class="l-cart"></div></div>
+    </section>
+  </div>
+</div>
+</main>
+<footer><b>Explorador Portgiga</b> · PTG é uma rede de teste, não é investimento e não é vendida por dinheiro.</footer>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const br = (n, d = 0) => Number(n).toLocaleString("pt-BR", {minimumFractionDigits: d, maximumFractionDigits: d});
+const curto = e => e.length > 18 ? e.slice(0, 10) + "…" + e.slice(-6) : e;
+function vel(h) { const u = ["H/s","kH/s","MH/s","GH/s","TH/s"]; let i = 0; while (h >= 1000 && i < u.length - 1) { h /= 1000; i++; } return br(h, i ? 2 : 0) + " " + u[i]; }
+function quanto(s) { s = Math.round(s); if (s < 60) return s + " s"; if (s < 3600) return Math.round(s / 60) + " min"; if (s < 86400) return Math.floor(s / 3600) + " h " + Math.round(s % 3600 / 60) + " min"; return Math.floor(s / 86400) + " d " + Math.floor(s % 86400 / 3600) + " h"; }
+function data(q) { return new Date(q * 1000).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"}); }
+function cor(nome) { return getComputedStyle(document.documentElement).getPropertyValue(nome).trim(); }
+const NOME_AP = {esp32: "ESP32", celular: "Celular", pc: "PC"};
+
+function medidor(id, valor, fracao) {
+  const el = $("#" + id);
+  el.querySelector("b").textContent = valor;
+  el.querySelector(".arco").style.strokeDashoffset = 125.7 * (1 - Math.max(0.02, Math.min(1, fracao)));
+}
+
+// ------------------------------------------------ gráficos em SVG puro (leves, sem animação infinita)
+function el(tag, at, pai) { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (pai) pai.appendChild(e); return e; }
+function limpar(svg) { while (svg.firstChild) svg.firstChild.remove(); return svg; }
+function eixos(svg, W, H, m, max, fmtY) {
+  for (let i = 0; i <= 4; i++) {
+    const y = m.t + (H - m.t - m.b) * i / 4;
+    el("line", {x1: m.l, x2: W - m.r, y1: y, y2: y, class: "linha-grade"}, svg);
+    el("text", {x: m.l - 6, y: y + 3, "text-anchor": "end"}, svg).textContent = fmtY(max * (1 - i / 4));
+  }
+}
+function rotulosX(svg, rot, x0, passo, yBase) {
+  const pula = Math.ceil(rot.length / 8);
+  rot.forEach((r, i) => { if (i % pula) return; const x = x0 + passo * i;
+    el("text", {x, y: yBase + 14, "text-anchor": "end", transform: `rotate(-35 ${x} ${yBase + 14})`}, svg).textContent = r; });
+}
+function topo(v) { if (v <= 4) return 4; if (v <= 8) return 8; const p = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / p * 1.1) * p; }
+function fmtCurto(v) { return v >= 1e6 ? br(v / 1e6, 1) + "M" : v >= 1e3 ? br(v / 1e3, 1) + "k" : br(v, v < 10 && v % 1 ? 1 : 0); }
+
+function area(svg, W, H, valores, rotulos, corL) {
+  limpar(svg); const m = {l: 44, r: 10, t: 10, b: 44};
+  const max = topo(Math.max(...valores, 0)); eixos(svg, W, H, m, max, fmtCurto);
+  const n = valores.length; if (!n) return;
+  const passo = n > 1 ? (W - m.l - m.r) / (n - 1) : 0, yB = H - m.b;
+  const pts = valores.map((v, i) => [m.l + passo * i, yB - (yB - m.t) * v / max]);
+  el("path", {d: `M${m.l},${yB} ` + pts.map(p => "L" + p.join(",")).join(" ") + ` L${pts[n - 1][0]},${yB}Z`, fill: corL, "fill-opacity": .75}, svg);
+  el("path", {d: "M" + pts.map(p => p.join(",")).join(" L"), fill: "none", stroke: corL, "stroke-width": 2}, svg);
+  pts.forEach(p => el("circle", {cx: p[0], cy: p[1], r: 3, fill: "#fff", stroke: corL, "stroke-width": 1.5}, svg));
+  rotulosX(svg, rotulos, m.l, passo, yB);
+}
+function barras(svg, W, H, valores, rotulos, cores) {
+  limpar(svg); const m = {l: 44, r: 10, t: 16, b: 44};
+  const max = topo(Math.max(...valores, 0)); eixos(svg, W, H, m, max, fmtCurto);
+  const n = valores.length, larg = (W - m.l - m.r) / n, yB = H - m.b;
+  valores.forEach((v, i) => {
+    const h = (yB - m.t) * v / max, x = m.l + larg * i + larg * .18;
+    el("rect", {x, y: yB - h, width: larg * .64, height: Math.max(h, v ? 1 : 0), rx: 3, fill: cores[i % cores.length]}, svg);
+    el("text", {x: x + larg * .32, y: yB - h - 4, "text-anchor": "middle", class: "valor"}, svg).textContent = fmtCurto(v);
+  });
+  rotulosX(svg, rotulos, m.l + larg / 2, larg, yB);
+}
+function pizza(svg, partes) {
+  limpar(svg); const cx = 100, cy = 100, r = 88;
+  const cores = [cor("--verde"), cor("--ouro"), cor("--azul"), cor("--rosa"), "#8b5cf6", "#14b8a6", cor("--fraco")];
+  let a = -Math.PI / 2;
+  partes.forEach((p, i) => {
+    const b = a + p.parte * 2 * Math.PI, c = cores[i % cores.length];
+    if (p.parte >= .9999) el("circle", {cx, cy, r, fill: c}, svg);
+    else el("path", {d: `M${cx},${cy} L${cx + r * Math.cos(a)},${cy + r * Math.sin(a)} A${r},${r} 0 ${b - a > Math.PI ? 1 : 0} 1 ${cx + r * Math.cos(b)},${cy + r * Math.sin(b)}Z`,
+                     fill: c, stroke: cor("--card"), "stroke-width": 1.5}, svg);
+    const y = 18 + i * 25;
+    el("rect", {x: 206, y: y - 10, width: 12, height: 12, rx: 3, fill: c}, svg);
+    el("text", {x: 224, y, class: "valor"}, svg).textContent = p.endereco === "outras" ? `outras ${p.quantas}` : curto(p.endereco).replace("…", "…");
+    el("text", {x: 224, y: y + 11}, svg).textContent = br(p.parte * 100, 1) + "% · " + fmtCurto(p.saldo) + " PTG";
+    a = b;
+  });
+}
+function velocidade(svg, hist) {
+  limpar(svg); const W = 540, H = 220, m = {l: 50, r: 34, t: 10, b: 44};
+  if (hist.length < 2) return;
+  const maxV = topo(Math.max(...hist.map(h => h[1]))), maxM = Math.max(4, Math.ceil(Math.max(...hist.map(h => h[2])) * 1.2));
+  eixos(svg, W, H, m, maxV, v => vel(v).replace(" ", ""));
+  for (let i = 0; i <= 4; i++) el("text", {x: W - m.r + 6, y: m.t + (H - m.t - m.b) * i / 4 + 3}, svg).textContent = Math.round(maxM * (1 - i / 4));
+  const t0 = hist[0][0], t1 = hist[hist.length - 1][0], yB = H - m.b, X = t => m.l + (W - m.l - m.r) * (t - t0) / Math.max(1, t1 - t0);
+  const pv = hist.map(h => [X(h[0]), yB - (yB - m.t) * h[1] / maxV]), pm = hist.map(h => [X(h[0]), yB - (yB - m.t) * h[2] / maxM]);
+  el("path", {d: `M${pv[0][0]},${yB} ` + pv.map(p => "L" + p.join(",")).join(" ") + ` L${pv[pv.length - 1][0]},${yB}Z`, fill: cor("--verde"), "fill-opacity": .35}, svg);
+  el("path", {d: "M" + pv.map(p => p.join(",")).join(" L"), fill: "none", stroke: cor("--verde"), "stroke-width": 1.6}, svg);
+  el("path", {d: "M" + pm.map(p => p.join(",")).join(" L"), fill: "none", stroke: cor("--ouro"), "stroke-width": 2}, svg);
+  const rot = [], n = 6; for (let i = 0; i <= n; i++) rot.push(new Date((t0 + (t1 - t0) * i / n) * 1000).toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"}));
+  rotulosX(svg, rot, m.l, (W - m.l - m.r) / n, yB);
+}
+
+// ------------------------------------------------ dados
+let maxVel = 1, ultimo = null;
+async function atualizar() {
+  try {
+    const r = await fetch("/api/explorador", {cache: "no-store"}); const d = await r.json(); ultimo = d;
+    $("#status").classList.remove("off"); $("#status-txt").textContent = "rede no ar";
+    $("#atualizado").textContent = "atualizado " + new Date().toLocaleTimeString("pt-BR");
+    maxVel = Math.max(maxVel, ...d.historico.map(h => h[1]), d.hps_total);
+    medidor("m-vel", vel(d.hps_total), d.hps_total / maxVel);
+    medidor("m-cart", br(d.carteiras), d.carteiras_com_saldo / Math.max(1, d.carteiras));
+    medidor("m-emit", fmtCurto(d.emitido), d.emitido / d.oferta_max * 20);
+    medidor("m-placas", br(d.mineradores_online), d.mineradores_online / Math.max(16, d.mineradores_online));
+    medidor("m-bloco", br(d.altura), 1 - d.proximo_bloco_s / d.bloco_s);
+
+    const dias = d.diario.map(x => x.dia.slice(8, 10) + "/" + x.dia.slice(5, 7));
+    area($("#g-emit"), 360, 200, d.diario.map(x => x.emitido), dias, cor("--verde"));
+    const ap = Object.keys(NOME_AP);
+    $("#n-ap").textContent = d.mineradores_online;
+    barras($("#g-ap"), 360, 200, ap.map(k => d.por_aparelho[k] || 0), ap.map(k => NOME_AP[k]), [cor("--verde"), cor("--azul"), cor("--ouro")]);
+    pizza($("#g-pizza"), d.distribuicao);
+    barras($("#g-novas"), 540, 220, d.diario.map(x => x.novas), dias, [cor("--verdeb")]);
+    velocidade($("#g-vel"), d.historico);
+
+    $("#l-transf").innerHTML = d.ultimas_transferencias.length ? d.ultimas_transferencias.map(t =>
+      `<button class="lk mono" data-q="${esc(t.de)}" title="de ${esc(t.de)} para ${esc(t.para)}">${br(t.valor, 2)} PTG<span class="fraco">${esc(curto(t.de))}</span></button>`).join("")
+      : `<span class="fraco">nenhuma ainda</span>`;
+    $("#l-blocos").innerHTML = d.ultimos_blocos.map(b =>
+      `<button class="lk mono" data-q="${b.altura}" title="${esc(b.hash)}">#${b.altura} ${esc(b.hash.slice(0, 22))}…</button>`).join("");
+
+    $("#n-placas").textContent = d.mineradores_online;
+    const abertos = new Set([...document.querySelectorAll(".grupo.aberto")].map(g => g.dataset.c));
+    $("#l-placas").innerHTML = d.placas.length ? d.placas.map(g => `<div class="grupo${abertos.has(g.carteira) ? " aberto" : ""}" data-c="${esc(g.carteira)}">
+      <button type="button"><span class="qtd">${g.placas.length}</span><span class="end mono">${esc(g.carteira)}</span><span class="vel">${vel(g.hps)}</span><span class="seta">›</span></button>
+      <div class="lista-placas">${g.placas.map(p => `<div class="placa"><b>${NOME_AP[p.aparelho] || esc(p.aparelho)}</b>
+        <div class="sub">${vel(p.hps)} · ${br(p.aceitas)} respostas</div><div class="fraco">ligada há ${quanto(p.online_s)}</div></div>`).join("")}
+        <button type="button" class="lk" data-q="${esc(g.carteira)}">ver carteira no explorador</button></div></div>`).join("")
+      : `<span class="fraco">nenhuma placa minerando agora</span>`;
+
+    $("#n-cart").textContent = d.carteiras;
+    $("#l-cart").innerHTML = d.lista_carteiras.map((c, i) => `<div class="cart"><span class="fraco num">${i + 1}</span>
+      <div style="min-width:0"><button class="lk mono" data-q="${esc(c.endereco)}">${esc(c.endereco)}</button>
+      <small>${c.desde ? "desde " + new Date(c.desde * 1000).toLocaleDateString("pt-BR") : "ainda sem movimento"}${c.minerando ? '<span class="tag">● minerando</span>' : ""}</small></div>
+      <b class="num">${br(c.saldo, 2)} PTG</b></div>`).join("");
+    const s = d.servidor, okTxt = v => v ? `<span class="ok">Funcionando ✓</span>` : `<span class="nao">Fora do ar</span>`;
+    $("#servicos").innerHTML = [
+      ["Site e painel", true, "este endereço"],
+      ["Mineração", d.mineradores_online > 0, `${d.mineradores_online} mineradores`],
+      ["App carteira", true, `<a href="/app/">abrir o app</a>`],
+      ["Link público", s.link_publico, "acesso pela internet"],
+      ["Transferências", true, `${br(d.transferencias)} na cadeia`],
+      ["Contas no site", true, `${br(d.contas)} contas`],
+    ].map(([n, ok, x]) => `<div class="serv"><h5>${n}</h5><div>${okTxt(ok)}</div><div>${x}</div></div>`).join("");
+    const pc = v => v == null ? "--" : `<span class="v">${v}%</span>`;
+    $("#nodo-br").innerHTML = `<h5>Portgiga nó 1</h5><div>${okTxt(true)}</div>
+      <div>CPU: ${pc(s.cpu)} RAM: ${pc(s.ram)}</div><div>Mineradores: <b>${s.clientes}</b></div><div class="fraco">no ar há ${quanto(s.no_ar_s)}</div><span class="selo">Oficial</span>`;
+  } catch (e) {
+    $("#status").classList.add("off"); $("#status-txt").textContent = "sem conexão";
+  }
+}
+
+// ------------------------------------------------ busca
+async function procurar(q) {
+  q = q.trim(); if (!q) return; $("#q").value = q;
+  const res = $("#resultado"); res.innerHTML = `<div class="res fraco">procurando…</div>`;
+  try {
+    if (/^ptg1/i.test(q)) {
+      const c = await (await fetch("/api/carteira?endereco=" + encodeURIComponent(q))).json();
+      if (c.erro) throw new Error(c.erro);
+      const placas = ultimo && ultimo.placas.find(g => g.carteira === c.endereco);
+      res.innerHTML = `<div class="res"><h4>Carteira</h4><dl>
+        <dt>Endereço</dt><dd class="mono">${esc(c.endereco)}</dd>
+        <dt>Saldo</dt><dd><b>${br(c.saldo, 2)} PTG</b></dd>
+        <dt>Total minerado</dt><dd>${br(c.minerado, 2)} PTG</dd>
+        <dt>Últimas 24 h</dt><dd>+${br(c.resumo_24h.minerado, 2)} minerados · ${c.resumo_24h.blocos_minerados} blocos</dd>
+        <dt>Placas agora</dt><dd>${placas ? `${placas.placas.length} minerando · ${vel(placas.hps)}` : "nenhuma"}</dd></dl>
+        ${c.movimentos.slice(0, 15).map(m => `<div class="mov"><span>${m.tipo === "mineracao" ? "⛏️ mineração" : m.tipo === "enviado" ? "↗ enviado" : "↙ recebido"}
+          <button class="lk mono" style="display:inline;width:auto" data-q="${m.bloco}">#${m.bloco}</button> <span class="fraco">${data(m.quando)}</span></span>
+          <b class="${m.tipo === "enviado" ? "menos" : "mais"}">${m.tipo === "enviado" ? "−" : "+"}${br(m.valor, 2)}</b></div>`).join("")}</div>`;
+    } else {
+      const b = await (await fetch("/api/bloco?id=" + encodeURIComponent(q))).json();
+      if (b.erro) throw new Error(b.erro);
+      const rec = Object.entries(b.dados.recompensas || {}), tr = b.dados.transferencias || [];
+      res.innerHTML = `<div class="res"><h4>Bloco #${b.altura}</h4><dl>
+        <dt>Hash</dt><dd class="mono">${esc(b.hash)}</dd>
+        <dt>Anterior</dt><dd class="mono"><button class="lk mono" data-q="${b.altura - 1}">${esc(b.anterior)}</button></dd>
+        <dt>Data</dt><dd>${new Date(b.quando * 1000).toLocaleString("pt-BR")}</dd>
+        <dt>Emissão</dt><dd>${br(b.emissao, 2)} PTG</dd></dl>
+        ${b.dados.mensagem ? `<p>${esc(b.dados.mensagem)}</p>` : ""}
+        ${rec.map(([e, v]) => `<div class="mov"><button class="lk mono" style="width:auto" data-q="${esc(e)}">⛏️ ${esc(curto(e))}</button><b class="mais">+${br(v, 4)}</b></div>`).join("")}
+        ${tr.map(t => `<div class="mov"><span><button class="lk mono" style="display:inline;width:auto" data-q="${esc(t.de)}">${esc(curto(t.de))}</button> → <button class="lk mono" style="display:inline;width:auto" data-q="${esc(t.para)}">${esc(curto(t.para))}</button></span><b>${br(t.valor, 2)} PTG</b></div>`).join("")}</div>`;
+    }
+  } catch (e) { res.innerHTML = `<div class="res erro">${esc(e.message)}</div>`; }
+}
+$("#busca").addEventListener("submit", e => { e.preventDefault(); procurar($("#q").value); });
+document.addEventListener("click", e => {
+  const q = e.target.closest("[data-q]"); if (q) { procurar(q.dataset.q); $("#busca").scrollIntoView({behavior: "smooth", block: "start"}); return; }
+  const g = e.target.closest(".grupo>button"); if (g) g.parentElement.classList.toggle("aberto");
+});
+const qs = new URLSearchParams(location.search).get("q"); if (qs) procurar(qs);
+atualizar(); setInterval(atualizar, 10000);
+</script>
+</body></html>
