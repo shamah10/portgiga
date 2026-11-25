@@ -159,6 +159,23 @@ class TestSocial(unittest.TestCase):
                                           anuncio=0, imagem="", video=base64.b64encode(falso).decode()))
         self.assertFalse(r["ok"])
 
+    def test_campo_escondido_nao_move_nem_apaga_arquivo_do_pc(self):
+        # ataque: mandar no pedido o caminho de um arquivo qualquer do PC (ex.: a chave da corretora)
+        alvo = os.path.join(self.tmp, "segredo.json")
+        with open(alvo, "w") as fh:
+            fh.write('{"chave": "nao pode sumir"}')
+        legenda = "oi"
+        r = social.postar(self.ana.pedido("portgiga-sc-postar:", [legenda, "PTG", "x" * 64, 0], legenda=legenda, moeda="PTG",
+                                          anuncio=0, _video_arquivo=alvo, _video_sha="x" * 64))
+        time.sleep(1)
+        self.assertTrue(os.path.exists(alvo))
+        self.assertFalse(r.get("processando"))
+        # e o caminho de fora também não passa pelo parâmetro interno
+        r2 = social.postar(self.ana.pedido("portgiga-sc-postar:", ["oi 2", "PTG", "y" * 64, 0], legenda="oi 2", moeda="PTG", anuncio=0),
+                           video_cru=(alvo, "y" * 64))
+        self.assertFalse(r2["ok"])
+        self.assertTrue(os.path.exists(alvo))
+
     def test_videos_desligados_e_um_por_vez(self):
         cx.salvar_regras({"social_videos": False})
         self.assertFalse(self.postar_video(self.ana, video(1))["ok"])

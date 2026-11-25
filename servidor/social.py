@@ -150,10 +150,18 @@ def url_video(pid, versao):
     return "/corretora/social/p%d.mp4?v=%d" % (pid, versao) if versao else None
 
 
-def _video(a):
-    """Lê o vídeo do pedido. Devolve (bytes ou caminho do arquivo cru, sha256 hex, erro)."""
-    if a.get("_video_arquivo"):          # enviado cru por /postar_video (não passa pelo JSON)
-        return a["_video_arquivo"], a["_video_sha"], None
+_UP_OK = re.compile(r"up_[0-9a-f]{16}\.bin")
+
+
+def _video(a, cru=None):
+    """Lê o vídeo do pedido. Devolve (bytes ou caminho do arquivo cru, sha256 hex, erro).
+    O arquivo cru só chega pelo parâmetro `cru` (de /postar_video), nunca por um campo do pedido:
+    senão alguém mandaria o caminho de qualquer arquivo do PC e o servidor o moveria e apagaria."""
+    if cru:
+        arq, sha = cru
+        if os.path.dirname(os.path.abspath(arq)) != os.path.abspath(PASTA) or not _UP_OK.fullmatch(os.path.basename(arq)):
+            return None, "", "vídeo inválido"
+        return arq, sha, None
     v = a.get("video", "")
     if not isinstance(v, str) or len(v) > MAX_VIDEO_BYTES * 4 // 3 + 16:
         return None, "", "vídeo grande demais (máximo 95 MB)"
@@ -378,14 +386,14 @@ def perfil(a):
         return {"ok": True, "perfil": _perfil(a["carteira"])}
 
 
-def postar(a):
+def postar(a, video_cru=None):
     legenda, moeda, anuncio = a.get("legenda"), a.get("moeda", ""), a.get("anuncio", 0)
     if not isinstance(legenda, str) or not isinstance(moeda, str) or type(anuncio) is not int:
         return {"ok": False, "erro": "pedido inválido"}
     dados, resumo, erro = _imagem(a)
     if erro:
         return {"ok": False, "erro": erro}
-    video, resumo_v, erro = _video(a)
+    video, resumo_v, erro = _video(a, video_cru)
     if erro:
         return {"ok": False, "erro": erro}
     if video and dados:
@@ -1103,8 +1111,7 @@ def _postar_video(h, do_pc, ip):
         if not (inicio[4:8] == b"ftyp" or inicio[:4] == b"\x1a\x45\xdf\xa3"):
             r = {"ok": False, "erro": "formato não aceito: mande o vídeo em MP4, MOV ou WebM"}
         else:
-            a["_video_arquivo"], a["_video_sha"] = arq, sha.hexdigest()
-            r = postar(a)
+            r = postar(a, video_cru=(arq, sha.hexdigest()))
     except Exception:
         r = {"ok": False, "erro": "o envio do vídeo foi interrompido: tente de novo"}
     if not r.get("processando"):       # recusado: o arquivo cru não fica no PC
