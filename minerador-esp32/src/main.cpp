@@ -11,6 +11,11 @@
 // (sem ela, um vizinho poderia trocar a carteira). 5 senhas erradas = pagina bloqueada por 5 min. Esqueceu a senha?
 // Grave de novo pelo cabo USB (quem tem a placa na mao manda nela). Por https a placa confere o certificado do servidor.
 //
+// v1.5: SEGUE O LINK SOZINHO. Enquanto a rede nao tem dominio proprio, o endereco publico (…trycloudflare.com)
+// muda quando o PC do servidor reinicia. Se o servidor (https) parar de responder por ~1 min, a placa le
+// https://portgiga.pages.dev/link.json (conferindo o certificado), pega o endereco novo, salva e volta a minerar.
+// Placas da rede de casa (http://) nao mudam sozinhas.
+//
 // LED azul: piscada curta = resposta aceita | aceso direto = conectando no Wi-Fi |
 //           piscando devagar = servidor fora do ar | duas piscadas seguidas = modo configuracao
 #include <WiFi.h>
@@ -24,7 +29,8 @@
 #include "sha_bloco.h"
 #include "raizes.h"
 
-static const char *VERSAO = "1.4";
+static const char *VERSAO = "1.5";
+static const char *LINK_FIXO = "https://portgiga.pages.dev/link.json";   // o site fixo publica o endereco de agora
 static const char *SERVIDOR_PADRAO = "http://10.0.0.186:7777";
 static const int LED = 2;
 static const int BOTAO = 0;   // botao BOOT da placa
@@ -40,6 +46,8 @@ uint32_t aceitas = 0, recusadas = 0;
 float ultimaVelocidade = 0;
 bool modoConfig = false;
 uint32_t wifiForaDesde = 0, wifiUltimaTentativa = 0;   // reconexao no meio da mineracao
+uint8_t falhasSeguidas = 0;                            // pedidos ao servidor que falharam em seguida
+uint32_t ultimaBuscaLink = 0;
 
 // ------------------------------------------------------------------ utilidades
 String campo(const String &json, const char *chave) {
@@ -121,6 +129,48 @@ bool httpGet(const String &url, String &resp) {
   http.end();
   if (cod < 0) { tls.stop(); simples.stop(); }   // conexao caiu: a proxima abre de novo
   return cod == 200;
+}
+
+// so aceita endereco https do tunel da Cloudflare ou do dominio da rede (o link.json nao pode mandar a placa para qualquer lugar)
+bool enderecoPublicoOk(const String &u) {
+  if (!u.startsWith("https://") || u.length() > 120) return false;
+  String host = u.substring(8);
+  int barra = host.indexOf('/');
+  if (barra >= 0) host = host.substring(0, barra);
+  for (unsigned i = 0; i < host.length(); i++) {
+    char c = host[i];
+    if (!(isalnum(c) || c == '-' || c == '.')) return false;
+  }
+  return host.endsWith(".trycloudflare.com") || host == "portgiga.com.br" || host.endsWith(".portgiga.com.br");
+}
+
+// servidor publico sumiu: le o endereco de agora no site fixo. Devolve true se mudou (e ja salvou).
+bool seguirLink() {
+  if (!cfgServidor.startsWith("https://")) return false;              // rede de casa (http): fica como esta
+  if (ultimaBuscaLink && millis() - ultimaBuscaLink < 120000) return false;   // no maximo a cada 2 min
+  ultimaBuscaLink = millis();
+  if (time(nullptr) < 1700000000) {
+    configTime(0, 0, "pool.ntp.org", "time.google.com");
+    for (int i = 0; i < 40 && time(nullptr) < 1700000000; i++) delay(250);
+  }
+  WiFiClientSecure cli;
+  cli.setCACert(RAIZES_TLS);
+  HTTPClient http;
+  http.setTimeout(10000);
+  if (!http.begin(cli, LINK_FIXO)) return false;
+  int cod = http.GET();
+  String resp = cod == 200 ? http.getString() : "";
+  http.end();
+  cli.stop();
+  String novo = campo(resp, "portgiga");
+  while (novo.endsWith("/")) novo.remove(novo.length() - 1);
+  Serial.println("procurando o endereco novo em " + String(LINK_FIXO) + ": " + (novo.length() ? novo : String("(nada)")));
+  if (!enderecoPublicoOk(novo) || novo == cfgServidor) return false;
+  prefs.begin("portgiga", false);
+  prefs.putString("servidor", novo);
+  prefs.end();
+  Serial.println("endereco do servidor mudou: " + cfgServidor + " -> " + novo + " (reiniciando)");
+  return true;
 }
 
 void hexParaBytes(const String &h, uint8_t *out) {
@@ -378,9 +428,12 @@ void loop() {
   if (!httpGet(cfgServidor + "/api/trabalho?carteira=" + cfgCarteira + "&aparelho=esp32&id=" + idMinerador + "&nome=" + codificar(cfgNome), resp)) {
     ultimoStatus = "servidor fora do ar (" + cfgServidor + ")";
     Serial.println(ultimoStatus + ", tentando em 5 s");
+    if (falhasSeguidas < 255) falhasSeguidas++;
+    if (falhasSeguidas >= 10 && seguirLink()) { delay(300); ESP.restart(); }   // ~1 min sem resposta
     for (int i = 0; i < 5; i++) { digitalWrite(LED, HIGH); delay(250); web.handleClient(); checarBotao(); digitalWrite(LED, LOW); delay(750); }
     return;
   }
+  falhasSeguidas = 0;
   String erro = campo(resp, "erro");
   if (erro.length()) { ultimoStatus = "servidor recusou: " + erro; Serial.println(ultimoStatus); delay(10000); return; }
   String trabalho = campo(resp, "trabalho"), base = campo(resp, "base");
