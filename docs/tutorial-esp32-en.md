@@ -6,6 +6,8 @@ It started with a silly question: **can a cheap ESP32 board mine a coin on equal
 
 The answer became **Portgiga (PTG)**, a small Brazilian peer-to-peer exchange coin with the pau-brasil tree as its symbol. Nine ESP32 boards mine it on my desk, and block 20,000 came out on Nov 24, 2026. In this guide you flash the miner onto an ESP32 in about 10 minutes from your browser and set it up from your phone.
 
+![Five of my ESP32 boards mining, red power LED on](img/foto-placas.jpg)
+
 > **First things first:** Portgiga is a learning project in a test phase. **PTG has no cash value and is not an investment.** Nobody promises profit. It's a coin for trading between people, made for fun. The web interface is in Portuguese for now; the steps below tell you what to click.
 
 ## How a tiny board can compete with a computer
@@ -94,6 +96,12 @@ On first boot the board enters **setup mode**: the blue LED **double-blinks** re
 | double-blinking | setup mode |
 
 Your board shows up on the dashboard with its speed, accepted answers and a **proof of work** you can verify. Coins arrive every block (one per minute). If power or Wi-Fi drops, the board keeps its settings and comes back on its own.
+
+My setup: nine boards in a row, each on an ordinary phone charger plugged into a power strip.
+
+![Nine ESP32 boards in a row](img/foto-fileira.jpg)
+
+![The chargers and the power strip](img/foto-tomadas.jpg)
 
 ![The network dashboard](img/painel.png)
 

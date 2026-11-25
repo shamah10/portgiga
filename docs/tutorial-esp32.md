@@ -6,6 +6,8 @@ Comecei com uma pergunta boba: **dá pra fazer uma moeda que uma plaquinha ESP32
 
 O resultado é a **Portgiga (PTG)**, uma moeda de troca brasileira, com o pau-brasil de símbolo. Hoje tem 9 placas ESP32 minerando na minha mesa, e o bloco 20.000 saiu em 24/11/2026. Neste tutorial você grava o minerador numa ESP32 em uns 10 minutos, pelo navegador, e configura pelo celular.
 
+![Cinco das minhas placas ESP32 minerando, com o LED vermelho de energia aceso](img/foto-placas.jpg)
+
 > **Antes de tudo:** a Portgiga é um projeto de aprendizado em fase de teste. **PTG não vale dinheiro e não é investimento.** Ninguém promete lucro. É moeda de troca entre pessoas, feita por diversão.
 
 ## Como a placa consegue competir com um computador
@@ -104,6 +106,12 @@ Na primeira vez, a placa entra no **modo configuração**: o LED azul dá **duas
 | dando duas piscadas seguidas | modo configuração |
 
 Se faltar luz ou o Wi-Fi cair, a placa não perde a configuração e volta sozinha.
+
+A minha montagem: 9 placas em fila, cada uma num carregador de celular comum, todos num filtro de linha.
+
+![As 9 placas ESP32 em fila](img/foto-fileira.jpg)
+
+![Os carregadores e o filtro de linha](img/foto-tomadas.jpg)
 
 ## Dá para conferir tudo
 
