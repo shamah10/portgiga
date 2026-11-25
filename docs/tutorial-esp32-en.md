@@ -29,7 +29,7 @@ Every minute a block of **10 PTG** is split among everyone who answered in that 
 | Computer with Chrome or Edge | Windows, Mac or Linux (Firefox and Safari can't flash) |
 | 2.4 GHz Wi-Fi | the ESP32 can't join 5 GHz networks |
 | A phone | to configure the board |
-| The firmware | [portgiga-minerador-esp32-v1.4.bin](https://github.com/shamah10/portgiga/releases/download/v1.4/portgiga-minerador-esp32-v1.4.bin) ([release page](https://github.com/shamah10/portgiga/releases/tag/v1.4)) |
+| The firmware | [portgiga-minerador-esp32-v1.5.bin](https://github.com/shamah10/portgiga/releases/download/v1.5/portgiga-minerador-esp32-v1.5.bin) ([release page](https://github.com/shamah10/portgiga/releases/tag/v1.5)) |
 
 ## Step 1 — Create a free wallet
 
@@ -44,11 +44,13 @@ This is where the coins your board mines will land.
 
 ## Step 2 — Flash the firmware from your browser
 
+**Easiest way:** open **https://portgiga.pages.dev/gravar/** in Chrome or Edge, click **Gravar na placa** (Flash the board), pick the port and wait. Then skip to Step 3. Prefer to do it by hand? Follow the steps below.
+
 1. Plug the ESP32 into your computer.
 2. In **Chrome or Edge**, open Espressif's official web flasher: **https://espressif.github.io/esptool-js/**
 3. Set **Baudrate** to **460800**, click **Connect** and pick the board's port (usually **CP2102**, **CH340** or **USB Serial**). Stuck on "Connecting..."? **Hold the BOOT button.**
 4. Click **Erase Flash** and wait.
-5. Set **Flash Address** to **0x0** and choose `portgiga-minerador-esp32-v1.4.bin`.
+5. Set **Flash Address** to **0x0** and choose `portgiga-minerador-esp32-v1.5.bin`.
 6. Click **Program** and wait for 100%.
 7. Click **Disconnect** and press the board's **EN**/**RST** button.
 
@@ -60,7 +62,7 @@ Prefer the terminal?
 ```bash
 pip install esptool
 esptool --chip esp32 erase-flash
-esptool --chip esp32 --baud 460800 write-flash 0x0 portgiga-minerador-esp32-v1.4.bin
+esptool --chip esp32 --baud 460800 write-flash 0x0 portgiga-minerador-esp32-v1.5.bin
 ```
 
 ## Step 3 — Set it up from your phone
@@ -84,7 +86,7 @@ On first boot the board enters **setup mode**: the blue LED **double-blinks** re
 
 ![The Minerar tab with the server address and the download button](img/aba-minerar.png)
 
-> Until the network has its own domain, the server address can change. If the board stops mining, check the address on the Minerar tab and set it again.
+> Until the network has its own domain, the server address can change. Since v1.5 the board finds the new address by itself (it reads it from portgiga.pages.dev) and keeps mining.
 
 ## Step 4 — Check it's mining
 

@@ -29,7 +29,7 @@ A cada minuto sai um bloco com **10 PTG**, dividido entre quem respondeu naquele
 | Computador com Chrome ou Edge | Windows, Mac ou Linux (Firefox e Safari não gravam) |
 | Wi-Fi de 2,4 GHz | a ESP32 não conecta em 5 GHz |
 | Um celular | para configurar a placa |
-| O firmware | [portgiga-minerador-esp32-v1.4.bin](https://github.com/shamah10/portgiga/releases/download/v1.4/portgiga-minerador-esp32-v1.4.bin) (página da versão: [releases/v1.4](https://github.com/shamah10/portgiga/releases/tag/v1.4)) |
+| O firmware | [portgiga-minerador-esp32-v1.5.bin](https://github.com/shamah10/portgiga/releases/download/v1.5/portgiga-minerador-esp32-v1.5.bin) (página da versão: [releases/v1.5](https://github.com/shamah10/portgiga/releases/tag/v1.5)) |
 
 ## Passo 1 — Crie uma carteira (grátis)
 
@@ -46,12 +46,14 @@ A cada minuto sai um bloco com **10 PTG**, dividido entre quem respondeu naquele
 
 ## Passo 2 — Grave o firmware pelo navegador
 
+**Jeito mais fácil:** abra **https://portgiga.pages.dev/gravar/** no Chrome ou Edge, clique em **Gravar na placa**, escolha a porta e espere. Depois pule para o passo 3. Prefere fazer à mão? Siga os passos abaixo.
+
 1. Ligue a ESP32 no computador pelo cabo USB.
 2. No **Chrome ou Edge**, abra o gravador oficial da Espressif (fabricante da ESP32): **https://espressif.github.io/esptool-js/**
 3. Em **Baudrate** escolha **460800** e clique em **Connect**. Escolha a porta da placa (costuma aparecer como **CP2102**, **CH340** ou **USB Serial**).
    - Ficou parado em "Connecting..."? **Segure o botão BOOT** da placa até começar.
 4. Clique em **Erase Flash** e espere terminar.
-5. Em **Flash Address** escreva **0x0** e escolha o arquivo `portgiga-minerador-esp32-v1.4.bin`.
+5. Em **Flash Address** escreva **0x0** e escolha o arquivo `portgiga-minerador-esp32-v1.5.bin`.
 6. Clique em **Program** e espere chegar a 100%.
 7. Clique em **Disconnect** e aperte o botão **EN** (ou **RST**) da placa.
 
@@ -63,7 +65,7 @@ A cada minuto sai um bloco com **10 PTG**, dividido entre quem respondeu naquele
 ```bash
 pip install esptool
 esptool --chip esp32 erase-flash
-esptool --chip esp32 --baud 460800 write-flash 0x0 portgiga-minerador-esp32-v1.4.bin
+esptool --chip esp32 --baud 460800 write-flash 0x0 portgiga-minerador-esp32-v1.5.bin
 ```
 (Em versões antigas do esptool: `erase_flash` e `write_flash`.)
 
@@ -88,7 +90,7 @@ Na primeira vez, a placa entra no **modo configuração**: o LED azul dá **duas
 
 ![Aba Minerar: o endereço do servidor e o botão de baixar](img/aba-minerar.png)
 
-> O endereço do servidor ainda pode mudar enquanto a rede não tem domínio próprio. Se a placa parar de minerar, confira o endereço na aba Minerar e configure de novo.
+> O endereço do servidor ainda pode mudar enquanto a rede não tem domínio próprio. Desde a v1.5 a placa acha o endereço novo sozinha (ela consulta o portgiga.pages.dev) e continua minerando.
 
 ## Passo 4 — Confira se está minerando
 
