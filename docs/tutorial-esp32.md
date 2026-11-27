@@ -8,7 +8,7 @@ O resultado é a **Portgiga (PTG)**, uma moeda de troca brasileira, com o pau-br
 
 ![Cinco das minhas placas ESP32 minerando, com o LED vermelho de energia aceso](img/foto-placas.jpg)
 
-> **Antes de tudo:** a Portgiga é um projeto de aprendizado em fase de teste. **PTG não vale dinheiro e não é investimento.** Ninguém promete lucro. É moeda de troca entre pessoas, feita por diversão.
+> **Antes de tudo:** a Portgiga é um projeto de aprendizado em fase de teste. **PTG é uma moeda de valor próprio.** Ninguém promete lucro. É moeda de troca entre pessoas, feita por diversão.
 
 ## Como a placa consegue competir com um computador
 
@@ -130,4 +130,4 @@ Toda transferência é assinada pela chave da carteira, e cada bloco guarda o re
 Ideias, correções e perguntas são bem-vindas nas *issues* do repositório.
 
 ---
-*PTG não vale dinheiro e não é investimento. É uma moeda de troca entre pessoas, feita por diversão e aprendizado.*
+*PTG é uma moeda de valor próprio: vale na troca entre pessoas, feita por diversão e aprendizado.*

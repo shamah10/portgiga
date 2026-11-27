@@ -4,7 +4,7 @@
 
 Uma moeda experimental feita em casa, minerada por placas **ESP32**, celulares e PCs. O símbolo é o pau-brasil.
 
-> **PTG não tem valor em dinheiro e ninguém promete que vai ter.** É um projeto de hobby, aprendizado e comunidade.
+> **PTG é uma moeda de valor próprio e ninguém promete lucro.** É um projeto de hobby, aprendizado e comunidade.
 
 A rede começou com 8 placas ESP32 de R$ 30 minerando juntas numa rede de casa. Este repositório tem tudo: o servidor, o painel, o firmware das placas e um verificador independente.
 

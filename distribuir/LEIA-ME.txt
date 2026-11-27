@@ -14,5 +14,5 @@ sem a senha (5 senhas erradas bloqueiam a pagina por 5 minutos). Por https a pla
 certificado do servidor. Esqueceu a senha? Grave a placa de novo pelo cabo USB.
 Da v1.3: se faltar luz ou o Wi-Fi cair, a placa nao perde a configuracao e volta sozinha.
 
-Aviso: a Portgiga esta em fase de teste e nao tem valor em dinheiro.
+Aviso: a Portgiga esta em fase de teste e a PTG e uma moeda de valor proprio.
 Nunca coloque a chave secreta da sua carteira na placa: ela so precisa do endereco ptg1.
